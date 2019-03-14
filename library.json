@@ -7,15 +7,15 @@
   "dependencies": [
     {
       "name": "squid-spec",
-      "version": "0.2"
+      "version": "0.1"
     },
     {
       "name": "keeper-contracts",
-      "version": "0.8.3"
+      "version": "0.8.5"
     },
     {
       "name": "brizo",
-      "version": ">0.2.3"
+      "version": ">0.2.4"
     }
   ]
 }

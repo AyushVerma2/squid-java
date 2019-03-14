@@ -11,6 +11,8 @@ import com.oceanprotocol.keeper.contracts.TemplateStoreManager;
 import com.oceanprotocol.squid.api.config.OceanConfig;
 import com.oceanprotocol.squid.external.KeeperService;
 import com.oceanprotocol.squid.manager.ManagerHelper;
+import com.oceanprotocol.squid.models.Account;
+import com.oceanprotocol.squid.models.Balance;
 import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.asset.AssetMetadata;
@@ -93,7 +95,11 @@ public class AssetsApiIT {
         EscrowAccessSecretStoreTemplate escrowAccessSecretStoreTemplate = ManagerHelper.loadEscrowAccessSecretStoreTemplate(keeper, config.getString("contract.EscrowAccessSecretStoreTemplate.address"));
         TemplateStoreManager templateManager = ManagerHelper.loadTemplateStoreManager(keeper, config.getString("contract.TemplateStoreManager.address"));
 
-        oceanAPIConsumer.getAccountsAPI().requestTokens(BigInteger.valueOf(100));
+        oceanAPIConsumer.getAccountsAPI().requestTokens(BigInteger.valueOf(1000));
+        Balance balance= oceanAPIConsumer.getAccountsAPI().balance(oceanAPIConsumer.getMainAccount());
+
+        log.debug("Account " + oceanAPIConsumer.getMainAccount().address + " balance is: " + balance.toString());
+
         boolean isTemplateApproved= templateManager.isTemplateApproved(escrowAccessSecretStoreTemplate.getContractAddress()).send();
         log.debug("Is escrowAccessSecretStoreTemplate approved? " + isTemplateApproved);
     }
@@ -116,7 +122,16 @@ public class AssetsApiIT {
         DDO ddo= oceanAPI.getAssetsAPI().create(metadataBase, serviceEndpoints);
         DID did= new DID(ddo.id);
 
+        oceanAPIConsumer.getAccountsAPI().requestTokens(BigInteger.valueOf(9000000));
+        Balance balance= oceanAPIConsumer.getAccountsAPI().balance(oceanAPIConsumer.getMainAccount());
+
+        log.debug("Account " + oceanAPIConsumer.getMainAccount().address + " balance is: " + balance.toString());
+
         Flowable<OrderResult> response = oceanAPIConsumer.getAssetsAPI().order(did, Service.DEFAULT_ACCESS_SERVICE_ID);
+
+        Balance balanceAfter= oceanAPIConsumer.getAccountsAPI().balance(oceanAPIConsumer.getMainAccount());
+
+        log.debug("Account " + oceanAPIConsumer.getMainAccount().address + " balance is: " + balance.toString());
 
         OrderResult result = response.blockingFirst();
         assertNotNull(result.getServiceAgreementId());

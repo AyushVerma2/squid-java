@@ -277,10 +277,11 @@ public class OceanManager extends BaseManager {
                             getKeeperService().unlockAccount(getMainAccount());
                             getKeeperService().tokenApprove(this.tokenContract, lockRewardCondition.getContractAddress(), Integer.valueOf(ddo.metadata.base.price));
                             BigInteger balance = this.tokenContract.balanceOf(getMainAccount().address).send();
-                            if (balance.intValue() < Integer.valueOf(ddo.metadata.base.price)) {
+                            if (balance.compareTo(BigInteger.valueOf(Long.parseLong(ddo.metadata.base.price))) < 0) {
+//                            if (balance.intValue() < Integer.valueOf(ddo.metadata.base.price)) {
                                 log.warn("Consumer account does not have sufficient token balance to fulfill the " +
                                         "LockRewardCondition. Do `requestTokens` using the `dispenser` contract then try this again.");
-                                log.info("token balance is: " + balance + "price is: " + Integer.valueOf(ddo.metadata.base.price));
+                                log.info("token balance is: " + balance + " price is: " + ddo.metadata.base.price);
                                 throw new Exception("LockRewardCondition.fulfill will fail due to insufficient token balance in the consumer account.");
                             }
                             this.fulfillLockReward(ddo, serviceDefinitionId, eventServiceAgreementId);
