@@ -14,6 +14,7 @@ import com.oceanprotocol.squid.api.helper.OceanInitializationHelper;
 import com.oceanprotocol.squid.api.impl.AccountsImpl;
 import com.oceanprotocol.squid.api.impl.AssetsImpl;
 import com.oceanprotocol.squid.api.impl.SecretStoreImpl;
+import com.oceanprotocol.squid.api.impl.TokensImpl;
 import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.KeeperService;
 import com.oceanprotocol.squid.exceptions.InitializationException;
@@ -57,6 +58,7 @@ public class OceanAPI {
     private EscrowReward escrowReward;
 
     private AccountsAPI accountsAPI;
+    private TokensAPI tokensAPI;
     private AssetsAPI assetsAPI;
     private SecretStoreAPI secretStoreAPI;
 
@@ -144,6 +146,7 @@ public class OceanAPI {
             oceanAPI.assetsManager.setMainAccount(oceanAPI.mainAccount);
 
             oceanAPI.accountsAPI = new AccountsImpl(oceanAPI.accountsManager);
+            oceanAPI.tokensAPI = new TokensImpl(oceanAPI.accountsManager);
             oceanAPI.secretStoreAPI = new SecretStoreImpl(oceanAPI.secretStoreManager);
             oceanAPI.assetsAPI = new AssetsImpl(oceanAPI.oceanManager, oceanAPI.assetsManager);
 
@@ -181,6 +184,15 @@ public class OceanAPI {
     public AccountsAPI getAccountsAPI() {
         return this.accountsAPI;
     }
+
+    /**
+     * Gets the TokensAPI
+     * @return an instance of an Implementation class of TokensAPI
+     */
+    public TokensAPI getTokensAPI() {
+        return this.tokensAPI;
+    }
+
 
     /**
      * Gets the AssetsAPI

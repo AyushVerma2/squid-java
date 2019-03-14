@@ -58,25 +58,4 @@ public class AccountsApiIT {
         assertEquals(1, balance.getDrops().compareTo(BigInteger.ZERO));
     }
 
-    @Test
-    public void requestTokens() throws Exception {
-
-        BigInteger tokens = BigInteger.ONE;
-
-        Balance balanceBefore = oceanAPI.getAccountsAPI().balance(oceanAPI.getMainAccount());
-        log.debug("Balance before: " + balanceBefore.toString());
-
-        TransactionReceipt receipt = oceanAPI.getAccountsAPI().requestTokens(tokens);
-
-        assertTrue(receipt.isStatusOK());
-
-        Balance balanceAfter = oceanAPI.getAccountsAPI().balance(oceanAPI.getMainAccount());
-
-        log.debug("Balance after: " + balanceAfter.toString());
-
-        BigDecimal before= balanceBefore.getOceanTokens();
-        BigDecimal after= balanceAfter.getOceanTokens();
-        assertEquals(0, after.compareTo(before.add(BigDecimal.ONE)));
-    }
-
 }
