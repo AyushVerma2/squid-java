@@ -1,3 +1,8 @@
+/*
+ * Copyright 2018 Ocean Protocol Foundation
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.oceanprotocol.squid.api.config;
 
 
@@ -18,12 +23,15 @@ public class OceanConfig {
     public static final String MAIN_ACCOUNT_ADDRESS = "account.main.address";
     public static final String MAIN_ACCOUNT_PASSWORD = "account.main.password";
     public static final String MAIN_ACCOUNT_CREDENTIALS_FILE = "account.main.credentialsFile";
-    public static final String DID_REGISTRY_ADDRESS = "contract.didRegistry.address";
-    public static final String SERVICE_EXECUTION_AGREEMENT_ADDRESS = "contract.serviceExecutionAgreement.address";
-    public static final String PAYMENT_CONDITIONS_ADDRESS = "contract.paymentConditions.address";
-    public static final String ACCESS_CONDITIONS_ADDRESS = "contract.accessConditions.address";
-    public static final String TOKEN_ADDRESS = "contract.token.address";
-    public static final String DISPENSER_ADDRESS = "contract.dispenser.address";
+    public static final String DID_REGISTRY_ADDRESS = "contract.DIDRegistry.address";
+    public static final String AGREEMENT_STORE_MANAGER_ADDRESS = "contract.AgreementStoreManager.address";
+    public static final String LOCKREWARD_CONDITIONS_ADDRESS = "contract.LockRewardCondition.address";
+    public static final String ESCROWREWARD_CONDITIONS_ADDRESS = "contract.EscrowReward.address";
+    public static final String ESCROW_ACCESS_SS_CONDITIONS_ADDRESS = "contract.EscrowAccessSecretStoreTemplate.address";
+    public static final String TEMPLATE_STORE_MANAGER_ADDRESS = "contract.TemplateStoreManager.address";
+    public static final String ACCESS_SS_CONDITIONS_ADDRESS = "contract.AccessSecretStoreCondition.address";
+    public static final String TOKEN_ADDRESS = "contract.OceanToken.address";
+    public static final String DISPENSER_ADDRESS = "contract.Dispenser.address";
     public static final String CONSUME_BASE_PATH = "consume.basePath";
 
 
@@ -36,9 +44,11 @@ public class OceanConfig {
     private String mainAccountPassword;
     private String mainAccountCredentialsFile;
     private String didRegistryAddress;
-    private String serviceExecutionAgreementAddress;
-    private String paymentConditionsAddress;
-    private String accessConditionsAddress;
+    private String agreementStoreManagerAddress;
+    private String escrowRewardAddress;
+    private String escrowAccessSecretStoreTemplateAddress;
+    private String lockRewardAddress;
+    private String accessSsConditionsAddress;
     private String tokenAddress;
     private String dispenserAddress;
     private String consumeBasePath;
@@ -83,28 +93,43 @@ public class OceanConfig {
 
         OceanConfigValidation validation = new OceanConfigValidation();
 
-        if (oceanConfig.getServiceExecutionAgreementAddress() == null || oceanConfig.getServiceExecutionAgreementAddress().isEmpty()) {
-            validation.setValid(false);
-            validation.addErrorMessage("The Address of Service Execution Agreement Contract must be set with the property "
-                    + OceanConfig.SERVICE_EXECUTION_AGREEMENT_ADDRESS);
-        }
-
         if (oceanConfig.getDidRegistryAddress() == null || oceanConfig.getDidRegistryAddress().isEmpty()) {
             validation.setValid(false);
             validation.addErrorMessage("The Address of DIDRegistry Contract must be set with the property "
                     + OceanConfig.DID_REGISTRY_ADDRESS);
         }
 
-        if (oceanConfig.getPaymentConditionsAddress() == null || oceanConfig.getPaymentConditionsAddress().isEmpty()) {
+
+        if (oceanConfig.getAgreementStoreManagerAddress() == null || oceanConfig.getAgreementStoreManagerAddress().isEmpty()) {
             validation.setValid(false);
-            validation.addErrorMessage("The Address of PaymentConditions Contract must be set with the property "
-                    + OceanConfig.PAYMENT_CONDITIONS_ADDRESS);
+            validation.addErrorMessage("The Address of agreementStoreManager Contract must be set with the property "
+                    + OceanConfig.AGREEMENT_STORE_MANAGER_ADDRESS);
         }
 
-        if (oceanConfig.getAccessConditionsAddress() == null || oceanConfig.getAccessConditionsAddress().isEmpty()) {
+
+        if (oceanConfig.getEscrowRewardConditionsAddress() == null || oceanConfig.getEscrowRewardConditionsAddress().isEmpty()) {
             validation.setValid(false);
-            validation.addErrorMessage("The Address of AccessConditions Contract must be set with the property "
-                    + OceanConfig.ACCESS_CONDITIONS_ADDRESS);
+            validation.addErrorMessage("The Address of EscrowReward Contract must be set with the property "
+                    + OceanConfig.ESCROWREWARD_CONDITIONS_ADDRESS);
+        }
+
+        if (oceanConfig.getEscrowAccessSecretStoreTemplateAddress() == null || oceanConfig.getEscrowAccessSecretStoreTemplateAddress().isEmpty()) {
+            validation.setValid(false);
+            validation.addErrorMessage("The Address of EscrowAccessSecretStoreTemplate Contract must be set with the property "
+                    + OceanConfig.ESCROW_ACCESS_SS_CONDITIONS_ADDRESS);
+        }
+
+        if (oceanConfig.getLockrewardConditionsAddress() == null || oceanConfig.getLockrewardConditionsAddress().isEmpty()) {
+            validation.setValid(false);
+            validation.addErrorMessage("The Address of LockReward Contract must be set with the property "
+                    + OceanConfig.LOCKREWARD_CONDITIONS_ADDRESS);
+        }
+
+
+        if (oceanConfig.getAccessSsConditionsAddress() == null || oceanConfig.getAccessSsConditionsAddress().isEmpty()) {
+            validation.setValid(false);
+            validation.addErrorMessage("The Address of AccessSecretsToreConditions Contract must be set with the property "
+                    + OceanConfig.ACCESS_SS_CONDITIONS_ADDRESS);
         }
 
         if (oceanConfig.getMainAccountAddress() == null || oceanConfig.getMainAccountAddress().isEmpty()) {
@@ -132,119 +157,151 @@ public class OceanConfig {
         return keeperUrl;
     }
 
-    public void setKeeperUrl(String keeperUrl) {
+    public OceanConfig setKeeperUrl(String keeperUrl) {
         this.keeperUrl = keeperUrl;
+        return this;
     }
 
     public BigInteger getKeeperGasLimit() {
         return keeperGasLimit;
     }
 
-    public void setKeeperGasLimit(BigInteger keeperGasLimit) {
+    public OceanConfig setKeeperGasLimit(BigInteger keeperGasLimit) {
         this.keeperGasLimit = keeperGasLimit;
+        return this;
     }
 
     public BigInteger getKeeperGasPrice() {
         return keeperGasPrice;
     }
 
-    public void setKeeperGasPrice(BigInteger keeperGasPrice) {
+    public OceanConfig setKeeperGasPrice(BigInteger keeperGasPrice) {
         this.keeperGasPrice = keeperGasPrice;
+        return this;
     }
 
     public String getAquariusUrl() {
         return aquariusUrl;
     }
 
-    public void setAquariusUrl(String aquariusUrl) {
-        this.aquariusUrl = aquariusUrl;
+    public OceanConfig setAquariusUrl(String address) {
+        this.aquariusUrl = address;
+        return this;
     }
 
     public String getSecretStoreUrl() {
         return secretStoreUrl;
     }
 
-    public void setSecretStoreUrl(String secretStoreUrl) {
+    public OceanConfig setSecretStoreUrl(String secretStoreUrl) {
         this.secretStoreUrl = secretStoreUrl;
+        return this;
     }
 
     public String getDidRegistryAddress() {
         return didRegistryAddress;
     }
 
-    public void setDidRegistryAddress(String didRegistryAddress) {
-        this.didRegistryAddress = didRegistryAddress;
+    public OceanConfig setDidRegistryAddress(String address) {
+        this.didRegistryAddress = address;
+        return this;
     }
 
-    public String getServiceExecutionAgreementAddress() {
-        return serviceExecutionAgreementAddress;
+    public String getEscrowRewardConditionsAddress() {
+        return escrowRewardAddress;
     }
 
-    public void setServiceExecutionAgreementAddress(String serviceExecutionAgreementAddress) {
-        this.serviceExecutionAgreementAddress = serviceExecutionAgreementAddress;
+    public OceanConfig setEscrowRewardConditionsAddress(String address) {
+        this.escrowRewardAddress= address;
+        return this;
     }
 
-    public String getPaymentConditionsAddress() {
-        return paymentConditionsAddress;
+    public String getAgreementStoreManagerAddress() {
+        return agreementStoreManagerAddress;
     }
 
-    public void setPaymentConditionsAddress(String paymentConditionsAddress) {
-        this.paymentConditionsAddress = paymentConditionsAddress;
+    public OceanConfig setAgreementStoreManagerAddress(String address) {
+        this.agreementStoreManagerAddress= address;
+        return this;
     }
 
-    public String getAccessConditionsAddress() {
-        return accessConditionsAddress;
+    public String getLockrewardConditionsAddress() {
+        return lockRewardAddress;
     }
 
-    public void setAccessConditionsAddress(String accessConditionsAddress) {
-        this.accessConditionsAddress = accessConditionsAddress;
+    public OceanConfig setLockrewardConditionsAddress(String address) {
+        this.lockRewardAddress= address;
+        return this;
+    }
+
+    public String getAccessSsConditionsAddress() {
+        return accessSsConditionsAddress;
+    }
+
+    public OceanConfig setAccessSsConditionsAddress(String address) {
+        this.accessSsConditionsAddress= address;
+        return this;
     }
 
     public String getConsumeBasePath() {
         return consumeBasePath;
     }
 
-    public void setConsumeBasePath(String consumeBasePath) {
+    public OceanConfig setConsumeBasePath(String consumeBasePath) {
         this.consumeBasePath = consumeBasePath;
+        return this;
     }
 
     public String getMainAccountAddress() {
         return mainAccountAddress;
     }
 
-    public void setMainAccountAddress(String mainAccountAddress) {
+    public OceanConfig setMainAccountAddress(String mainAccountAddress) {
         this.mainAccountAddress = mainAccountAddress;
+        return this;
     }
 
     public String getMainAccountPassword() {
         return mainAccountPassword;
     }
 
-    public void setMainAccountPassword(String mainAccountPassword) {
+    public OceanConfig setMainAccountPassword(String mainAccountPassword) {
         this.mainAccountPassword = mainAccountPassword;
+        return this;
     }
 
     public String getMainAccountCredentialsFile() {
         return mainAccountCredentialsFile;
     }
 
-    public void setMainAccountCredentialsFile(String mainAccountCredentialsFile) {
+    public OceanConfig setMainAccountCredentialsFile(String mainAccountCredentialsFile) {
         this.mainAccountCredentialsFile = mainAccountCredentialsFile;
+        return this;
     }
 
     public String getTokenAddress() {
         return tokenAddress;
     }
 
-    public void setTokenAddress(String tokenAddress) {
+    public OceanConfig setTokenAddress(String tokenAddress) {
         this.tokenAddress = tokenAddress;
+        return this;
     }
 
     public String getDispenserAddress() {
         return dispenserAddress;
     }
 
-    public void setDispenserAddress(String dispenserAddress) {
+    public OceanConfig setDispenserAddress(String dispenserAddress) {
         this.dispenserAddress = dispenserAddress;
+        return this;
+    }
+
+    public String getEscrowAccessSecretStoreTemplateAddress() {
+        return escrowAccessSecretStoreTemplateAddress;
+    }
+
+    public void setEscrowAccessSecretStoreTemplateAddress(String escrowAccessSecretStoreTemplateAddress) {
+        this.escrowAccessSecretStoreTemplateAddress = escrowAccessSecretStoreTemplateAddress;
     }
 }

@@ -1,3 +1,8 @@
+/*
+ * Copyright 2018 Ocean Protocol Foundation
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.oceanprotocol.squid.helpers;
 
 import com.oceanprotocol.squid.exceptions.EncodingException;
@@ -122,7 +127,7 @@ public abstract class EncodingHelper {
         } else if (type.contains("bool"))
             return TypeEncoder.encode(new Bool((boolean) value));
         else if (type.contains("uint"))
-            return TypeEncoder.encode(new Uint(BigInteger.valueOf((int) value)));
+            return TypeEncoder.encode(new Uint(BigInteger.valueOf((Integer) value)));
         else if (type.contains("address"))
             return TypeEncoder.encode(new Address((String) value));
         else if (type.contains("bytes"))

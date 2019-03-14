@@ -1,3 +1,8 @@
+/*
+ * Copyright 2018 Ocean Protocol Foundation
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.oceanprotocol.squid.api.impl;
 
 import com.oceanprotocol.squid.api.SecretStoreAPI;

@@ -15,7 +15,7 @@ cache:
 before_install:
 - git clone https://github.com/oceanprotocol/barge
 - cd barge
-- KEEPER_VERSION=v0.6.12 travis_wait 30 bash -x start_ocean.sh --latest --no-pleuston --local-spree-node 2>&1 > start_ocean.log &
+- KEEPER_VERSION=v0.8.5 travis_wait 30 bash start_ocean.sh --latest --no-pleuston --local-spree-node & # 2>&1 > start_ocean.log &
 - cd ..
 - sleep 60
 - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
@@ -29,11 +29,11 @@ before_install:
     done
     ls -la "${HOME}/.ocean/keeper-contracts/artifacts/"
 
-    /bin/sh src/test/resources/scripts/updateConfAddresses.sh
+    /bin/bash src/test/resources/scripts/updateConfAddresses.sh
 
 install:
-- mvn --settings .maven.xml install -P dev -Dgpg.skip -Dmaven.javadoc.skip=true -B -V
-#- mvn --settings .maven.xml install -P integration-test -Dgpg.skip -Dmaven.javadoc.skip=true -B -V # TODO: uncomment this when barge run properly in travis
+#- mvn --settings .maven.xml install -P dev -Dgpg.skip -Dmaven.javadoc.skip=true -B -V # Unit tests only
+- mvn --settings .maven.xml install -P integration-test -Dgpg.skip -Dmaven.javadoc.skip=true -B -V
 - mvn help:evaluate -Dexpression=project.version | grep -e '^[^\[]'
 - export project_version=$(mvn help:evaluate -Dexpression=project.version | grep -e '^[^\[]')
 
@@ -43,7 +43,7 @@ script:
 
 after_success:
 - java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r target/site/jacoco-ut/jacoco.xml
-- maven javadoc:javadoc
+- mvn javadoc:javadoc
 
 deploy:
 - provider: releases

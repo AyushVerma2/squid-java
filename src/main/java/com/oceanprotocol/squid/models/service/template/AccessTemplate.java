@@ -1,3 +1,8 @@
+/*
+ * Copyright 2018 Ocean Protocol Foundation
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.oceanprotocol.squid.models.service.template;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -16,10 +21,10 @@ import java.util.List;
 public class AccessTemplate extends AbstractModel implements FromJsonToModel {
 
     @JsonProperty
-    public String type= "OceanProtocolServiceAgreementTemplate";
+    public String type= "Access";
 
     @JsonProperty
-    public String id= "0x044852b2a670ade5407e78fb2863c51de9fcb96542a07186fe3aeda6bb8a116d";
+    public String id= "";
 
     @JsonProperty
     public String name= "dataAssetAccessServiceAgreement";
@@ -30,11 +35,9 @@ public class AccessTemplate extends AbstractModel implements FromJsonToModel {
     @JsonProperty
     public String creator;
 
-    @JsonProperty
-    public List<Condition> conditions= new ArrayList<>();
 
     @JsonProperty
-    public AccessService.ServiceAgreementContract serviceAgreementContract;
+    public AccessService.ServiceAgreementTemplate serviceAgreementTemplate;
 
 
     public AccessTemplate() {

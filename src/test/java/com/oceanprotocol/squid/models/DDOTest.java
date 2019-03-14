@@ -1,3 +1,8 @@
+/*
+ * Copyright 2018 Ocean Protocol Foundation
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.oceanprotocol.squid.models;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -164,7 +169,7 @@ public class DDOTest {
 
         MetadataService metadataService = new MetadataService(metadata, "http://disney.com", "0");
 
-        AccessService accessService = new AccessService("http://ocean.com", "1");
+        AccessService accessService = new AccessService("http://ocean.com", "1", "0x00000000");
 
         ddo.services.add(metadataService);
         ddo.services.add(accessService);
@@ -190,8 +195,8 @@ public class DDOTest {
         Map<String, Object> params= new HashMap<>();
         params.put("parameter.did", did);
         params.put("parameter.price", price);
-        params.put("contract.paymentConditions.address", "0xaaaabbbccc");
-        params.put("contract.accessConditions.address", "0xbbbbccccdddd");
+        params.put("contract.LockRewardCondition.address", "0xaaaabbbccc");
+        params.put("contract.AccessSecretStoreCondition.address", "0xbbbbccccdddd");
 
         params.put("parameter.assetId", did.replace("did:op:", ""));
 

@@ -1,3 +1,8 @@
+/*
+ * Copyright 2018 Ocean Protocol Foundation
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.oceanprotocol.squid.manager;
 
 import com.oceanprotocol.squid.external.AquariusService;
@@ -134,7 +139,7 @@ public class AccountsManager extends BaseManager {
      * Requests Ocean Tokens from the Dispenser Smart Contract
      * Contract: OceanMarket
      * Method: requestTokens
-     * @param amount amount of tokens requestsd
+     * @param amount amount of tokens requests
      * @return TransactionReceipt
      * @throws EthereumException if the EVM throws an exception
      */
@@ -142,7 +147,24 @@ public class AccountsManager extends BaseManager {
         try{
             return dispenser.requestTokens(amount).send();
         } catch (Exception ex)  {
-            String msg = "Unable request tokens " + amount.intValue();
+            String msg = "Unable request tokens " + amount.toString();
+            log.error(msg + ": " + ex.getMessage());
+            throw new EthereumException(msg, ex);
+        }
+    }
+
+    /**
+     * Transfer tokens from one account to the receiver address
+     * @param receiverAccount Address of the transfer receiver
+     * @param amount Amount of tokens to transfer
+     * @return TransactionReceipt tx receipt
+     * @throws EthereumException
+     */
+    public TransactionReceipt transfer(String receiverAccount, BigInteger amount) throws EthereumException {
+        try{
+            return tokenContract.transfer(receiverAccount, amount).send();
+        } catch (Exception ex)  {
+            String msg = "Unable transfer tokens " + amount.toString();
             log.error(msg + ": " + ex.getMessage());
             throw new EthereumException(msg, ex);
         }

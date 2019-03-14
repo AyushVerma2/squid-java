@@ -1,6 +1,14 @@
 History
 =======
 
+0.4.0 (March xx, 2019)
+-------------------------
+
+* Adaptation to Squid-Spec 0.2
+* Adaptation to Keeper v0.8
+* Upgrade to web3j-4.1.1
+
+
 0.3.6 (February 25th, 2019)
 -------------------------
 

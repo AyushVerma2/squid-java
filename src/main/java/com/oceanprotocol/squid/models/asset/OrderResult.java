@@ -1,16 +1,21 @@
+/*
+ * Copyright 2018 Ocean Protocol Foundation
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.oceanprotocol.squid.models.asset;
 
 public class OrderResult {
 
     private String serviceAgreementId;
-    private Boolean accessGranted = false;
-    private Boolean paymentRefund = false;
+    private Boolean accessFullfilled = false;
+    private Boolean refund = false;
 
-    public OrderResult(String serviceAgreementId, Boolean accessGranted, Boolean paymentRefund) {
+    public OrderResult(String serviceAgreementId, Boolean accessFullfilled, Boolean refund) {
 
         this.serviceAgreementId = serviceAgreementId;
-        this.accessGranted = accessGranted;
-        this.paymentRefund = paymentRefund;
+        this.accessFullfilled = accessFullfilled;
+        this.refund = refund;
     }
 
     public String getServiceAgreementId() {
@@ -22,18 +27,18 @@ public class OrderResult {
     }
 
     public Boolean isAccessGranted() {
-        return accessGranted;
+        return accessFullfilled;
     }
 
-    public void setAccessGranted(Boolean accessGranted) {
-        this.accessGranted = accessGranted;
+    public void setAccessFullfilled(Boolean accessFullfilled) {
+        this.accessFullfilled = accessFullfilled;
     }
 
-    public Boolean isPaymentRefund() {
-        return paymentRefund;
+    public Boolean isRefund() {
+        return refund;
     }
 
-    public void setPaymentRefund(Boolean paymentRefund) {
-        this.paymentRefund = paymentRefund;
+    public void setRefund(Boolean refund) {
+        this.refund = refund;
     }
 }

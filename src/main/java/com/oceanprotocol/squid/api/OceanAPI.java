@@ -1,3 +1,8 @@
+/*
+ * Copyright 2018 Ocean Protocol Foundation
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.oceanprotocol.squid.api;
 
 import com.oceanprotocol.keeper.contracts.*;
@@ -9,6 +14,7 @@ import com.oceanprotocol.squid.api.helper.OceanInitializationHelper;
 import com.oceanprotocol.squid.api.impl.AccountsImpl;
 import com.oceanprotocol.squid.api.impl.AssetsImpl;
 import com.oceanprotocol.squid.api.impl.SecretStoreImpl;
+import com.oceanprotocol.squid.api.impl.TokensImpl;
 import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.KeeperService;
 import com.oceanprotocol.squid.exceptions.InitializationException;
@@ -46,11 +52,13 @@ public class OceanAPI {
     private OceanToken tokenContract;
     private Dispenser dispenser;
     private DIDRegistry didRegistryContract;
-    private ServiceExecutionAgreement serviceExecutionAgreementContract;
-    private PaymentConditions paymentConditionsContract;
-    private AccessConditions accessConditionsContract;
+    private EscrowAccessSecretStoreTemplate escrowAccessSecretStoreTemplate;
+    private LockRewardCondition lockRewardCondition;
+    private AccessSecretStoreCondition accessSecretStoreCondition;
+    private EscrowReward escrowReward;
 
     private AccountsAPI accountsAPI;
+    private TokensAPI tokensAPI;
     private AssetsAPI assetsAPI;
     private SecretStoreAPI secretStoreAPI;
 
@@ -111,18 +119,20 @@ public class OceanAPI {
             oceanAPI.secretStoreManager = oceanInitializationHelper.getSecretStoreManager(oceanAPI.secretStoreDto, oceanAPI.evmDto);
 
             oceanAPI.didRegistryContract = oceanInitializationHelper.loadDIDRegistryContract(oceanAPI.keeperService);
-            oceanAPI.serviceExecutionAgreementContract = oceanInitializationHelper.loadServiceExecutionAgreementContract(oceanAPI.keeperService);
-            oceanAPI.paymentConditionsContract = oceanInitializationHelper.loadPaymentConditionsContract(oceanAPI.keeperService);
-            oceanAPI.accessConditionsContract = oceanInitializationHelper.loadAccessConditionsContract(oceanAPI.keeperService);
+            oceanAPI.escrowAccessSecretStoreTemplate = oceanInitializationHelper.loadEscrowAccessSecretStoreTemplate(oceanAPI.keeperService);
+            oceanAPI.lockRewardCondition = oceanInitializationHelper.loadLockRewardCondition(oceanAPI.keeperService);
+            oceanAPI.accessSecretStoreCondition = oceanInitializationHelper.loadAccessSecretStoreCondition(oceanAPI.keeperService);
+            oceanAPI.escrowReward = oceanInitializationHelper.loadEscrowReward(oceanAPI.keeperService);
             oceanAPI.dispenser = oceanInitializationHelper.loadDispenserContract(oceanAPI.keeperService);
             oceanAPI.tokenContract = oceanInitializationHelper.loadOceanTokenContract(oceanAPI.keeperService);
 
             oceanAPI.oceanManager = oceanInitializationHelper.getOceanManager(oceanAPI.keeperService, oceanAPI.aquariusService);
             oceanAPI.oceanManager.setSecretStoreManager(oceanAPI.secretStoreManager)
                     .setDidRegistryContract(oceanAPI.didRegistryContract)
-                    .setServiceExecutionAgreementContract(oceanAPI.serviceExecutionAgreementContract)
-                    .setPaymentConditionsContract(oceanAPI.paymentConditionsContract)
-                    .setAccessConditionsContract(oceanAPI.accessConditionsContract)
+                    .setEscrowAccessSecretStoreTemplate(oceanAPI.escrowAccessSecretStoreTemplate)
+                    .setLockRewardCondition(oceanAPI.lockRewardCondition)
+                    .setEscrowReward(oceanAPI.escrowReward)
+                    .setAccessSecretStoreCondition(oceanAPI.accessSecretStoreCondition)
                     .setTokenContract(oceanAPI.tokenContract)
                     .setMainAccount(oceanAPI.mainAccount)
                     .setEvmDto(oceanAPI.evmDto);
@@ -136,6 +146,7 @@ public class OceanAPI {
             oceanAPI.assetsManager.setMainAccount(oceanAPI.mainAccount);
 
             oceanAPI.accountsAPI = new AccountsImpl(oceanAPI.accountsManager);
+            oceanAPI.tokensAPI = new TokensImpl(oceanAPI.accountsManager);
             oceanAPI.secretStoreAPI = new SecretStoreImpl(oceanAPI.secretStoreManager);
             oceanAPI.assetsAPI = new AssetsImpl(oceanAPI.oceanManager, oceanAPI.assetsManager);
 
@@ -173,6 +184,15 @@ public class OceanAPI {
     public AccountsAPI getAccountsAPI() {
         return this.accountsAPI;
     }
+
+    /**
+     * Gets the TokensAPI
+     * @return an instance of an Implementation class of TokensAPI
+     */
+    public TokensAPI getTokensAPI() {
+        return this.tokensAPI;
+    }
+
 
     /**
      * Gets the AssetsAPI

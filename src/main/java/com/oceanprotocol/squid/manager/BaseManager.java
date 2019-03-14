@@ -1,3 +1,8 @@
+/*
+ * Copyright 2018 Ocean Protocol Foundation
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.oceanprotocol.squid.manager;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -18,6 +23,8 @@ import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.asset.AssetMetadata;
 import com.oceanprotocol.squid.models.service.AuthorizationService;
 import com.oceanprotocol.squid.models.service.MetadataService;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Credentials;
 import org.web3j.crypto.Sign;
@@ -39,34 +46,36 @@ public abstract class BaseManager {
     protected OceanToken tokenContract;
     protected Dispenser dispenser;
     protected DIDRegistry didRegistry;
-    protected ServiceExecutionAgreement serviceExecutionAgreement;
-    protected PaymentConditions paymentConditions;
-    protected AccessConditions accessConditions;
+    protected EscrowAccessSecretStoreTemplate escrowAccessSecretStoreTemplate;
+    protected LockRewardCondition lockRewardCondition;
+    protected EscrowReward escrowReward;
+    protected AccessSecretStoreCondition accessSecretStoreCondition;
     protected ContractAddresses contractAddresses  = new ContractAddresses();
+    protected Config config= ConfigFactory.load();
 
     protected Account mainAccount;
 
     public static class ContractAddresses {
 
-        private String paymentConditionsAddress;
-        private String accessConditionsAddress;
+        private String lockRewardConditionAddress;
+        private String accessSecretStoreConditionAddress;
 
         public ContractAddresses(){}
 
-        public String getPaymentConditionsAddress() {
-            return paymentConditionsAddress;
+        public String getLockRewardConditionAddress() {
+            return lockRewardConditionAddress;
         }
 
-        public void setPaymentConditionsAddress(String paymentConditionsAddress) {
-            this.paymentConditionsAddress = paymentConditionsAddress;
+        public void setLockRewardConditionAddress(String address) {
+            this.lockRewardConditionAddress = address;
         }
 
-        public String getAccessConditionsAddress() {
-            return accessConditionsAddress;
+        public String getAccessSecretStoreConditionAddress() {
+            return accessSecretStoreConditionAddress;
         }
 
-        public void setAccessConditionsAddress(String accessConditionsAddress) {
-            this.accessConditionsAddress = accessConditionsAddress;
+        public void setAccessSecretStoreConditionAddress(String address) {
+            this.accessSecretStoreConditionAddress = address;
         }
     }
 
@@ -275,36 +284,15 @@ public abstract class BaseManager {
     }
 
     /**
-     * It sets the ServiceExecutionAgreement stub instance
-     * @param contract ServiceExecutionAgreement instance
+     * It sets the EscrowAccessSecretStoreTemplate stub instance
+     * @param contract EscrowAccessSecretStoreTemplate instance
      * @return BaseManager instance
      */
-    public BaseManager setServiceExecutionAgreementContract(ServiceExecutionAgreement contract)    {
-        this.serviceExecutionAgreement= contract;
+    public BaseManager setEscrowAccessSecretStoreTemplate(EscrowAccessSecretStoreTemplate contract)    {
+        this.escrowAccessSecretStoreTemplate= contract;
         return this;
     }
 
-    /**
-     * It sets the PaymentConditions stub instance
-     * @param contract PaymentConditions instance
-     * @return BaseManager instance
-     */
-    public BaseManager setPaymentConditionsContract(PaymentConditions contract)    {
-        this.paymentConditions= contract;
-        this.contractAddresses.setPaymentConditionsAddress(this.paymentConditions.getContractAddress());
-        return this;
-    }
-
-    /**
-     * It sets the AccessConditions stub instance
-     * @param contract AccessConditions instance
-     * @return BaseManager instance
-     */
-    public BaseManager setAccessConditionsContract(AccessConditions contract)    {
-        this.accessConditions= contract;
-        this.contractAddresses.setAccessConditionsAddress(this.accessConditions.getContractAddress());
-        return this;
-    }
 
     /**
      * It sets the DIDRegistry stub instance
@@ -315,6 +303,60 @@ public abstract class BaseManager {
         this.didRegistry= contract;
         return this;
     }
+
+    /**
+     * It gets the lockRewardCondition stub instance
+     * @return LockRewardCondition instance
+     */
+    public LockRewardCondition getLockRewardCondition() {
+        return lockRewardCondition;
+    }
+
+    /**
+     * It sets the LockRewardCondition instance
+     * @param lockRewardCondition instance
+     */
+    public BaseManager setLockRewardCondition(LockRewardCondition lockRewardCondition) {
+        this.lockRewardCondition = lockRewardCondition;
+        return this;
+    }
+
+    /**
+     * It gets the EscrowReward stub instance
+     * @return EscrowReward instance
+     */
+    public EscrowReward getEscrowReward() {
+        return escrowReward;
+    }
+
+    /**
+     * It sets the EscrowReward instance
+     * @param escrowReward
+     * @return
+     */
+    public BaseManager setEscrowReward(EscrowReward escrowReward) {
+        this.escrowReward = escrowReward;
+        return this;
+    }
+
+    /**
+     * It gets the AccessSecretStoreCondition stub instance
+     * @return AccessSecretStoreCondition instance
+     */
+    public AccessSecretStoreCondition getAccessSecretStoreCondition() {
+        return accessSecretStoreCondition;
+    }
+
+    /**
+     * It sets the EscrowReward instance
+     * @param accessSecretStoreCondition
+     * @return
+     */
+    public BaseManager setAccessSecretStoreCondition(AccessSecretStoreCondition accessSecretStoreCondition) {
+        this.accessSecretStoreCondition = accessSecretStoreCondition;
+        return this;
+    }
+
 
     public Account getMainAccount() {
         return mainAccount;

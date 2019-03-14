@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.oceanprotocol</groupId>
     <artifactId>squid</artifactId>
-    <version>0.3.6</version>
+    <version>0.4.0</version>
     <packaging>jar</packaging>
     <name>Java client library for Ocean Protocol</name>
     <url>https://github.com/oceanprotocol/squid-java</url>
@@ -20,11 +20,11 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <final-name>squid</final-name>
-        <web3j.version>4.0.1</web3j.version>
-        <ocean.keeper.version>0.6.12</ocean.keeper.version>
+        <web3j.version>4.1.1</web3j.version>
+        <ocean.keeper.version>0.8.3</ocean.keeper.version>
         <ocean.secretstore.version>0.1.4</ocean.secretstore.version>
         <eddsa.version>0.3.0</eddsa.version>
-        <jackson.version>2.9.7</jackson.version>
+        <jackson.version>2.9.8</jackson.version>
         <log4j.version>2.11.1</log4j.version>
         <junit.version>4.12</junit.version>
         <typesafe-config.version>1.3.3</typesafe-config.version>

@@ -1,3 +1,8 @@
+/*
+ * Copyright 2018 Ocean Protocol Foundation
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.oceanprotocol.squid.manager;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -55,7 +60,7 @@ public class BaseManagerTest {
 
     private static final String SERVICE_AGREEMENT_ADDRESS;
     static {
-        SERVICE_AGREEMENT_ADDRESS = config.getString("contract.serviceExecutionAgreement.address");
+        SERVICE_AGREEMENT_ADDRESS = config.getString("contract.AgreementStoreManager.address");
     }
 
 

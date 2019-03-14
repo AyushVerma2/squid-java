@@ -1,3 +1,8 @@
+/*
+ * Copyright 2018 Ocean Protocol Foundation
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.oceanprotocol.squid.api;
 
 import com.oceanprotocol.squid.models.Account;
@@ -10,6 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -48,22 +54,8 @@ public class AccountsApiIT {
 
         Balance balance = oceanAPI.getAccountsAPI().balance(oceanAPI.getMainAccount());
         assertNotNull(balance);
-        assertTrue(balance.getEth().compareTo(BigInteger.ZERO)>0);
-        assertTrue(balance.getOcn().intValue()>0);
-    }
-
-    @Test
-    public void requestTokens() throws Exception {
-
-        BigInteger tokens = BigInteger.valueOf(1);
-
-        Balance balanceBefore = oceanAPI.getAccountsAPI().balance(oceanAPI.getMainAccount());
-        TransactionReceipt receipt = oceanAPI.getAccountsAPI().requestTokens(tokens);
-
-        assertTrue(receipt.isStatusOK());
-
-        Balance balanceAfter = oceanAPI.getAccountsAPI().balance(oceanAPI.getMainAccount());
-        assertEquals(balanceBefore.getOcn().add(BigInteger.valueOf(1)), balanceAfter.getOcn());
+        assertEquals(1, balance.getEth().compareTo(BigInteger.ZERO));
+        assertEquals(1, balance.getDrops().compareTo(BigInteger.ZERO));
     }
 
 }

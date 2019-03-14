@@ -1,3 +1,8 @@
+/*
+ * Copyright 2018 Ocean Protocol Foundation
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.oceanprotocol.squid.manager;
 
 import com.oceanprotocol.squid.external.KeeperService;
@@ -102,6 +107,6 @@ public class AccountsManagerTest {
         Balance balance= manager.getAccountBalance(address);
 
         assertEquals(ethBalance, balance.getEth());
-        assertEquals(oceanBalance, balance.getOcn());
+        assertEquals(oceanBalance, balance.getDrops());
     }
 }

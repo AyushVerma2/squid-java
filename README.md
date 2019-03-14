@@ -29,28 +29,7 @@
 
 This library enables to integrate the Ocean Protocol capabilities from JVM clients.
 
-The list of methods implemented are:
-
-
-**Asset**
-
-* create
-* resolve
-* search
-* query
-* order
-* consume
-
-**Accounts**
-
-* list
-* balance
-* requestTokens
-
-**Secret Store**
-
-* encrypt
-* decrypt
+Currently squid-java implements the last version of the [squid-spec (v0.2)](https://github.com/oceanprotocol/dev-ocean/blob/master/doc/architecture/squid.md).
 
 
 ## Using the API
@@ -69,12 +48,18 @@ aquarius.url="http://localhost:5000"
 secretstore.url="http://localhost:12001"
 
 # Contracts addresses
-contract.token.address="0xe749e2f8482810b11b838ae8c5eb69e54d610411"
-contract.didRegistry.address="0x611f28ef25d778afc5a0034aea94297e2c215a42"
-contract.dispenser.address="0x83d35336e2cC9C69F6bD22c6D8412e4Ad59134ec"
-contract.serviceExecutionAgreement.address="0xdeAF2aa754287628d5d30Ca99d94a0CAd2AD4CAb"
-contract.paymentConditions.address="0xf9e633cbeeb2a474d3fe22261046c99e805beec4"
-contract.accessConditions.address="0xfe0145caf0ec55d23dc1b08431b071f6e1123a76"
+contract.SignCondition.address="0xEEE56e2a630DD29F9A628d618E58bb173911F393"
+contract.HashLockCondition.address="0x85cCa2B01adddCA8Df221e6027EE0D7716224202"
+contract.LockRewardCondition.address="0x3a3926f3f88F1eE05164404f93FDb3887cbE8e35"
+contract.AccessSecretStoreCondition.address="0x19513460bc16254c74AE806683E906478A42B543"
+contract.EscrowReward.address="0x8F006DbB3727d18f032C5618595ecDD2EDE13b61"
+contract.EscrowAccessSecretStoreTemplate.address="0xD306b5edCDC7819E1EB80B43De6548931706A3f4"
+contract.OceanToken.address="0x726baA2f854A3BEC2378a707AeB38c9d933Ebad6"
+contract.Dispenser.address="0xF152cF3c67dFD41a317eAe8fAc0e1e8E98724A13"
+contract.DIDRegistry.address="0xc354ba9AD5dF1023C2640b14A09E61a500F21546"
+contract.ConditionStoreManager.address="0x336EFb3c9E56F713dFdA4CDB3Dd0882F3226b6eE"
+contract.TemplateStoreManager.address="0xfeA10BBb093d7fcb1EDf575Aa7e28d37b9DcFcE9"
+contract.AgreementStoreManager.address="0x645439117eB378a6d35148452E287a038666Ed67"
 
 consume.basePath = "/tmp"
 
@@ -161,8 +146,8 @@ Typically in Maven you could add the dependency:
 ```xml
 <dependency>
   <groupId>com.oceanprotocol</groupId>
-  <artifactId>squid</artifactId>
-  <version>0.3.0</version>
+  <artifactId>squid-java</artifactId>
+  <version>0.4.0</version>
 </dependency>
 ```
 
@@ -184,8 +169,10 @@ The execution of the integration tests require to have running the complete Ocea
 After having `barge` in your environment, you can run the components needed running:
 
 ```bash
-./start_ocean.sh --latest --local-spree-node --no-pleuston
+KEEPER_VERSION=v0.8.0 bash start_ocean.sh --latest --no-pleuston --local-spree-node --force-pull
 ```
+
+If you have older versions of the docker images is recommended to delete all them to be sure you are running the last version of the stack.
 
 You can execute the integration tests using the following command:
 

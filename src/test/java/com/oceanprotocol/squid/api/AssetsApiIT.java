@@ -1,15 +1,24 @@
+/*
+ * Copyright 2018 Ocean Protocol Foundation
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.oceanprotocol.squid.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.oceanprotocol.keeper.contracts.EscrowAccessSecretStoreTemplate;
+import com.oceanprotocol.keeper.contracts.TemplateStoreManager;
 import com.oceanprotocol.squid.api.config.OceanConfig;
+import com.oceanprotocol.squid.external.KeeperService;
+import com.oceanprotocol.squid.manager.ManagerHelper;
 import com.oceanprotocol.squid.models.Account;
+import com.oceanprotocol.squid.models.Balance;
 import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.asset.AssetMetadata;
 import com.oceanprotocol.squid.models.asset.OrderResult;
 import com.oceanprotocol.squid.models.service.Service;
 import com.oceanprotocol.squid.models.service.ServiceEndpoints;
-import com.oceanprotocol.squid.core.sla.setup.SetupServiceAgreement;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import io.reactivex.Flowable;
@@ -18,6 +27,7 @@ import org.apache.logging.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -25,9 +35,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class AssetsApiIT {
 
@@ -39,6 +47,8 @@ public class AssetsApiIT {
     private static ServiceEndpoints serviceEndpoints;
     private static OceanAPI oceanAPI;
     private static OceanAPI oceanAPIConsumer;
+
+    private static KeeperService keeper;
 
     private static  Config config;
 
@@ -60,10 +70,6 @@ public class AssetsApiIT {
         assertNotNull(oceanAPI.getAssetsAPI());
         assertNotNull(oceanAPI.getMainAccount());
 
-        // TODO Enable the access's template registration in future versions
-        //setupServiceAgreement = new SetupServiceAgreement();
-        //setupServiceAgreement.registerTemplate();
-
         Properties properties = new Properties();
         properties.put(OceanConfig.KEEPER_URL, config.getString("keeper.url"));
         properties.put(OceanConfig.KEEPER_GAS_LIMIT, config.getString("keeper.gasLimit"));
@@ -74,15 +80,28 @@ public class AssetsApiIT {
         properties.put(OceanConfig.MAIN_ACCOUNT_ADDRESS, config.getString("account.parity.address2"));
         properties.put(OceanConfig.MAIN_ACCOUNT_PASSWORD,  config.getString("account.parity.password2"));
         properties.put(OceanConfig.MAIN_ACCOUNT_CREDENTIALS_FILE, config.getString("account.parity.file2"));
-        properties.put(OceanConfig.DID_REGISTRY_ADDRESS, config.getString("contract.didRegistry.address"));
-        properties.put(OceanConfig.SERVICE_EXECUTION_AGREEMENT_ADDRESS, config.getString("contract.serviceExecutionAgreement.address"));
-        properties.put(OceanConfig.PAYMENT_CONDITIONS_ADDRESS,config.getString("contract.paymentConditions.address"));
-        properties.put(OceanConfig.ACCESS_CONDITIONS_ADDRESS, config.getString("contract.accessConditions.address"));
-        properties.put(OceanConfig.TOKEN_ADDRESS, config.getString("contract.token.address"));
-        properties.put(OceanConfig.DISPENSER_ADDRESS, config.getString("contract.dispenser.address"));
+        properties.put(OceanConfig.DID_REGISTRY_ADDRESS, config.getString("contract.DIDRegistry.address"));
+        properties.put(OceanConfig.AGREEMENT_STORE_MANAGER_ADDRESS, config.getString("contract.AgreementStoreManager.address"));
+        properties.put(OceanConfig.LOCKREWARD_CONDITIONS_ADDRESS,config.getString("contract.LockRewardCondition.address"));
+        properties.put(OceanConfig.ESCROWREWARD_CONDITIONS_ADDRESS,config.getString("contract.EscrowReward.address"));
+        properties.put(OceanConfig.ESCROW_ACCESS_SS_CONDITIONS_ADDRESS,config.getString("contract.EscrowAccessSecretStoreTemplate.address"));
+        properties.put(OceanConfig.ACCESS_SS_CONDITIONS_ADDRESS, config.getString("contract.AccessSecretStoreCondition.address"));
+        properties.put(OceanConfig.TOKEN_ADDRESS, config.getString("contract.OceanToken.address"));
+        properties.put(OceanConfig.DISPENSER_ADDRESS, config.getString("contract.Dispenser.address"));
 
         oceanAPIConsumer = OceanAPI.getInstance(properties);
 
+        keeper = ManagerHelper.getKeeper(config, ManagerHelper.VmClient.parity, "");
+        EscrowAccessSecretStoreTemplate escrowAccessSecretStoreTemplate = ManagerHelper.loadEscrowAccessSecretStoreTemplate(keeper, config.getString("contract.EscrowAccessSecretStoreTemplate.address"));
+        TemplateStoreManager templateManager = ManagerHelper.loadTemplateStoreManager(keeper, config.getString("contract.TemplateStoreManager.address"));
+
+        oceanAPIConsumer.getAccountsAPI().requestTokens(BigInteger.valueOf(1000));
+        Balance balance= oceanAPIConsumer.getAccountsAPI().balance(oceanAPIConsumer.getMainAccount());
+
+        log.debug("Account " + oceanAPIConsumer.getMainAccount().address + " balance is: " + balance.toString());
+
+        boolean isTemplateApproved= templateManager.isTemplateApproved(escrowAccessSecretStoreTemplate.getContractAddress()).send();
+        log.debug("Is escrowAccessSecretStoreTemplate approved? " + isTemplateApproved);
     }
 
     @Test
@@ -102,9 +121,18 @@ public class AssetsApiIT {
 
         DDO ddo= oceanAPI.getAssetsAPI().create(metadataBase, serviceEndpoints);
         DID did= new DID(ddo.id);
-      
+
+        oceanAPIConsumer.getAccountsAPI().requestTokens(BigInteger.valueOf(9000000));
+        Balance balance= oceanAPIConsumer.getAccountsAPI().balance(oceanAPIConsumer.getMainAccount());
+
+        log.debug("Account " + oceanAPIConsumer.getMainAccount().address + " balance is: " + balance.toString());
+
         Flowable<OrderResult> response = oceanAPIConsumer.getAssetsAPI().order(did, Service.DEFAULT_ACCESS_SERVICE_ID);
-      
+
+        Balance balanceAfter= oceanAPIConsumer.getAccountsAPI().balance(oceanAPIConsumer.getMainAccount());
+
+        log.debug("Account " + oceanAPIConsumer.getMainAccount().address + " balance is: " + balance.toString());
+
         OrderResult result = response.blockingFirst();
         assertNotNull(result.getServiceAgreementId());
         assertEquals(true, result.isAccessGranted());

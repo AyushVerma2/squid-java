@@ -1,3 +1,8 @@
+/*
+ * Copyright 2018 Ocean Protocol Foundation
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.oceanprotocol.squid.manager;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -37,7 +42,6 @@ public class AssetsManagerIT {
     private static AssetMetadata metadataBase;
     private static DDO ddoBase;
     private static final Config config = ConfigFactory.load();
-    private static String TEST_ADDRESS;
 
 
     @BeforeClass
@@ -57,7 +61,6 @@ public class AssetsManagerIT {
         metadataBase = (AssetMetadata) ddoBase.metadata;
         objectMapper = new ObjectMapper();
 
-        TEST_ADDRESS = config.getString("account.ganache.address");
     }
 
 

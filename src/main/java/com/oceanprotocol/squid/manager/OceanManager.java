@@ -1,17 +1,19 @@
+/*
+ * Copyright 2018 Ocean Protocol Foundation
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.oceanprotocol.squid.manager;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.oceanprotocol.keeper.contracts.AccessConditions;
-import com.oceanprotocol.keeper.contracts.PaymentConditions;
-import com.oceanprotocol.keeper.contracts.ServiceExecutionAgreement;
+import com.oceanprotocol.keeper.contracts.EscrowAccessSecretStoreTemplate;
 import com.oceanprotocol.squid.core.sla.ServiceAgreementHandler;
-import com.oceanprotocol.squid.core.sla.functions.LockPayment;
+import com.oceanprotocol.squid.core.sla.functions.FulfillEscrowReward;
+import com.oceanprotocol.squid.core.sla.functions.FulfillLockReward;
+import com.oceanprotocol.squid.exceptions.*;
 import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.BrizoService;
 import com.oceanprotocol.squid.external.KeeperService;
-import com.oceanprotocol.squid.exceptions.*;
 import com.oceanprotocol.squid.helpers.*;
-import com.oceanprotocol.squid.models.Account;
 import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.Order;
@@ -27,7 +29,6 @@ import org.web3j.abi.EventEncoder;
 import org.web3j.abi.FunctionReturnDecoder;
 import org.web3j.abi.datatypes.Event;
 import org.web3j.abi.datatypes.Type;
-import org.web3j.crypto.CipherException;
 import org.web3j.crypto.Keys;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.request.EthFilter;
@@ -37,6 +38,7 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.URISyntaxException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -182,40 +184,43 @@ public class OceanManager extends BaseManager {
             AuthorizationService authorizationService = null;
             //Adding the authorization service if the endpoint is defined
             if (serviceEndpoints.getSecretStoreEndpoint()!=null && !serviceEndpoints.getSecretStoreEndpoint().equals("")){
-                 authorizationService = new AuthorizationService(Service.serviceTypes.Authorization, serviceEndpoints.getSecretStoreEndpoint(), Service.DEFAULT_AUTHORIZATION_SERVICE_ID);
+                authorizationService = new AuthorizationService(Service.serviceTypes.Authorization, serviceEndpoints.getSecretStoreEndpoint(), Service.DEFAULT_AUTHORIZATION_SERVICE_ID);
             }
 
             // Initializing DDO
             DDO ddo = this.buildDDO(metadataService, authorizationService, getMainAccount().address, threshold);
 
             // Definition of a DEFAULT ServiceAgreement Contract
-            AccessService.ServiceAgreementContract serviceAgreementContract = new AccessService.ServiceAgreementContract();
-            serviceAgreementContract.contractName = "ServiceExecutionAgreement";
-            serviceAgreementContract.fulfillmentOperator = 1;
+            AccessService.ServiceAgreementTemplate serviceAgreementTemplate = new AccessService.ServiceAgreementTemplate();
+            serviceAgreementTemplate.contractName = "EscrowAccessSecretStoreTemplate";
 
-            // Execute Agreement Event
+            // AgreementCreated Event
             Condition.Event executeAgreementEvent = new Condition.Event();
-            executeAgreementEvent.name = "ExecuteAgreement";
+            executeAgreementEvent.name = "AgreementCreated";
             executeAgreementEvent.actorType = "consumer";
             // Handler
             Condition.Handler handler = new Condition.Handler();
-            handler.moduleName = "payment";
-            handler.functionName = "lockPayment";
+            handler.moduleName = "escrowAccessSecretStoreTemplate";
+            handler.functionName = "escrowAccessSecretStoreTemplate";
             handler.version = "0.1";
             executeAgreementEvent.handler = handler;
 
-            serviceAgreementContract.events = Arrays.asList(executeAgreementEvent);
+            serviceAgreementTemplate.events = Arrays.asList(executeAgreementEvent);
 
+            // The templateId of the AccessService is the address of the escrowAccessSecretStoreTemplate contract
+            String accessServiceTemplateId = escrowAccessSecretStoreTemplate.getContractAddress();
             AccessService accessService = new AccessService(serviceEndpoints.getAccessEndpoint(),
                     Service.DEFAULT_ACCESS_SERVICE_ID,
-                    serviceAgreementContract);
+                    serviceAgreementTemplate,
+                    accessServiceTemplateId);
             accessService.purchaseEndpoint = serviceEndpoints.getPurchaseEndpoint();
+            accessService.name = "dataAssetAccessServiceAgreement";
 
             // Initializing conditions and adding to Access service
             ServiceAgreementHandler sla = new ServiceAgreementHandler();
-            accessService.conditions = sla.initializeConditions(
-                    accessService.templateId,
-                    getContractAddresses(),
+            accessService.serviceAgreementTemplate.conditions = sla.initializeConditions(
+                    //accessService.templateId,
+                    //getContractAddresses(),
                     getAccessConditionParams(ddo.getDid().toString(), Integer.parseInt(metadata.base.price)));
 
             // Adding services to DDO
@@ -262,60 +267,41 @@ public class OceanManager extends BaseManager {
 
         try {
 
-            // Returns a flowable over an AccessGranted event after calling the lockPayment function
-            Flowable<AccessConditions.AccessGrantedEventResponse> accessGrantedFlowable = this.initializeServiceAgreement(did, ddo, serviceDefinitionId, serviceAgreementId)
-                    .map(event -> EncodingHelper.toHexString(event.agreementId))
+            return this.initializeServiceAgreement(did, ddo, serviceDefinitionId, serviceAgreementId)
+                    .map(event -> EncodingHelper.toHexString(event._agreementId))
                     .switchMap(eventServiceAgreementId -> {
                         if (eventServiceAgreementId.isEmpty())
                             return Flowable.empty();
                         else {
-                            log.debug("Received ExecuteServiceAgreement Event with Id: " + eventServiceAgreementId);
+                            log.debug("Received AgreementCreated Event with Id: " + eventServiceAgreementId);
                             getKeeperService().unlockAccount(getMainAccount());
-                            getKeeperService().tokenApprove(this.tokenContract, paymentConditions.getContractAddress(), Integer.valueOf(ddo.metadata.base.price));
-                            this.lockPayment(ddo, serviceDefinitionId, eventServiceAgreementId);
-                            return ServiceAgreementHandler.listenForGrantedAccess(accessConditions, serviceAgreementId);
+                            getKeeperService().tokenApprove(this.tokenContract, lockRewardCondition.getContractAddress(), Integer.valueOf(ddo.metadata.base.price));
+                            BigInteger balance = this.tokenContract.balanceOf(getMainAccount().address).send();
+                            if (balance.compareTo(BigInteger.valueOf(Long.parseLong(ddo.metadata.base.price))) < 0) {
+//                            if (balance.intValue() < Integer.valueOf(ddo.metadata.base.price)) {
+                                log.warn("Consumer account does not have sufficient token balance to fulfill the " +
+                                        "LockRewardCondition. Do `requestTokens` using the `dispenser` contract then try this again.");
+                                log.info("token balance is: " + balance + " price is: " + ddo.metadata.base.price);
+                                throw new Exception("LockRewardCondition.fulfill will fail due to insufficient token balance in the consumer account.");
+                            }
+                            this.fulfillLockReward(ddo, serviceDefinitionId, eventServiceAgreementId);
+                            return ServiceAgreementHandler.listenForFulfilledEvent(accessSecretStoreCondition, serviceAgreementId);
                         }
-                    });
-
-            // We add an initial (empty) event to the flowable
-            accessGrantedFlowable = accessGrantedFlowable.startWith(new AccessConditions.AccessGrantedEventResponse());
-
-            // We initialize a Flowable over an PaymentRefund Event
-            Flowable<PaymentConditions.PaymentRefundEventResponse> paymentRefundFlowable = ServiceAgreementHandler.listenForPaymentRefund(paymentConditions, serviceAgreementId)
-                    // We also add an initial (empty) event to the flowable
-                    .startWith(new PaymentConditions.PaymentRefundEventResponse());
-
-            // We compose both events with a withLatestFrom function
-            // this function triggers only if both flowables has at least one event
-            // That's the reason we add an initial event to the flowables
-            return accessGrantedFlowable
-                    .withLatestFrom(paymentRefundFlowable, (access, refund) -> {
-
-                        byte[] accessAgreement = access.agreementId;
-                        byte[] refundAgreement = refund.agreementId;
-
-                        // The AccessGranted event and the PaymentRefund event are mutually exclusive
-                        if (accessAgreement!= null)
-                            return new OrderResult(EncodingHelper.toHexString(accessAgreement), true, false);
-                        else if (refundAgreement!= null)
-                            return new OrderResult(EncodingHelper.toHexString(refundAgreement), false, true);
-
-                        // If both agreements are null, it means we are processing the initial events
-                        return new OrderResult("", false, false);
-
                     })
-                    // We add a filter to ignore the result of processing the initial events
-                    .filter( result -> result.isPaymentRefund() || result.isAccessGranted())
-                    .timeout(60, TimeUnit.SECONDS
-                    )
-                    .doOnError(throwable -> {
+                    .map( event ->  new OrderResult(serviceAgreementId, true, false))
+                    // TODO timout of the condition
+                    .timeout(60, TimeUnit.SECONDS)
+                    .onErrorReturn(throwable -> {
+
+                        if (throwable instanceof TimeoutException){
+                            // If we get a timeout listening for an AccessSecretStoreCondition Fulfilled Event,
+                            // we must perform a refund executing escrowReward.fulfill
+                            this.fulfillEscrowReward(ddo, serviceDefinitionId, serviceAgreementId);
+                            return new OrderResult(serviceAgreementId, false, true);
+                        }
 
                         String msg = "There was a problem executing the Service Agreement " + serviceAgreementId;
-                        if (throwable instanceof TimeoutException){
-                            msg = "Timeout waiting for AccessGranted or PaymentRefund events for service agreement " + serviceAgreementId;
-                        }
-
-                        throw new ServiceAgreementException(serviceAgreementId, msg);
+                        throw new ServiceAgreementException(serviceAgreementId, msg, throwable);
                     });
 
         }catch (DDOException|ServiceException|ServiceAgreementException e){
@@ -337,8 +323,9 @@ public class OceanManager extends BaseManager {
      * @throws ServiceException ServiceException
      * @throws ServiceAgreementException ServiceAgreementException
      */
-    private Flowable<ServiceExecutionAgreement.AgreementInitializedEventResponse> initializeServiceAgreement(DID did, DDO ddo, String serviceDefinitionId, String serviceAgreementId)
+    private Flowable<EscrowAccessSecretStoreTemplate.AgreementCreatedEventResponse> initializeServiceAgreement(DID did, DDO ddo, String serviceDefinitionId, String serviceAgreementId)
             throws  DDOException, ServiceException, ServiceAgreementException {
+
 
         // We need to unlock the account before calling the purchase method
         // to be able to generate the sign of the serviceAgreement
@@ -366,7 +353,11 @@ public class OceanManager extends BaseManager {
             agreementSignature = accessService.generateServiceAgreementSignature(
                     getKeeperService().getWeb3(),
                     getMainAccount().getAddress(),
-                    serviceAgreementId
+                    ddo.proof.creator,
+                    serviceAgreementId,
+                    lockRewardCondition.getContractAddress(),
+                    accessSecretStoreCondition.getContractAddress(),
+                    escrowReward.getContractAddress()
             );
         }catch(IOException e){
             String msg = "Error generating signature for Service Agreement: " + serviceAgreementId;
@@ -390,25 +381,62 @@ public class OceanManager extends BaseManager {
         }
 
         // 4. Listening of events
-       return  ServiceAgreementHandler.listenExecuteAgreement(serviceExecutionAgreement, serviceAgreementId);
+        return  ServiceAgreementHandler.listenExecuteAgreement(escrowAccessSecretStoreTemplate, serviceAgreementId);
 
     }
 
+
     /**
-     * Executes the lock payment
+     * Executes the fulfill of the LockRewardCondition
      * @param ddo the ddo
      * @param serviceDefinitionId the serviceDefinition id
      * @param serviceAgreementId service agreement id
      * @return a flag that indicates if the function was executed correctly
      * @throws ServiceException ServiceException
-     * @throws LockPaymentException LockPaymentException
+     * @throws LockRewardFulfillException LockRewardFulfillException
      */
-    private boolean lockPayment(DDO ddo, String serviceDefinitionId, String serviceAgreementId) throws ServiceException, LockPaymentException {
+    private boolean fulfillLockReward(DDO ddo, String serviceDefinitionId, String serviceAgreementId) throws ServiceException, LockRewardFulfillException {
 
         AccessService accessService= ddo.getAccessService(serviceDefinitionId);
         BasicAssetInfo assetInfo = getBasicAssetInfo(accessService);
 
-        return LockPayment.executeLockPayment(paymentConditions, serviceAgreementId, assetInfo);
+        return FulfillLockReward.executeFulfill(lockRewardCondition, serviceAgreementId, this.escrowReward.getContractAddress(), assetInfo);
+    }
+
+    /**
+     * Executes the fulfill of the EscrowReward
+     * @param ddo the ddo
+     * @param serviceDefinitionId the serviceDefinition id
+     * @param serviceAgreementId service agreement id
+     * @return a flag that indicates if the function was executed correctly
+     * @throws ServiceException ServiceException
+     * @throws EscrowRewardException EscrowRewardException
+     */
+    private boolean fulfillEscrowReward(DDO ddo, String serviceDefinitionId, String serviceAgreementId) throws ServiceException, EscrowRewardException {
+
+        AccessService accessService= ddo.getAccessService(serviceDefinitionId);
+        BasicAssetInfo assetInfo = getBasicAssetInfo(accessService);
+
+        String lockRewardConditionId = "";
+        String accessSecretStoreConditionId = "";
+
+        try {
+
+            lockRewardConditionId = accessService.generateLockRewardId(serviceAgreementId, escrowReward.getContractAddress(), lockRewardCondition.getContractAddress());
+            accessSecretStoreConditionId = accessService.generateAccessSecretStoreConditionId(serviceAgreementId, getMainAccount().getAddress(), accessSecretStoreCondition.getContractAddress());
+        }
+        catch (UnsupportedEncodingException e) {
+            throw new EscrowRewardException("Error generating the condition Ids ", e);
+        }
+
+
+        return FulfillEscrowReward.executeFulfill(escrowReward,
+                serviceAgreementId,
+                this.lockRewardCondition.getContractAddress(),
+                assetInfo,
+                this.getMainAccount().address,
+                lockRewardConditionId,
+                accessSecretStoreConditionId);
     }
 
 
@@ -509,8 +537,11 @@ public class OceanManager extends BaseManager {
         Map<String, Object> params= new HashMap<>();
         params.put("parameter.did", did);
         params.put("parameter.price", price);
-        params.put("contract.paymentConditions.address", paymentConditions.getContractAddress());
-        params.put("contract.accessConditions.address", accessConditions.getContractAddress());
+
+        //config.getString("")
+        params.put("contract.EscrowReward.address", escrowReward.getContractAddress());
+        params.put("contract.LockRewardCondition.address", lockRewardCondition.getContractAddress());
+        params.put("contract.AccessSecretStoreCondition.address", accessSecretStoreCondition.getContractAddress());
 
         params.put("parameter.assetId", did.replace("did:op:", "0x"));
 
@@ -529,28 +560,20 @@ public class OceanManager extends BaseManager {
 
         try {
 
-            List<Condition> conditions = accessService.conditions;
-            Condition lockCondition = conditions.stream()
-                    .filter(condition -> condition.name.equalsIgnoreCase("lockPayment"))
-                    .findFirst()
-                    .get();
+            Condition lockRewardCondition = accessService.getConditionbyName("lockReward");
+            Condition.ConditionParameter amount = lockRewardCondition.getParameterByName("_amount");
+
+            Condition accessSecretStoreCondition = accessService.getConditionbyName("accessSecretStore");
+            Condition.ConditionParameter documentId = accessSecretStoreCondition.getParameterByName("_documentId");
+
+            assetInfo.setPrice((Integer) amount.value);
+            assetInfo.setAssetId(EncodingHelper.hexStringToBytes((String) documentId.value));
 
 
-            for (Condition.ConditionParameter parameter : lockCondition.parameters) {
-
-                if (parameter.name.equalsIgnoreCase("assetId")) {
-                    assetInfo.setAssetId(EncodingHelper.hexStringToBytes((String) parameter.value));
-                }
-
-                if (parameter.name.equalsIgnoreCase("price")) {
-
-                    assetInfo.setPrice((Integer) parameter.value);
-                }
-            }
         } catch (UnsupportedEncodingException e) {
             log.error("Exception encoding serviceAgreement " + e.getMessage());
 
-            }
+        }
 
         return assetInfo;
 

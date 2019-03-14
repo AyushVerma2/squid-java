@@ -1,3 +1,8 @@
+/*
+ * Copyright 2018 Ocean Protocol Foundation
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.oceanprotocol.squid.manager;
 
 import com.oceanprotocol.keeper.contracts.Dispenser;
@@ -21,6 +26,7 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class AccountsManagerIT {
@@ -48,8 +54,8 @@ public class AccountsManagerIT {
         manager= AccountsManager.getInstance(keeper, aquarius);
 
         // Loading Smart Contracts required
-        oceanToken= ManagerHelper.loadOceanTokenContract(keeper, config.getString("contract.token.address"));
-        dispenser= ManagerHelper.loadDispenserContract(keeper, config.getString("contract.dispenser.address"));
+        oceanToken= ManagerHelper.loadOceanTokenContract(keeper, config.getString("contract.OceanToken.address"));
+        dispenser= ManagerHelper.loadDispenserContract(keeper, config.getString("contract.Dispenser.address"));
         manager.setTokenContract(oceanToken);
         manager.setDispenserContract(dispenser);
 
@@ -61,10 +67,10 @@ public class AccountsManagerIT {
         keeperError= ManagerHelper.getKeeper(badConfig, ManagerHelper.VmClient.parity);
         managerError= AccountsManager.getInstance(keeperError, aquarius);
         managerError.setTokenContract(
-                ManagerHelper.loadOceanTokenContract(keeperError, config.getString("contract.token.address"))
+                ManagerHelper.loadOceanTokenContract(keeperError, config.getString("contract.OceanToken.address"))
         );
         managerError.setDispenserContract(
-                ManagerHelper.loadDispenserContract(keeperError, config.getString("contract.dispenser.address"))
+                ManagerHelper.loadDispenserContract(keeperError, config.getString("contract.Dispenser.address"))
         );
     }
 
@@ -92,11 +98,11 @@ public class AccountsManagerIT {
 
         Balance balance= manager.getAccountBalance(TEST_ADDRESS);
 
-        log.debug("Balance is " + balance.toString());
-        log.debug("Eth balance is " + balance.getEth().toString());
+        log.debug("OCEAN Balance is " + balance.getDrops().toString());
+        log.debug("ETH balance is " + balance.getEth().toString());
 
-        assertTrue(balance.getEth().compareTo(BigInteger.ZERO)>0);
-        assertTrue(balance.getOcn().intValue() > 0);
+        assertEquals(1, balance.getEth().compareTo(BigInteger.ZERO));
+        assertEquals(1, balance.getDrops().compareTo(BigInteger.ZERO));
 
     }
 

@@ -1,3 +1,8 @@
+/*
+ * Copyright 2018 Ocean Protocol Foundation
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 package com.oceanprotocol.squid.manager;
 
 import com.oceanprotocol.secretstore.auth.ConsumerWorker;
@@ -11,6 +16,7 @@ import com.typesafe.config.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,17 +47,19 @@ public class SecretStoreManagerIT {
 
         EvmDto consumerEvmDto= EvmDto.builder(
                 config.getString("keeper.url"),
-                config.getString("account.parity.address3"),
-                config.getString("account.parity.password3")
+                config.getString("account.parity.address2"),
+                config.getString("account.parity.password2")
         );
 
         publisherWorker= new PublisherWorker(ssDto, publisherEvmDto);
         consumerWorker= new ConsumerWorker(ssDto, consumerEvmDto);
     }
 
+    // This IT only works if Secret Store is started without the `acl_contract` option set to none
     @Test
+    @Ignore
     public void encryptDocument() throws Exception {
-        String serviceAgreementId= DID.builder().getHash();
+        String did= DID.builder().getHash();
 
         List<String> contentUrls= new ArrayList<>();
         contentUrls.add(URL1);
@@ -59,10 +67,10 @@ public class SecretStoreManagerIT {
 
         String urls= "[" + StringsHelper.wrapWithQuotesAndJoin(contentUrls) + "]";
 
-        log.debug("Encrypting did: " + serviceAgreementId + " and urls: " + urls);
-        String encryptedContent= publisherWorker.encryptDocument(serviceAgreementId, urls, 0);
+        log.debug("Encrypting did: " + did + " and urls: " + urls);
+        String encryptedContent= publisherWorker.encryptDocument(did, urls, 0);
 
-        String decryptedContent= consumerWorker.decryptDocument(serviceAgreementId, encryptedContent);
+        String decryptedContent= consumerWorker.decryptDocument(did, encryptedContent);
 
         assertEquals(urls, decryptedContent);
 
