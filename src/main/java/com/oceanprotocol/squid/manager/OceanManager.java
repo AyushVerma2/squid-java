@@ -7,6 +7,7 @@ package com.oceanprotocol.squid.manager;
 
 import com.oceanprotocol.keeper.contracts.EscrowAccessSecretStoreTemplate;
 import com.oceanprotocol.squid.core.sla.ServiceAgreementHandler;
+import com.oceanprotocol.squid.core.sla.functions.FulfillAccessSecretStoreCondition;
 import com.oceanprotocol.squid.core.sla.functions.FulfillEscrowReward;
 import com.oceanprotocol.squid.core.sla.functions.FulfillLockReward;
 import com.oceanprotocol.squid.exceptions.*;
@@ -417,6 +418,21 @@ public class OceanManager extends BaseManager {
 
         return FulfillLockReward.executeFulfill(lockRewardCondition, serviceAgreementId, this.escrowReward.getContractAddress(), amount);
     }
+
+
+    /**
+     * Executes the fulfill of the AccessSecretStoreCondition
+     * @param agreementId service agreement id
+     * @param assetId the id of the asset
+     * @param granteeAddress the address of the grantedd
+     * @return a flag that indicates if the function was executed correctly
+     * @throws AccessSecretStoreConditionException AccessSecretStoreConditionException
+     */
+    public Boolean fulfillAccessSecretStoreCondition(String agreementId, String assetId, String granteeAddress) throws AccessSecretStoreConditionException {
+
+        return FulfillAccessSecretStoreCondition.executeFulfill(accessSecretStoreCondition, agreementId, assetId, granteeAddress);
+    }
+
 
     /**
      * Executes the fulfill of the EscrowReward

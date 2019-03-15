@@ -55,8 +55,6 @@ public class FulfillEscrowReward {
             lockConditionIdBytes = EncodingHelper.hexStringToBytes(lockConditionId);
             releaseConditionIdBytes = EncodingHelper.hexStringToBytes(releaseConditionId);
 
-            // TODO Calculate lockConditionId and releaseConditionId
-
             TransactionReceipt receipt= escrowReward.fulfill(
                     serviceId,
                     BigInteger.valueOf(assetInfo.getPrice()),

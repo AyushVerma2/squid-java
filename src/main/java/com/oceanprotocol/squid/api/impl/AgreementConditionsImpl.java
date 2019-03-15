@@ -1,6 +1,7 @@
 package com.oceanprotocol.squid.api.impl;
 
 import com.oceanprotocol.squid.api.AgreementConditionsAPI;
+import com.oceanprotocol.squid.exceptions.AccessSecretStoreConditionException;
 import com.oceanprotocol.squid.exceptions.LockRewardFulfillException;
 import com.oceanprotocol.squid.manager.OceanManager;
 
@@ -21,4 +22,12 @@ public class AgreementConditionsImpl implements AgreementConditionsAPI{
         return oceanManager.fulfillLockReward(agreementId, amount);
 
     }
+
+    @Override
+    public Boolean grantAccess(String agreementId, String assetId, String granteeAddress) throws AccessSecretStoreConditionException {
+
+        return oceanManager.fulfillAccessSecretStoreCondition(agreementId, assetId, granteeAddress);
+
+    }
+
 }
