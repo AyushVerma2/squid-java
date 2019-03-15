@@ -25,17 +25,16 @@ public class FulfillLockReward {
      * @param lockRewardCondition  LockRewardCondition contract
      * @param serviceAgreementId the service agreement id
      * @param escrowRewardAddress the address of the EscrowReward Contract
-     * @param assetInfo basic info of the asset
+     * @param amount of tokens
      * @return a flag that indicates if the function was executed correctly
      * @throws LockRewardFulfillException LockRewardFulfillException
      */
     public static Boolean executeFulfill(LockRewardCondition lockRewardCondition,
                                          String serviceAgreementId,
                                          String escrowRewardAddress,
-                                         BasicAssetInfo assetInfo) throws LockRewardFulfillException {
+                                         BigInteger amount) throws LockRewardFulfillException {
 
         byte[] serviceId;
-        Integer price = -1;
 
         try {
 
@@ -45,7 +44,7 @@ public class FulfillLockReward {
             TransactionReceipt receipt= lockRewardCondition.fulfill(
                     serviceId,
                     escrowRewardAddress,
-                    BigInteger.valueOf(assetInfo.getPrice())
+                    amount
             ).send();
 
             if (!receipt.getStatus().equals("0x1")) {
@@ -65,4 +64,7 @@ public class FulfillLockReward {
         }
 
     }
+
+
+
 }

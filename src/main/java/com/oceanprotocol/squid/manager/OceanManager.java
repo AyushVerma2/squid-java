@@ -400,7 +400,22 @@ public class OceanManager extends BaseManager {
         AccessService accessService= ddo.getAccessService(serviceDefinitionId);
         BasicAssetInfo assetInfo = getBasicAssetInfo(accessService);
 
-        return FulfillLockReward.executeFulfill(lockRewardCondition, serviceAgreementId, this.escrowReward.getContractAddress(), assetInfo);
+        BigInteger amount = BigInteger.valueOf(assetInfo.getPrice());
+
+        return this.fulfillLockReward(serviceAgreementId, amount);
+    }
+
+    /**
+     * Executes the fulfill of the LockRewardCondition
+     * @param serviceAgreementId service agreement id
+     * @param amount of tokens
+     * @return a flag that indicates if the function was executed correctly
+     * @throws ServiceException ServiceException
+     * @throws LockRewardFulfillException LockRewardFulfillException
+     */
+    public boolean fulfillLockReward(String serviceAgreementId, BigInteger amount) throws LockRewardFulfillException {
+
+        return FulfillLockReward.executeFulfill(lockRewardCondition, serviceAgreementId, this.escrowReward.getContractAddress(), amount);
     }
 
     /**
