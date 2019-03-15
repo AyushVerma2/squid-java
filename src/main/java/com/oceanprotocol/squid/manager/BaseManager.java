@@ -50,6 +50,7 @@ public abstract class BaseManager {
     protected LockRewardCondition lockRewardCondition;
     protected EscrowReward escrowReward;
     protected AccessSecretStoreCondition accessSecretStoreCondition;
+    protected AgreementStoreManager agreementStoreManager;
     protected ContractAddresses contractAddresses  = new ContractAddresses();
     protected Config config= ConfigFactory.load();
 
@@ -357,6 +358,14 @@ public abstract class BaseManager {
         return this;
     }
 
+    public AgreementStoreManager getAgreementStoreManager() {
+        return agreementStoreManager;
+    }
+
+    public BaseManager setAgreementStoreManager(AgreementStoreManager agreementStoreManager) {
+        this.agreementStoreManager = agreementStoreManager;
+        return this;
+    }
 
     public Account getMainAccount() {
         return mainAccount;

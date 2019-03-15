@@ -15,6 +15,7 @@ import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.BrizoService;
 import com.oceanprotocol.squid.external.KeeperService;
 import com.oceanprotocol.squid.helpers.*;
+import com.oceanprotocol.squid.models.AgreementData;
 import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.Order;
@@ -35,6 +36,8 @@ import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.request.EthFilter;
 import org.web3j.protocol.core.methods.response.EthLog;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.tuples.generated.Tuple2;
+import org.web3j.tuples.generated.Tuple6;
 
 import java.io.File;
 import java.io.IOException;
@@ -460,16 +463,85 @@ public class OceanManager extends BaseManager {
             throw new EscrowRewardException("Error generating the condition Ids ", e);
         }
 
+        return this.fulfillEscrowReward(serviceAgreementId,  BigInteger.valueOf(assetInfo.getPrice()),  this.lockRewardCondition.getContractAddress(), this.getMainAccount().address, lockRewardConditionId, accessSecretStoreConditionId);
+
+    }
+
+
+    /**
+     * Executes the fulfill of the EscrowReward
+     * @param serviceAgreementId service agreement id
+     * @param amount of tokens
+     * @param receiverAddress the address of the receiver
+     * @param senderAddress the address of the sender
+     * @param lockRewardConditionId the lockRewardCondition id
+     * @param accessSecretStoreConditionId the accessSecretStoreCondition it
+     * @return a flag that indicates if the function was executed correctly
+     * @throws ServiceException ServiceException
+     * @throws EscrowRewardException EscrowRewardException
+     */
+    private boolean fulfillEscrowReward(String serviceAgreementId, BigInteger amount, String receiverAddress, String senderAddress, String lockRewardConditionId, String accessSecretStoreConditionId) throws ServiceException, EscrowRewardException {
+
 
         return FulfillEscrowReward.executeFulfill(escrowReward,
                 serviceAgreementId,
-                this.lockRewardCondition.getContractAddress(),
-                assetInfo,
-                this.getMainAccount().address,
+                amount,
+                receiverAddress,
+                senderAddress,
                 lockRewardConditionId,
                 accessSecretStoreConditionId);
     }
 
+
+    /**
+     *  Executes the fulfill of the EscrowReward
+     * @param agreementId the id of the agreement
+     * @param amount the amount
+     * @return a flag that indicates if the condition was executed correctly
+     * @throws EscrowRewardException
+     */
+    public boolean fulfillEscrowReward(String agreementId, BigInteger amount) throws  EscrowRewardException {
+
+        AgreementData agreementData;
+
+        try {
+
+            agreementData = getAgreementData(agreementId);
+
+            return FulfillEscrowReward.executeFulfill(escrowReward,
+                    agreementId,
+                    amount,
+                    agreementData.getProviderAdress(),
+                    agreementData.getConsumerAdress(),
+                    agreementData.getLockRewardConditionId(),
+                    agreementData.getAccessSecretStoreConditionId());
+
+        }catch (Exception e) {
+            throw new EscrowRewardException("There was an exception getting the data of the agreement " + agreementId, e);
+        }
+    }
+
+    private AgreementData getAgreementData(String agreementId) throws Exception {
+
+        byte[] serviceId = EncodingHelper.hexStringToBytes(agreementId);
+
+
+        Tuple6<byte[], String, String, List<byte[]>, String, BigInteger> agreement = agreementStoreManager.getAgreement(serviceId).send();
+        byte[] accessSecretStoreConditionId = agreement.getValue4().get(0);
+        byte[] lockRewardConditionId = agreement.getValue4().get(1);
+
+        Tuple2<String, String> data =  escrowAccessSecretStoreTemplate.getAgreementData(serviceId).send();
+        String consumer = data.getValue1();
+        String provider = data.getValue2();
+
+        AgreementData agreementData = new AgreementData();
+        agreementData.setAccessSecretStoreConditionIdBytes(accessSecretStoreConditionId);
+        agreementData.setLockRewardConditionIdBytes(lockRewardConditionId);
+        agreementData.setConsumerAdress(consumer);
+        agreementData.setProviderAdress(provider);
+
+        return agreementData;
+    }
 
     /**
      *  Downloads an Asset previously ordered through a Service Agreement

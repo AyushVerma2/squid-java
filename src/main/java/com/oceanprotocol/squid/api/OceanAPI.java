@@ -11,10 +11,7 @@ import com.oceanprotocol.secretstore.core.SecretStoreDto;
 import com.oceanprotocol.squid.api.config.OceanConfig;
 import com.oceanprotocol.squid.api.config.OceanConfigFactory;
 import com.oceanprotocol.squid.api.helper.OceanInitializationHelper;
-import com.oceanprotocol.squid.api.impl.AccountsImpl;
-import com.oceanprotocol.squid.api.impl.AssetsImpl;
-import com.oceanprotocol.squid.api.impl.SecretStoreImpl;
-import com.oceanprotocol.squid.api.impl.TokensImpl;
+import com.oceanprotocol.squid.api.impl.*;
 import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.KeeperService;
 import com.oceanprotocol.squid.exceptions.InitializationException;
@@ -56,11 +53,13 @@ public class OceanAPI {
     private LockRewardCondition lockRewardCondition;
     private AccessSecretStoreCondition accessSecretStoreCondition;
     private EscrowReward escrowReward;
+    private AgreementStoreManager agreementStoreManager;
 
     private AccountsAPI accountsAPI;
     private TokensAPI tokensAPI;
     private AssetsAPI assetsAPI;
     private SecretStoreAPI secretStoreAPI;
+    private AgreementConditionsAPI agreementConditionsAPI;
 
     private Account mainAccount;
 
@@ -126,6 +125,8 @@ public class OceanAPI {
             oceanAPI.dispenser = oceanInitializationHelper.loadDispenserContract(oceanAPI.keeperService);
             oceanAPI.tokenContract = oceanInitializationHelper.loadOceanTokenContract(oceanAPI.keeperService);
 
+            oceanAPI.agreementStoreManager = oceanInitializationHelper.loadAgreementStoreManager(oceanAPI.keeperService);
+
             oceanAPI.oceanManager = oceanInitializationHelper.getOceanManager(oceanAPI.keeperService, oceanAPI.aquariusService);
             oceanAPI.oceanManager.setSecretStoreManager(oceanAPI.secretStoreManager)
                     .setDidRegistryContract(oceanAPI.didRegistryContract)
@@ -135,8 +136,8 @@ public class OceanAPI {
                     .setAccessSecretStoreCondition(oceanAPI.accessSecretStoreCondition)
                     .setTokenContract(oceanAPI.tokenContract)
                     .setMainAccount(oceanAPI.mainAccount)
-                    .setEvmDto(oceanAPI.evmDto);
-
+                    .setEvmDto(oceanAPI.evmDto)
+                    .setAgreementStoreManager(oceanAPI.agreementStoreManager);
 
             oceanAPI.accountsManager = oceanInitializationHelper.getAccountsManager(oceanAPI.keeperService, oceanAPI.aquariusService);
             oceanAPI.accountsManager.setTokenContract(oceanAPI.tokenContract);
@@ -149,6 +150,7 @@ public class OceanAPI {
             oceanAPI.tokensAPI = new TokensImpl(oceanAPI.accountsManager);
             oceanAPI.secretStoreAPI = new SecretStoreImpl(oceanAPI.secretStoreManager);
             oceanAPI.assetsAPI = new AssetsImpl(oceanAPI.oceanManager, oceanAPI.assetsManager);
+            oceanAPI.agreementConditionsAPI = new AgreementConditionsImpl(oceanAPI.oceanManager);
 
             return oceanAPI;
         }catch (Exception e){
@@ -210,4 +212,11 @@ public class OceanAPI {
         return this.secretStoreAPI;
     }
 
+    /**
+     * Gets the AgreementConditionsAPI
+     * @return  an instance of an Implementation class of AgreementConditionsAPI
+     */
+    public AgreementConditionsAPI getAgreementConditionsAPI() {
+        return agreementConditionsAPI;
+    }
 }

@@ -25,9 +25,9 @@ public class FulfillEscrowReward {
      * Executes a fulfill function of a EscrowReward Condition
      * @param escrowReward  the EscrowReward contract
      * @param serviceAgreementId the service agreement id
-     * @param lockRewardAddress the address of the lockReward contract
-     * @param assetInfo basic info of the asset
-     * @param consumerAddress the Address of the consumer
+     * @param receiverAddress the address of the lockReward contract
+     * @param amount amount of tokens
+     * @param senderAddress the Address of the consumer
      * @param lockConditionId the id of the lock condition
      * @param releaseConditionId the id of the release condition
      * @return a flag that indicates if the function was executed correctly
@@ -35,9 +35,9 @@ public class FulfillEscrowReward {
      */
     public static Boolean executeFulfill(EscrowReward escrowReward,
                                          String serviceAgreementId,
-                                         String lockRewardAddress,
-                                         BasicAssetInfo assetInfo,
-                                         String consumerAddress,
+                                         BigInteger amount,
+                                         String receiverAddress,
+                                         String senderAddress,
                                          String lockConditionId,
                                          String releaseConditionId) throws EscrowRewardException {
 
@@ -45,11 +45,12 @@ public class FulfillEscrowReward {
         byte[] serviceId;
         byte[] lockConditionIdBytes;
         byte[] releaseConditionIdBytes;
-        Integer price = -1;
 
         try {
 
-            lockRewardAddress = Keys.toChecksumAddress(lockRewardAddress);
+            receiverAddress = Keys.toChecksumAddress(receiverAddress);
+            senderAddress = Keys.toChecksumAddress(senderAddress);
+
             serviceId = EncodingHelper.hexStringToBytes(serviceAgreementId);
 
             lockConditionIdBytes = EncodingHelper.hexStringToBytes(lockConditionId);
@@ -57,11 +58,68 @@ public class FulfillEscrowReward {
 
             TransactionReceipt receipt= escrowReward.fulfill(
                     serviceId,
-                    BigInteger.valueOf(assetInfo.getPrice()),
-                    lockRewardAddress,
-                    consumerAddress,
+                    amount,
+                    receiverAddress,
+                    senderAddress,
                     lockConditionIdBytes,
                     releaseConditionIdBytes
+            ).send();
+
+            if (!receipt.getStatus().equals("0x1")) {
+                String msg = "The Status received is not valid executing EscrowReward.Fulfill: " + receipt.getStatus() + " for serviceAgreement " + serviceAgreementId;
+                log.error(msg);
+                throw new EscrowRewardException(msg);
+            }
+
+            log.debug("EscrowReward.Fulfill transactionReceipt OK for serviceAgreement " + serviceAgreementId);
+            return true;
+
+        } catch (Exception e) {
+
+            String msg = "Error executing EscrowReward.Fulfill for serviceAgreement " + serviceAgreementId;
+            log.error(msg+ ": " + e.getMessage());
+            throw new EscrowRewardException(msg, e);
+        }
+
+    }
+
+
+    /**
+     * Executes a fulfill function of a EscrowReward Condition
+     * @param escrowReward  the EscrowReward contract
+     * @param serviceAgreementId the service agreement id
+     * @param receiverAddress the address of the lockReward contract
+     * @param amount amount of tokens
+     * @param senderAddress the Address of the consumer
+     * @param lockConditionId the id of the lock condition
+     * @param releaseConditionId the id of the release condition
+     * @return a flag that indicates if the function was executed correctly
+     * @throws EscrowRewardException EscrowRewardException
+     */
+    public static Boolean executeFulfill(EscrowReward escrowReward,
+                                         String serviceAgreementId,
+                                         BigInteger amount,
+                                         String receiverAddress,
+                                         String senderAddress,
+                                         byte[] lockConditionId,
+                                         byte[] releaseConditionId) throws EscrowRewardException {
+
+        byte[] serviceId;
+
+        try {
+
+            receiverAddress = Keys.toChecksumAddress(receiverAddress);
+            senderAddress = Keys.toChecksumAddress(senderAddress);
+
+            serviceId = EncodingHelper.hexStringToBytes(serviceAgreementId);
+
+            TransactionReceipt receipt= escrowReward.fulfill(
+                    serviceId,
+                    amount,
+                    receiverAddress,
+                    senderAddress,
+                    lockConditionId,
+                    releaseConditionId
             ).send();
 
             if (!receipt.getStatus().equals("0x1")) {
