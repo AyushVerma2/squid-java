@@ -6,7 +6,7 @@
 > 🐳 Ocean client Library (Java)
 > [oceanprotocol.com](https://oceanprotocol.com)
 
-[![Travis (.com)](https://img.shields.io/travis/com/oceanprotocol/squid-java.svg)](https://travis-ci.com/oceanprotocol/squid-java)
+[![Build Status](https://travis-ci.com/oceanprotocol/squid-java.svg?branch=develop)](https://travis-ci.com/oceanprotocol/squid-java)
 
 ---
 
