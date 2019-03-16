@@ -20,7 +20,7 @@ import java.io.IOException;
  * Manages the functionality related with the Secret Store
  */
 public class SecretStoreManager {
-    
+
     private PublisherWorker publisherWorker;
     private ConsumerWorker consumerWorker;
 

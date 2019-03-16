@@ -150,7 +150,7 @@ public class OceanManager extends BaseManager {
                     url
             ).send();
 
-            return !receipt.getStatus().equals("0x1");
+            return receipt.getStatus().equals("0x1");
 
         } catch (Exception e){
             throw new DIDRegisterException("Error registering DID " + did.getHash(), e);
