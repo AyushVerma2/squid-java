@@ -23,8 +23,6 @@ import org.junit.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.oceanprotocol.squid.models.AbstractModel.DATE_FORMAT;
 import static org.junit.Assert.assertEquals;
@@ -32,7 +30,7 @@ import static org.junit.Assert.assertTrue;
 
 public class DDOTest {
 
-    static final Logger log = LogManager.getLogger(DDOTest.class);
+    private static final Logger log = LogManager.getLogger(DDOTest.class);
 
     // DDO example downloaded from w3c site
     private static final String DDO_JSON_SAMPLE = "src/test/resources/examples/ddo-example.json";

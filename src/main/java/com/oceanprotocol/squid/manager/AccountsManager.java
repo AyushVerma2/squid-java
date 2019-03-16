@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class AccountsManager extends BaseManager {
 
-    static final Logger log= LogManager.getLogger(AccountsManager.class);
+    private static final Logger log= LogManager.getLogger(AccountsManager.class);
 
     private AccountsManager(KeeperService keeperService, AquariusService aquariusService){
         super(keeperService, aquariusService);

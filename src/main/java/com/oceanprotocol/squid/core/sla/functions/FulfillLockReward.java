@@ -29,22 +29,21 @@ public class FulfillLockReward {
      * @return a flag that indicates if the function was executed correctly
      * @throws LockRewardFulfillException LockRewardFulfillException
      */
-    public static Boolean executeFulfill(LockRewardCondition lockRewardCondition,
-                                         String serviceAgreementId,
-                                         String escrowRewardAddress,
-                                         BasicAssetInfo assetInfo) throws LockRewardFulfillException {
+    public static Boolean executeFulfill(final LockRewardCondition lockRewardCondition,
+                                         final String serviceAgreementId,
+                                         final String escrowRewardAddress,
+                                         final BasicAssetInfo assetInfo) throws LockRewardFulfillException {
 
         byte[] serviceId;
-        Integer price = -1;
 
         try {
 
-            escrowRewardAddress = Keys.toChecksumAddress(escrowRewardAddress);
+            String escrowRewardAddressChecksum = Keys.toChecksumAddress(escrowRewardAddress);
             serviceId = EncodingHelper.hexStringToBytes(serviceAgreementId);
 
             TransactionReceipt receipt= lockRewardCondition.fulfill(
                     serviceId,
-                    escrowRewardAddress,
+                    escrowRewardAddressChecksum,
                     BigInteger.valueOf(assetInfo.getPrice())
             ).send();
 

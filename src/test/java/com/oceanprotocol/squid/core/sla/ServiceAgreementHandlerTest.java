@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 
 public class ServiceAgreementHandlerTest {
 
-    static final Logger log= LogManager.getLogger(ServiceAgreementHandlerTest.class);
+    private static final Logger log= LogManager.getLogger(ServiceAgreementHandlerTest.class);
 
     private static ServiceAgreementHandler sla;
 

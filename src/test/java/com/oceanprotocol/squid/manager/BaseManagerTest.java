@@ -33,15 +33,6 @@ public class BaseManagerTest {
 
     private static final Logger log = LogManager.getLogger(BaseManagerTest.class);
 
-
-    public static class BaseManagerImplementation extends BaseManager {
-
-        public BaseManagerImplementation(KeeperService keeperService, AquariusService aquariusService) throws IOException, CipherException {
-            super(keeperService, aquariusService);
-        }
-
-    }
-
     private static final Config config = ConfigFactory.load();
 
     private static final String METADATA_JSON_SAMPLE = "src/test/resources/examples/metadata.json";
@@ -59,6 +50,15 @@ public class BaseManagerTest {
     private static final String SERVICE_AGREEMENT_ADDRESS;
     static {
         SERVICE_AGREEMENT_ADDRESS = config.getString("contract.AgreementStoreManager.address");
+    }
+
+    public static class BaseManagerImplementation extends BaseManager {
+
+
+        public BaseManagerImplementation(KeeperService keeperService, AquariusService aquariusService) throws IOException, CipherException {
+            super(keeperService, aquariusService);
+        }
+
     }
 
 

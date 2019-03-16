@@ -141,9 +141,7 @@ public abstract class EthereumHelper {
      */
     public static boolean isValidAddress(String input) {
         String hash= remove0x(input).toLowerCase();
-        if (hash.length() == 40 && EncodingHelper.isHexString(hash))
-            return true;
-        return false;
+        return (hash.length() == 40 && EncodingHelper.isHexString(hash));
     }
 
 
@@ -168,7 +166,7 @@ public abstract class EthereumHelper {
               return EthereumHelper.remove0x(EncodingHelper.hexEncodeAbiType("uint", Integer.parseInt((String) value)));
             else
                 return EthereumHelper.remove0x(EncodingHelper.hexEncodeAbiType("uint", value));
-        else if (type.equals("address"))
+        else if ("address".equals(type))
             return EthereumHelper.remove0x((String)value);
 
         return "";

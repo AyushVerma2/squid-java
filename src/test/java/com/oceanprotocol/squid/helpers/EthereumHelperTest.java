@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
 
 public class EthereumHelperTest {
 
-    static final Logger log= LogManager.getLogger(EthereumHelper.class);
+    private static final Logger log= LogManager.getLogger(EthereumHelper.class);
 
     public static final String PRIVATE_KEY_STRING = "a392604efc2fad9c0b3da43b5f698a2e3f270f170d859912be0d54742275c5f6";
     public static final String PUBLIC_KEY_STRING = "0x506bc1dc099358e5137292f4efdd57e400f29ba5132aa5d12b18dac1c1f6aab"

@@ -21,7 +21,7 @@ import java.io.IOException;
  */
 public class SecretStoreManager {
 
-    static final Logger log= LogManager.getLogger(SecretStoreManager.class);
+    private static final Logger log= LogManager.getLogger(SecretStoreManager.class);
 
     private PublisherWorker publisherWorker;
     private ConsumerWorker consumerWorker;

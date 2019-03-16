@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public class AssetsManager extends BaseManager {
 
-    static final Logger log= LogManager.getLogger(AssetsManager.class);
+    private static final Logger log= LogManager.getLogger(AssetsManager.class);
 
     public AssetsManager(KeeperService keeperService, AquariusService aquariusService){
         super(keeperService, aquariusService);

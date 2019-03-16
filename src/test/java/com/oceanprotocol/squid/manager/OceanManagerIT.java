@@ -146,10 +146,6 @@ public class OceanManagerIT {
                 managerPublisher.getAquariusService().getClass().isAssignableFrom(AquariusService.class));
     }
 
-    @Test
-    public void searchOrders() {
-
-    }
 
     private DDO newRegisteredAsset() throws Exception {
 
