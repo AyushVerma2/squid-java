@@ -6,6 +6,7 @@
 package com.oceanprotocol.squid.manager;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.oceanprotocol.secretstore.core.EvmDto;
 import com.oceanprotocol.squid.exceptions.DDOException;
 import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.KeeperService;
@@ -21,14 +22,11 @@ import org.apache.logging.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.web3j.crypto.CipherException;
-import com.oceanprotocol.secretstore.core.EvmDto;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class BaseManagerTest {

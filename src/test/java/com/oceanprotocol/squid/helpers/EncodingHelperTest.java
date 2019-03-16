@@ -5,13 +5,13 @@
 
 package com.oceanprotocol.squid.helpers;
 
-import org.apache.logging.log4j.core.net.MimeMessageBuilder;
 import org.junit.Test;
 import org.web3j.abi.datatypes.generated.Bytes32;
 
 import java.io.UnsupportedEncodingException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class EncodingHelperTest {
 

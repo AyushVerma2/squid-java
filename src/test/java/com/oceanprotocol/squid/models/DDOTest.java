@@ -23,12 +23,12 @@ import org.junit.Test;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.oceanprotocol.squid.models.AbstractModel.DATE_FORMAT;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DDOTest {
 
@@ -67,9 +67,7 @@ public class DDOTest {
 
     @Test
     public void generateDID() throws Exception {
-        DDO ddo = DDO.fromJSON(new TypeReference<DDO>() {
-        }, DDO_JSON_CONTENT);
-        String account = config.getString("account.ganache.address");
+        DDO ddo = DDO.fromJSON(new TypeReference<DDO>() {}, DDO_JSON_CONTENT);
 
         assertTrue(ddo.id.startsWith(DID.PREFIX));
         assertEquals(64, ddo.getDid().getHash().length());
@@ -189,20 +187,6 @@ public class DDOTest {
         assertEquals("test name", ((JSONObject) (json.getJSONArray("service").get(0))).getJSONObject("metadata").getJSONObject("base").getString("name"));
 
     }
-
-
-    private Map<String, Object> getAccessConditionParams(String did, int price)  {
-        Map<String, Object> params= new HashMap<>();
-        params.put("parameter.did", did);
-        params.put("parameter.price", price);
-        params.put("contract.LockRewardCondition.address", "0xaaaabbbccc");
-        params.put("contract.AccessSecretStoreCondition.address", "0xbbbbccccdddd");
-
-        params.put("parameter.assetId", did.replace("did:op:", ""));
-
-        return params;
-    }
-
 
 
 }
