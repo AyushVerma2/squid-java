@@ -42,7 +42,7 @@ script:
 #- mvn clean verify -P all-test # TODO: uncomment this when barge run properly in travis
 
 after_success:
-- java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r target/site/jacoco-ut/jacoco.xml
+- java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r target/site/jacoco/jacoco.xml
 - mvn javadoc:javadoc
 
 deploy:
