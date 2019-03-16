@@ -29,7 +29,6 @@ public class TemplatesApiIT {
     private static OceanAPI oceanAPI;
     private static Config config;
     private static TemplateStoreManager templateStoreManager;
-    private static String templateStoreManagerAddress;
 
     private static long timeout= 2000l;
 
@@ -55,7 +54,6 @@ public class TemplatesApiIT {
         templateStoreManager= ManagerHelper.deployTemplateStoreManager(keeper);
         templateStoreManager.initialize(keeper.getAddress()).send();
 
-        templateStoreManagerAddress= templateStoreManager.getContractAddress();
         oceanAPI.setTemplateStoreManagerContract(templateStoreManager);
         String owner= templateStoreManager.owner().send();
 
@@ -109,9 +107,6 @@ public class TemplatesApiIT {
         oceanAPI.getTemplatesAPI().revoke(templateAddress);
 
         assertFalse(oceanAPI.getTemplatesAPI().isApproved(templateAddress));
-
-        BigInteger numberTemplatesAfter= oceanAPI.getTemplatesAPI().getListSize();
-        log.debug("Number of existing templates: after " + numberTemplates.toString());
 
         assertEquals(0, oceanAPI.getTemplatesAPI().getTemplate(templateAddress)
                 .state.compareTo(TemplateSEA.TemplateState.Revoked.getStatus()));

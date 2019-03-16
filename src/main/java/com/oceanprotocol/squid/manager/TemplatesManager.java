@@ -8,27 +8,20 @@ package com.oceanprotocol.squid.manager;
 import com.oceanprotocol.squid.exceptions.EthereumException;
 import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.KeeperService;
-import com.oceanprotocol.squid.models.Account;
-import com.oceanprotocol.squid.models.Balance;
 import com.oceanprotocol.squid.models.service.template.TemplateSEA;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.response.EthAccounts;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.tuples.generated.Tuple4;
 
-import java.io.IOException;
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Controller class to manage the SEA Template functions
  */
 public class TemplatesManager extends BaseManager {
 
-    static final Logger log= LogManager.getLogger(TemplatesManager.class);
+    private static final Logger log= LogManager.getLogger(TemplatesManager.class);
 
 
     private TemplatesManager(KeeperService keeperService, AquariusService aquariusService){
