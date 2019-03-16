@@ -20,9 +20,7 @@ import java.io.IOException;
  * Manages the functionality related with the Secret Store
  */
 public class SecretStoreManager {
-
-    private static final Logger log= LogManager.getLogger(SecretStoreManager.class);
-
+    
     private PublisherWorker publisherWorker;
     private ConsumerWorker consumerWorker;
 
