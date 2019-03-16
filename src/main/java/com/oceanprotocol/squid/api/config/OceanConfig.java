@@ -50,6 +50,7 @@ public class OceanConfig {
     private String lockRewardAddress;
     private String accessSsConditionsAddress;
     private String tokenAddress;
+    private String templateStoreManagerAddress;
     private String dispenserAddress;
     private String consumeBasePath;
 
@@ -125,11 +126,16 @@ public class OceanConfig {
                     + OceanConfig.LOCKREWARD_CONDITIONS_ADDRESS);
         }
 
-
         if (oceanConfig.getAccessSsConditionsAddress() == null || oceanConfig.getAccessSsConditionsAddress().isEmpty()) {
             validation.setValid(false);
             validation.addErrorMessage("The Address of AccessSecretsToreConditions Contract must be set with the property "
                     + OceanConfig.ACCESS_SS_CONDITIONS_ADDRESS);
+        }
+
+        if (oceanConfig.getTemplateStoreManagerAddress() == null || oceanConfig.getTemplateStoreManagerAddress().isEmpty()) {
+            validation.setValid(false);
+            validation.addErrorMessage("The Address of TemplateStoreManager Contract must be set with the property "
+                    + OceanConfig.TEMPLATE_STORE_MANAGER_ADDRESS);
         }
 
         if (oceanConfig.getMainAccountAddress() == null || oceanConfig.getMainAccountAddress().isEmpty()) {
@@ -287,6 +293,16 @@ public class OceanConfig {
         this.tokenAddress = tokenAddress;
         return this;
     }
+
+    public String getTemplateStoreManagerAddress() {
+        return templateStoreManagerAddress;
+    }
+
+    public OceanConfig setTemplateStoreManagerAddress(String templateStoreManagerAddress) {
+        this.templateStoreManagerAddress = templateStoreManagerAddress;
+        return this;
+    }
+
 
     public String getDispenserAddress() {
         return dispenserAddress;

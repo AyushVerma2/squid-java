@@ -27,18 +27,26 @@ public abstract class ManagerHelper {
         return getKeeper(config, VmClient.ganache);
     }
 
+    public static KeeperService getKeeper(String url, String address, String password, String file, BigInteger gasLimit, BigInteger gasPrice) throws IOException, CipherException {
+        KeeperService keeper= KeeperService.getInstance(url, address, password, file);
+
+        keeper.setGasLimit(gasLimit)
+                .setGasPrice(gasPrice);
+
+        return keeper;
+    }
+
     public static KeeperService getKeeper(Config config, VmClient client) throws IOException, CipherException {
-        KeeperService keeper= KeeperService.getInstance(
+
+         return getKeeper(
                 config.getString("keeper.url"),
                 config.getString("account." + client.toString() + ".address"),
                 config.getString("account." + client.toString() + ".password"),
-                config.getString("account." + client.toString() + ".file")
+                config.getString("account." + client.toString() + ".file"),
+                BigInteger.valueOf(config.getLong("keeper.gasLimit")),
+                BigInteger.valueOf(config.getLong("keeper.gasPrice"))
         );
 
-        keeper.setGasLimit(BigInteger.valueOf(config.getLong("keeper.gasLimit")))
-              .setGasPrice(BigInteger.valueOf(config.getLong("keeper.gasPrice")));
-
-        return keeper;
     }
 
 
@@ -156,5 +164,22 @@ public abstract class ManagerHelper {
         );
     }
 
+    public static TemplateStoreManager deployTemplateStoreManager(KeeperService keeper) throws Exception {
+        log.debug("Deploying TemplateStoreManager with address: " + keeper.getCredentials().getAddress());
+        return TemplateStoreManager.deploy(
+                keeper.getWeb3(),
+                keeper.getCredentials(),
+                keeper.getContractGasProvider())
+                .send();
+    }
+
+    public static EscrowAccessSecretStoreTemplate deployEscrowAccessSecretStoreTemplate(KeeperService keeper) throws Exception {
+        log.debug("Deploying EscrowAccessSecretStoreTemplate with address: " + keeper.getCredentials().getAddress());
+        return EscrowAccessSecretStoreTemplate.deploy(
+                keeper.getWeb3(),
+                keeper.getCredentials(),
+                keeper.getContractGasProvider())
+                .send();
+    }
 
 }

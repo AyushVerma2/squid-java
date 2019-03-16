@@ -12,7 +12,6 @@ import com.oceanprotocol.secretstore.core.SecretStoreDto;
 import com.oceanprotocol.squid.exceptions.DDOException;
 import com.oceanprotocol.squid.exceptions.DIDFormatException;
 import com.oceanprotocol.squid.exceptions.EncryptionException;
-import com.oceanprotocol.squid.exceptions.ServiceException;
 import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.KeeperService;
 import com.oceanprotocol.squid.helpers.EncodingHelper;
@@ -50,6 +49,7 @@ public abstract class BaseManager {
     protected LockRewardCondition lockRewardCondition;
     protected EscrowReward escrowReward;
     protected AccessSecretStoreCondition accessSecretStoreCondition;
+    protected TemplateStoreManager templateStoreManager;
     protected ContractAddresses contractAddresses  = new ContractAddresses();
     protected Config config= ConfigFactory.load();
 
@@ -233,21 +233,6 @@ public abstract class BaseManager {
     }
 
     /**
-     * Initialize the OceanToken object using the address given as parameter to point to the deployed contract
-     * @param address OceanToken contract address
-     * @return AccountsManager instance
-     * @throws IOException IOException
-     * @throws CipherException CipherException
-     */
-    public BaseManager setTokenContract(String address) throws IOException, CipherException {
-        this.tokenContract= OceanToken.load(address,
-                getKeeperService().getWeb3(),
-                getKeeperService().getCredentials(),
-                getKeeperService().getContractGasProvider());
-        return this;
-    }
-
-    /**
      * It sets the OceanToken stub instance
      * @param contract OceanToken instance
      * @return BaseManager instance
@@ -257,6 +242,15 @@ public abstract class BaseManager {
         return this;
     }
 
+    /**
+     * It sets the OceanToken stub instance
+     * @param contract OceanToken instance
+     * @return BaseManager instance
+     */
+    public BaseManager setTemplateStoreManagerContract(TemplateStoreManager contract)   {
+        this.templateStoreManager= contract;
+        return this;
+    }
 
     /**
      * It sets the Dispenser stub instance
@@ -268,20 +262,6 @@ public abstract class BaseManager {
         return this;
     }
 
-    /**
-     * Initialize the DIDRegistry object using the address given as parameter to point to the deployed contract
-     * @param address DIDRegistry contract address
-     * @return BaseManager instance
-     * @throws IOException IOException
-     * @throws CipherException CipherException
-     */
-    public BaseManager setDidRegistryContract(String address) throws IOException, CipherException {
-        this.didRegistry= DIDRegistry.load(address,
-                getKeeperService().getWeb3(),
-                getKeeperService().getCredentials(),
-                getKeeperService().getContractGasProvider());
-        return this;
-    }
 
     /**
      * It sets the EscrowAccessSecretStoreTemplate stub instance

@@ -11,18 +11,12 @@ import com.oceanprotocol.secretstore.core.SecretStoreDto;
 import com.oceanprotocol.squid.api.config.OceanConfig;
 import com.oceanprotocol.squid.api.config.OceanConfigFactory;
 import com.oceanprotocol.squid.api.helper.OceanInitializationHelper;
-import com.oceanprotocol.squid.api.impl.AccountsImpl;
-import com.oceanprotocol.squid.api.impl.AssetsImpl;
-import com.oceanprotocol.squid.api.impl.SecretStoreImpl;
-import com.oceanprotocol.squid.api.impl.TokensImpl;
+import com.oceanprotocol.squid.api.impl.*;
 import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.KeeperService;
 import com.oceanprotocol.squid.exceptions.InitializationException;
 import com.oceanprotocol.squid.exceptions.InvalidConfiguration;
-import com.oceanprotocol.squid.manager.AccountsManager;
-import com.oceanprotocol.squid.manager.AssetsManager;
-import com.oceanprotocol.squid.manager.OceanManager;
-import com.oceanprotocol.squid.manager.SecretStoreManager;
+import com.oceanprotocol.squid.manager.*;
 import com.oceanprotocol.squid.models.Account;
 import com.typesafe.config.Config;
 import org.apache.logging.log4j.LogManager;
@@ -48,6 +42,7 @@ public class OceanAPI {
     private OceanManager oceanManager;
     private AssetsManager assetsManager;
     private AccountsManager accountsManager;
+    private TemplatesManager templatesManager;
 
     private OceanToken tokenContract;
     private Dispenser dispenser;
@@ -56,11 +51,13 @@ public class OceanAPI {
     private LockRewardCondition lockRewardCondition;
     private AccessSecretStoreCondition accessSecretStoreCondition;
     private EscrowReward escrowReward;
+    private TemplateStoreManager templateStoreManagerContract;
 
     private AccountsAPI accountsAPI;
     private TokensAPI tokensAPI;
     private AssetsAPI assetsAPI;
     private SecretStoreAPI secretStoreAPI;
+    private TemplatesAPI templatesAPI;
 
     private Account mainAccount;
 
@@ -125,6 +122,7 @@ public class OceanAPI {
             oceanAPI.escrowReward = oceanInitializationHelper.loadEscrowReward(oceanAPI.keeperService);
             oceanAPI.dispenser = oceanInitializationHelper.loadDispenserContract(oceanAPI.keeperService);
             oceanAPI.tokenContract = oceanInitializationHelper.loadOceanTokenContract(oceanAPI.keeperService);
+            oceanAPI.templateStoreManagerContract = oceanInitializationHelper.loadTemplateStoreManagerContract(oceanAPI.keeperService);
 
             oceanAPI.oceanManager = oceanInitializationHelper.getOceanManager(oceanAPI.keeperService, oceanAPI.aquariusService);
             oceanAPI.oceanManager.setSecretStoreManager(oceanAPI.secretStoreManager)
@@ -134,6 +132,7 @@ public class OceanAPI {
                     .setEscrowReward(oceanAPI.escrowReward)
                     .setAccessSecretStoreCondition(oceanAPI.accessSecretStoreCondition)
                     .setTokenContract(oceanAPI.tokenContract)
+                    .setTemplateStoreManagerContract(oceanAPI.templateStoreManagerContract)
                     .setMainAccount(oceanAPI.mainAccount)
                     .setEvmDto(oceanAPI.evmDto);
 
@@ -142,13 +141,19 @@ public class OceanAPI {
             oceanAPI.accountsManager.setTokenContract(oceanAPI.tokenContract);
             oceanAPI.accountsManager.setDispenserContract(oceanAPI.dispenser);
             oceanAPI.accountsManager .setMainAccount(oceanAPI.mainAccount);
+
             oceanAPI.assetsManager = oceanInitializationHelper.getAssetsManager(oceanAPI.keeperService, oceanAPI.aquariusService);
             oceanAPI.assetsManager.setMainAccount(oceanAPI.mainAccount);
+
+            oceanAPI.templatesManager = oceanInitializationHelper.getTemplatesManager(oceanAPI.keeperService, oceanAPI.aquariusService);
+            oceanAPI.templatesManager.setMainAccount(oceanAPI.mainAccount);
+            oceanAPI.templatesManager.setTemplateStoreManagerContract(oceanAPI.templateStoreManagerContract);
 
             oceanAPI.accountsAPI = new AccountsImpl(oceanAPI.accountsManager);
             oceanAPI.tokensAPI = new TokensImpl(oceanAPI.accountsManager);
             oceanAPI.secretStoreAPI = new SecretStoreImpl(oceanAPI.secretStoreManager);
             oceanAPI.assetsAPI = new AssetsImpl(oceanAPI.oceanManager, oceanAPI.assetsManager);
+            oceanAPI.templatesAPI = new TemplatesImpl(oceanAPI.templatesManager);
 
             return oceanAPI;
         }catch (Exception e){
@@ -210,4 +215,22 @@ public class OceanAPI {
         return this.secretStoreAPI;
     }
 
+    /**
+     * Gets the TemplatesAPI
+     * @return an instance of an Implementation class of TemplatesAPI
+     */
+    public TemplatesAPI getTemplatesAPI() {
+        return this.templatesAPI;
+    }
+
+    // TODO: Review an alternative to introduce a cleaner dependency injection
+    /**
+     * Allows to overwrite the TemplateStoreManager contract instance
+     * @param contract TemplateStoreManager
+     */
+    public void setTemplateStoreManagerContract(TemplateStoreManager contract)  {
+        oceanAPI.templatesManager.setTemplateStoreManagerContract(
+                contract);
+
+    }
 }

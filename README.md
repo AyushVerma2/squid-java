@@ -76,7 +76,7 @@ And you can instantiate the API with the following lines:
  OceanAPI oceanAPI = OceanAPI.getInstance(config);
 ```
 
-Remember that TypeSafe Config allows you to overwrite the values using Environment Variables or arguments passed to the JVM
+Remember that TypeSafe Config allows you to overwrite the values using Environment Variables or arguments passed to the JVM.
 
 If you want to use Java's Properties, you just need to create a Properties Object with the same properties of the application.conf.
 You can read this Properties from a properties file, or define the values of these properties in your code
@@ -110,7 +110,19 @@ Once you have initialized the API you can call the methods through their corresp
  boolean result = oceanAPI.getAssetsAPI().consume(orderResult.getServiceAgreementId(), did, SERVICE_DEFINITION_ID, "/tmp");
 ```
 
-Note: Due to [this issue](https://github.com/oceanprotocol/squid-java/issues/67), is necessary to register the Access Service's template using squid-py
+### Using Squid-Java with Barge
+
+If you are using [Barge](https://github.com/oceanprotocol/barge/) for playing with the Ocean Protocol stack, you can use the following command to run the components 
+necessary to have a fully functional environment:
+
+`KEEPER_VERSION=v0.8.5 bash start_ocean.sh --latest --no-pleuston --local-spree-node`
+
+After a few minutes, when Keeper has deployed the contracts, the ABI files describing the Smart Contracts can be found 
+in the `${HOME}/.ocean/keeper-contracts/artifacts/` folder. Depending on the network you are using, each ABI includes the 
+address where the Smart Contract is deployed in each network.
+
+If you want to run the integration tests in your local, you can execute the Bash Script `src/test/resources/scripts/updateConfAddresses.sh`
+to update the addresses to use in your `src/test/resources/application.conf` file.
 
 ### Dealing with Flowables
 
