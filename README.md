@@ -6,8 +6,7 @@
 > 🐳 Ocean client Library (Java)
 > [oceanprotocol.com](https://oceanprotocol.com)
 
-[![Build Status](https://travis-ci.com/oceanprotocol/squid-java.svg?branch=develop)](https://travis-ci.com/oceanprotocol/squid-java)
-
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a2285f0f3a664cf091c8e00a243898ce)](https://app.codacy.com/app/ocean-protocol/squid-java?utm_source=github.com&utm_medium=referral&utm_content=oceanprotocol/squid-java&utm_campaign=Badge_Grade_Dashboard) [![Build Status](https://travis-ci.com/oceanprotocol/squid-java.svg?branch=develop)](https://travis-ci.com/oceanprotocol/squid-java) 
 ---
 
 ## Table of Contents
