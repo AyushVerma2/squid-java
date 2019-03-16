@@ -5,14 +5,13 @@
 
 package com.oceanprotocol.squid.manager;
 
+import com.oceanprotocol.squid.exceptions.EthereumException;
 import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.KeeperService;
-import com.oceanprotocol.squid.exceptions.EthereumException;
 import com.oceanprotocol.squid.models.Account;
 import com.oceanprotocol.squid.models.Balance;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.web3j.crypto.CipherException;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthAccounts;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
@@ -27,9 +26,7 @@ import java.util.List;
  */
 public class AccountsManager extends BaseManager {
 
-    static final Logger log= LogManager.getLogger(AccountsManager.class);
-
-    private BigInteger ERROR_BALANCE= BigInteger.ZERO;
+    private static final Logger log= LogManager.getLogger(AccountsManager.class);
 
     private AccountsManager(KeeperService keeperService, AquariusService aquariusService){
         super(keeperService, aquariusService);
@@ -52,10 +49,9 @@ public class AccountsManager extends BaseManager {
      * Returns the list of ethereum accounts registered in the Keeper node
      * If getBalance is true, get the ethereum and ocean balance of each account
      * @return  List of accounts
-     * @param getBalance flag that indicates if we want to get the balance of each account
      * @throws EthereumException if the EVM throws an exception
      */
-    public List<Account> getAccounts(boolean getBalance) throws EthereumException {
+    public List<Account> getAccounts() throws EthereumException {
 
         try {
 
@@ -73,15 +69,6 @@ public class AccountsManager extends BaseManager {
             throw new EthereumException("Error getting etherum accounts from keeper", e);
 
         }
-    }
-
-    /**
-     * Returns the list of ethereum accounts registered in the Keeper node
-     * @return List of accounts without Balance information
-     * @throws EthereumException if the EVM throws an exception
-     */
-    public List<Account> getAccounts() throws EthereumException {
-        return getAccounts(false);
     }
 
     /**

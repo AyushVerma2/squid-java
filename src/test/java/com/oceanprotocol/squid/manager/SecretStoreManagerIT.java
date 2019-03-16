@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
 public class SecretStoreManagerIT {
 
 
-    static final Logger log= LogManager.getLogger(SecretStoreManagerIT.class);
+    private static final Logger log= LogManager.getLogger(SecretStoreManagerIT.class);
 
     private static PublisherWorker publisherWorker;
     private static ConsumerWorker consumerWorker;

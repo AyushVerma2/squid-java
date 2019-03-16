@@ -18,11 +18,10 @@ import com.oceanprotocol.squid.models.service.Service;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.text.ParseException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import static com.oceanprotocol.squid.models.DDO.PublicKey.ETHEREUM_KEY_TYPE;
 
@@ -32,10 +31,7 @@ public class DDO extends AbstractModel implements FromJsonToModel {
 
     static final Logger log= LogManager.getLogger(DDO.class);
 
-    private static final String DDO_PROOF_TYPE= "DDODataSHA3Signature";
     private static final String UUID_PROOF_TYPE= "DDOIntegritySignature";
-
-    private static final String MODEL_CHARSET= "UTF-8";
 
     @JsonProperty("@context")
     public String context= "https://w3id.org/future-method/v1";
@@ -52,7 +48,6 @@ public class DDO extends AbstractModel implements FromJsonToModel {
     @JsonProperty
     public List<Authentication> authentication= new ArrayList<>();
 
-    //@JsonProperty("service")
     @JsonIgnore
     public List<Service> services= new ArrayList<>();
 

@@ -49,7 +49,7 @@ import java.util.concurrent.TimeoutException;
  */
 public class OceanManager extends BaseManager {
 
-    static final Logger log= LogManager.getLogger(OceanManager.class);
+    private static final Logger log= LogManager.getLogger(OceanManager.class);
 
     protected OceanManager(KeeperService keeperService, AquariusService aquariusService) {
         super(keeperService, aquariusService);
@@ -150,9 +150,8 @@ public class OceanManager extends BaseManager {
                     url
             ).send();
 
-            if (!receipt.getStatus().equals("0x1"))
-                return false;
-            return true;
+            return receipt.getStatus().equals("0x1");
+
         } catch (Exception e){
             throw new DIDRegisterException("Error registering DID " + did.getHash(), e);
         }

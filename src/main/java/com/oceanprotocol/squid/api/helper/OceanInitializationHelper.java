@@ -11,10 +11,7 @@ import com.oceanprotocol.secretstore.core.SecretStoreDto;
 import com.oceanprotocol.squid.api.config.OceanConfig;
 import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.KeeperService;
-import com.oceanprotocol.squid.manager.AccountsManager;
-import com.oceanprotocol.squid.manager.AssetsManager;
-import com.oceanprotocol.squid.manager.OceanManager;
-import com.oceanprotocol.squid.manager.SecretStoreManager;
+import com.oceanprotocol.squid.manager.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.web3j.crypto.CipherException;
@@ -121,6 +118,18 @@ public class OceanInitializationHelper {
     }
 
     /**
+     * Initialize an instance of TemplatesManager
+     * @param keeperService the keeperService
+     * @param aquariusService the AquariusService
+     * @return an initialized TemplatesManager object
+     * @throws IOException IOException
+     * @throws CipherException CipherException
+     */
+    public TemplatesManager getTemplatesManager(KeeperService keeperService, AquariusService aquariusService) throws IOException, CipherException {
+        return TemplatesManager.getInstance(keeperService, aquariusService);
+    }
+
+    /**
      * Initialize an instance of AssetsManager
      * @param keeperService the KeeperService
      * @param aquariusService the AquariusService
@@ -142,6 +151,21 @@ public class OceanInitializationHelper {
     public OceanToken loadOceanTokenContract(KeeperService keeper) throws IOException, CipherException {
         return OceanToken.load(
                 oceanConfig.getTokenAddress(),
+                keeper.getWeb3(),
+                keeper.getCredentials(),
+                keeper.getContractGasProvider());
+    }
+
+    /**
+     * Loads the TemplateStoreManager contract from Keeper
+     * @param keeper the keeper Service
+     * @return an instance of TemplateStoreManager contract deployed in keeper
+     * @throws IOException IOException
+     * @throws CipherException CipherException
+     */
+    public TemplateStoreManager loadTemplateStoreManagerContract(KeeperService keeper) throws IOException, CipherException {
+        return TemplateStoreManager.load(
+                oceanConfig.getTemplateStoreManagerAddress(),
                 keeper.getWeb3(),
                 keeper.getCredentials(),
                 keeper.getContractGasProvider());

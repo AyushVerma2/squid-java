@@ -7,11 +7,9 @@ package com.oceanprotocol.squid.core.sla;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.oceanprotocol.squid.external.KeeperService;
-import com.oceanprotocol.squid.helpers.EthereumHelper;
 import com.oceanprotocol.squid.manager.ManagerHelper;
 import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.service.AccessService;
-import com.oceanprotocol.squid.models.service.template.AccessTemplate;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
@@ -20,18 +18,15 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.web3j.crypto.Hash;
-import org.web3j.crypto.Keys;
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 public class ServiceAgreementHandlerTest {
 
-    static final Logger log= LogManager.getLogger(ServiceAgreementHandlerTest.class);
+    private static final Logger log= LogManager.getLogger(ServiceAgreementHandlerTest.class);
 
     private static ServiceAgreementHandler sla;
 
@@ -64,7 +59,6 @@ public class ServiceAgreementHandlerTest {
     public void generateConditionIds()  throws Exception {
 
         String agreementId ="0xc4a15b18fcf343a4b2cda85800a454f6153c1478db8f4b7bacba3ef21129cc26";
-        String assetId = "0xdaf95108d69844cbaafcd66fd480a244c7751fa9c659437cbc71b0f922b83220";
         String consumerAddress = "0x068Ed00cF0441e4829D9784fCBe7b9e26D4BD8d0";
         String publisherAddress = "0x00Bd138aBD70e2F00903268F3Db08f2D25677C9e";
         String escrowRewardConditionAddress = "0xe22570D8ea2D8004023A928FbEb36f14738C62c9";
@@ -89,7 +83,6 @@ public class ServiceAgreementHandlerTest {
     public void generateSASignature()  throws Exception {
 
         String agreementId ="0xc4a15b18fcf343a4b2cda85800a454f6153c1478db8f4b7bacba3ef21129cc26";
-        String assetId = "0xdaf95108d69844cbaafcd66fd480a244c7751fa9c659437cbc71b0f922b83220";
         String consumerAddress = "0x068Ed00cF0441e4829D9784fCBe7b9e26D4BD8d0";
         String publisherAddress = "0x00Bd138aBD70e2F00903268F3Db08f2D25677C9e";
         String escrowRewardConditionAddress = "0xe22570D8ea2D8004023A928FbEb36f14738C62c9";

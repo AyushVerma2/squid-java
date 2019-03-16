@@ -19,7 +19,7 @@ import java.math.BigInteger;
 
 public class FulfillEscrowReward {
 
-    static final Logger log= LogManager.getLogger(FulfillEscrowReward.class);
+    private static final Logger log= LogManager.getLogger(FulfillEscrowReward.class);
 
     /**
      * Executes a fulfill function of a EscrowReward Condition
@@ -49,7 +49,7 @@ public class FulfillEscrowReward {
 
         try {
 
-            lockRewardAddress = Keys.toChecksumAddress(lockRewardAddress);
+            String lockRewardAddressChecksum = Keys.toChecksumAddress(lockRewardAddress);
             serviceId = EncodingHelper.hexStringToBytes(serviceAgreementId);
 
             lockConditionIdBytes = EncodingHelper.hexStringToBytes(lockConditionId);
@@ -60,7 +60,7 @@ public class FulfillEscrowReward {
             TransactionReceipt receipt= escrowReward.fulfill(
                     serviceId,
                     BigInteger.valueOf(assetInfo.getPrice()),
-                    lockRewardAddress,
+                    lockRewardAddressChecksum,
                     consumerAddress,
                     lockConditionIdBytes,
                     releaseConditionIdBytes

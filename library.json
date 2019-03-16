@@ -7,7 +7,7 @@
   "dependencies": [
     {
       "name": "squid-spec",
-      "version": "0.1"
+      "version": "0.2"
     },
     {
       "name": "keeper-contracts",

@@ -21,16 +21,10 @@ import java.io.IOException;
  */
 public class SecretStoreManager {
 
-    static final Logger log= LogManager.getLogger(SecretStoreManager.class);
-
-    private SecretStoreDto secretStoreDto;
-    private EvmDto evmDto;
     private PublisherWorker publisherWorker;
     private ConsumerWorker consumerWorker;
 
     private SecretStoreManager(SecretStoreDto ssDto, EvmDto evmDto) {
-        this.secretStoreDto= ssDto;
-        this.evmDto= evmDto;
         this.publisherWorker= new PublisherWorker(ssDto, evmDto);
         this.consumerWorker= new ConsumerWorker(ssDto, evmDto);
     }

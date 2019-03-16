@@ -47,6 +47,7 @@ public class OceanConfigFactory {
         oceanConfig.setAccessSsConditionsAddress((String)properties.getOrDefault(OceanConfig.ACCESS_SS_CONDITIONS_ADDRESS, ""));
         oceanConfig.setAgreementStoreManagerAddress((String)properties.getOrDefault(OceanConfig.AGREEMENT_STORE_MANAGER_ADDRESS, ""));
         oceanConfig.setTokenAddress((String)properties.getOrDefault(OceanConfig.TOKEN_ADDRESS, ""));
+        oceanConfig.setTemplateStoreManagerAddress((String)properties.getOrDefault(OceanConfig.TEMPLATE_STORE_MANAGER_ADDRESS, ""));
         oceanConfig.setDispenserAddress((String)properties.getOrDefault(OceanConfig.DISPENSER_ADDRESS, ""));
         oceanConfig.setConsumeBasePath((String)properties.getOrDefault(OceanConfig.CONSUME_BASE_PATH, DEFAULT_CONSUME_PATH));
         oceanConfig.setMainAccountAddress((String)properties.getOrDefault(OceanConfig.MAIN_ACCOUNT_ADDRESS, ""));
