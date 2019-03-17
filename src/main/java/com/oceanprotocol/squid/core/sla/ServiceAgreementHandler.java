@@ -14,6 +14,7 @@ import com.oceanprotocol.squid.helpers.EthereumHelper;
 import com.oceanprotocol.squid.models.AbstractModel;
 import com.oceanprotocol.squid.models.service.Condition;
 import io.reactivex.Flowable;
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.web3j.abi.EventEncoder;
@@ -21,8 +22,11 @@ import org.web3j.abi.datatypes.Event;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.request.EthFilter;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +41,7 @@ public class ServiceAgreementHandler {
 
     private static final Logger log= LogManager.getLogger(ServiceAgreementHandler.class);
 
-    private static final String ACCESS_CONDITIONS_FILE_TEMPLATE= "src/main/resources/sla/sla-access-conditions-template.json";
+    private static final String ACCESS_CONDITIONS_FILE_TEMPLATE= "sla-access-conditions-template.json";
     private String conditionsTemplate= null;
 
     public static final String FUNCTION_LOCKREWARD_DEF= "fulfill(bytes32,address,uint256)";
@@ -141,10 +145,18 @@ public class ServiceAgreementHandler {
     public List<Condition> initializeConditions(Map<String, Object> params) throws InitializeConditionsException {
 
         try {
-            params.putAll(getFunctionsFingerprints());
+            conditionsTemplate= IOUtils.toString(
+                    this.getClass().getClassLoader().getResourceAsStream("sla/sla-access-conditions-template.json"),
+                    StandardCharsets.UTF_8);
+
+        } catch (IOException ex) {}
+        
+        try {
 
             if (conditionsTemplate == null)
-                conditionsTemplate = new String(Files.readAllBytes(Paths.get(ACCESS_CONDITIONS_FILE_TEMPLATE)));
+                conditionsTemplate = new String(Files.readAllBytes(Paths.get("src/main/resources/sla/" + ACCESS_CONDITIONS_FILE_TEMPLATE)));
+
+            params.putAll(getFunctionsFingerprints());
 
             params.forEach((_name, _func) -> {
                 if (_func instanceof byte[])
