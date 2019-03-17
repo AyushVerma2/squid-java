@@ -44,6 +44,12 @@ public class AssetMetadata extends Metadata {
         this.did= did;
     }
 
+    public static AssetMetadata builder()   {
+        AssetMetadata assetMetadata= new AssetMetadata();
+        assetMetadata.base= new Base();
+        assetMetadata.curation= new Curation();
+        return assetMetadata;
+    }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonPropertyOrder(alphabetic=true)
@@ -87,13 +93,13 @@ public class AssetMetadata extends Metadata {
         public String workExample;
 
         @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-        public ArrayList<File> files;
+        public ArrayList<File> files= new ArrayList<>();
 
         @JsonProperty
         public String encryptedFiles=null;
 
         @JsonProperty
-        public ArrayList<Link> links;
+        public ArrayList<Link> links= new ArrayList<>();
 
         @JsonProperty
         public String inLanguage;
@@ -107,7 +113,8 @@ public class AssetMetadata extends Metadata {
         @JsonProperty
         public String checksum;
 
-        public Base() {}
+        public Base() {
+        }
 
     }
 
