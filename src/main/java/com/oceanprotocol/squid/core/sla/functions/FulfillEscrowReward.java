@@ -8,6 +8,7 @@ package com.oceanprotocol.squid.core.sla.functions;
 import com.oceanprotocol.keeper.contracts.EscrowReward;
 import com.oceanprotocol.squid.exceptions.EscrowRewardException;
 import com.oceanprotocol.squid.helpers.EncodingHelper;
+import com.oceanprotocol.squid.helpers.EthereumHelper;
 import com.oceanprotocol.squid.models.Account;
 import com.oceanprotocol.squid.models.asset.BasicAssetInfo;
 import org.apache.logging.log4j.LogManager;
@@ -51,7 +52,7 @@ public class FulfillEscrowReward {
             receiverAddress = Keys.toChecksumAddress(receiverAddress);
             senderAddress = Keys.toChecksumAddress(senderAddress);
 
-            serviceId = EncodingHelper.hexStringToBytes(serviceAgreementId);
+            serviceId = EncodingHelper.hexStringToBytes(EthereumHelper.add0x(serviceAgreementId));
 
             lockConditionIdBytes = EncodingHelper.hexStringToBytes(lockConditionId);
             releaseConditionIdBytes = EncodingHelper.hexStringToBytes(releaseConditionId);
@@ -111,7 +112,7 @@ public class FulfillEscrowReward {
             receiverAddress = Keys.toChecksumAddress(receiverAddress);
             senderAddress = Keys.toChecksumAddress(senderAddress);
 
-            serviceId = EncodingHelper.hexStringToBytes(serviceAgreementId);
+            serviceId = EncodingHelper.hexStringToBytes(EthereumHelper.add0x(serviceAgreementId));
 
             TransactionReceipt receipt= escrowReward.fulfill(
                     serviceId,

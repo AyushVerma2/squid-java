@@ -8,6 +8,7 @@ package com.oceanprotocol.squid.core.sla.functions;
 import com.oceanprotocol.keeper.contracts.LockRewardCondition;
 import com.oceanprotocol.squid.exceptions.LockRewardFulfillException;
 import com.oceanprotocol.squid.helpers.EncodingHelper;
+import com.oceanprotocol.squid.helpers.EthereumHelper;
 import com.oceanprotocol.squid.models.asset.BasicAssetInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -39,7 +40,7 @@ public class FulfillLockReward {
         try {
 
             escrowRewardAddress = Keys.toChecksumAddress(escrowRewardAddress);
-            serviceId = EncodingHelper.hexStringToBytes(serviceAgreementId);
+            serviceId = EncodingHelper.hexStringToBytes(EthereumHelper.add0x(serviceAgreementId));
 
             TransactionReceipt receipt= lockRewardCondition.fulfill(
                     serviceId,

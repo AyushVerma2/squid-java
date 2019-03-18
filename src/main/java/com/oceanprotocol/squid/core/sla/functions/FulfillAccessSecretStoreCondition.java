@@ -3,6 +3,7 @@ package com.oceanprotocol.squid.core.sla.functions;
 import com.oceanprotocol.keeper.contracts.AccessSecretStoreCondition;
 import com.oceanprotocol.squid.exceptions.AccessSecretStoreConditionException;
 import com.oceanprotocol.squid.helpers.EncodingHelper;
+import com.oceanprotocol.squid.helpers.EthereumHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.web3j.crypto.Keys;
@@ -36,8 +37,8 @@ public class FulfillAccessSecretStoreCondition {
         try {
 
             granteeAddress = Keys.toChecksumAddress(granteeAddress);
-            serviceIdBytes = EncodingHelper.hexStringToBytes(agreementId);
-            assetIdBytes = EncodingHelper.hexStringToBytes(assetId);
+            serviceIdBytes = EncodingHelper.hexStringToBytes(EthereumHelper.add0x(agreementId));
+            assetIdBytes = EncodingHelper.hexStringToBytes(EthereumHelper.add0x(assetId));
 
             TransactionReceipt receipt= accessSecretStoreCondition.fulfill(
                     serviceIdBytes,

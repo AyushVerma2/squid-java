@@ -19,7 +19,7 @@ public class AgreementConditionsImpl implements AgreementConditionsAPI{
 
 
     @Override
-    public Boolean lockReward(String agreementId, BigInteger amount) throws LockRewardFulfillException {
+    public Boolean lockReward(String agreementId, Integer amount) throws LockRewardFulfillException {
 
         return oceanManager.fulfillLockReward(agreementId, amount);
 
@@ -33,13 +33,13 @@ public class AgreementConditionsImpl implements AgreementConditionsAPI{
     }
 
     @Override
-    public Boolean releaseReward(String agreementId, BigInteger amount) throws EscrowRewardException {
+    public Boolean releaseReward(String agreementId, Integer amount) throws EscrowRewardException {
 
         return oceanManager.fulfillEscrowReward(agreementId, amount);
     }
 
     @Override
-    public Boolean refundReward(String agreementId, BigInteger amount) throws EscrowRewardException {
+    public Boolean refundReward(String agreementId, Integer amount) throws EscrowRewardException {
 
         return  oceanManager.fulfillEscrowReward(agreementId, amount);
     }

@@ -20,7 +20,7 @@ public interface AgreementConditionsAPI {
      * @return a flag that indicates if the condition was executed correctly
      * @throws LockRewardFulfillException when there is a problem with the transaction
      */
-    public Boolean lockReward(String agreementId, BigInteger amount) throws LockRewardFulfillException;
+    public Boolean lockReward(String agreementId, Integer amount) throws LockRewardFulfillException;
 
 
     /**
@@ -42,7 +42,7 @@ public interface AgreementConditionsAPI {
      * @return  a flag that indicates if the condition was executed correctly
      * @throws EscrowRewardException when there is a problem with the transaction
      */
-    public Boolean releaseReward(String agreementId, BigInteger amount) throws EscrowRewardException;
+    public Boolean releaseReward(String agreementId, Integer amount) throws EscrowRewardException;
 
 
     /**
@@ -53,7 +53,7 @@ public interface AgreementConditionsAPI {
      * @return  a flag that indicates if the condition was executed correctly
      * @throws EscrowRewardException when there is a problem with the transaction
      */
-    public Boolean refundReward(String agreementId, BigInteger amount) throws EscrowRewardException;
+    public Boolean refundReward(String agreementId, Integer amount) throws EscrowRewardException;
 
 
 

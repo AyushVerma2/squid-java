@@ -278,8 +278,6 @@ public class OceanManager extends BaseManager {
                             return Flowable.empty();
                         else {
                             log.debug("Received AgreementCreated Event with Id: " + eventServiceAgreementId);
-                            getKeeperService().unlockAccount(getMainAccount());
-                            getKeeperService().tokenApprove(this.tokenContract, lockRewardCondition.getContractAddress(), Integer.valueOf(ddo.metadata.base.price));
                             BigInteger balance = this.tokenContract.balanceOf(getMainAccount().address).send();
                             if (balance.compareTo(BigInteger.valueOf(Long.parseLong(ddo.metadata.base.price))) < 0) {
 //                            if (balance.intValue() < Integer.valueOf(ddo.metadata.base.price)) {
@@ -327,7 +325,7 @@ public class OceanManager extends BaseManager {
      * @throws ServiceException ServiceException
      * @throws ServiceAgreementException ServiceAgreementException
      */
-    private Flowable<EscrowAccessSecretStoreTemplate.AgreementCreatedEventResponse> initializeServiceAgreement(DID did, DDO ddo, String serviceDefinitionId, String serviceAgreementId)
+    protected Flowable<EscrowAccessSecretStoreTemplate.AgreementCreatedEventResponse> initializeServiceAgreement(DID did, DDO ddo, String serviceDefinitionId, String serviceAgreementId)
             throws  DDOException, ServiceException, ServiceAgreementException {
 
 
@@ -404,9 +402,7 @@ public class OceanManager extends BaseManager {
         AccessService accessService= ddo.getAccessService(serviceDefinitionId);
         BasicAssetInfo assetInfo = getBasicAssetInfo(accessService);
 
-        BigInteger amount = BigInteger.valueOf(assetInfo.getPrice());
-
-        return this.fulfillLockReward(serviceAgreementId, amount);
+        return this.fulfillLockReward(serviceAgreementId, assetInfo.getPrice());
     }
 
     /**
@@ -414,12 +410,20 @@ public class OceanManager extends BaseManager {
      * @param serviceAgreementId service agreement id
      * @param amount of tokens
      * @return a flag that indicates if the function was executed correctly
-     * @throws ServiceException ServiceException
      * @throws LockRewardFulfillException LockRewardFulfillException
      */
-    public boolean fulfillLockReward(String serviceAgreementId, BigInteger amount) throws LockRewardFulfillException {
+    public boolean fulfillLockReward(String serviceAgreementId, Integer amount) throws LockRewardFulfillException {
 
-        return FulfillLockReward.executeFulfill(lockRewardCondition, serviceAgreementId, this.escrowReward.getContractAddress(), amount);
+        try {
+            getKeeperService().unlockAccount(getMainAccount());
+            getKeeperService().tokenApprove(this.tokenContract, lockRewardCondition.getContractAddress(), amount);
+        }catch (Exception e){
+            String msg = "Error fulfilling LockReward for agreement " + serviceAgreementId;
+            log.error(msg);
+            throw new LockRewardFulfillException(msg, e);
+        }
+
+        return FulfillLockReward.executeFulfill(lockRewardCondition, serviceAgreementId, this.escrowReward.getContractAddress(),  BigInteger.valueOf(amount));
     }
 
 
@@ -432,6 +436,14 @@ public class OceanManager extends BaseManager {
      * @throws AccessSecretStoreConditionException AccessSecretStoreConditionException
      */
     public Boolean fulfillAccessSecretStoreCondition(String agreementId, String assetId, String granteeAddress) throws AccessSecretStoreConditionException {
+
+        try {
+            getKeeperService().unlockAccount(getMainAccount());
+        }catch (Exception e){
+            String msg = "Error fulfilling AccessSecretStore for agreement " + agreementId;
+            log.error(msg);
+            throw new AccessSecretStoreConditionException(msg, e);
+        }
 
         return FulfillAccessSecretStoreCondition.executeFulfill(accessSecretStoreCondition, agreementId, assetId, granteeAddress);
     }
@@ -482,6 +494,13 @@ public class OceanManager extends BaseManager {
      */
     private boolean fulfillEscrowReward(String serviceAgreementId, BigInteger amount, String receiverAddress, String senderAddress, String lockRewardConditionId, String accessSecretStoreConditionId) throws ServiceException, EscrowRewardException {
 
+        try {
+            getKeeperService().unlockAccount(getMainAccount());
+        }catch (Exception e){
+            String msg = "Error fulfilling AccessSecretStore for agreement " + serviceAgreementId;
+            log.error(msg);
+            throw new EscrowRewardException(msg, e);
+        }
 
         return FulfillEscrowReward.executeFulfill(escrowReward,
                 serviceAgreementId,
@@ -500,21 +519,21 @@ public class OceanManager extends BaseManager {
      * @return a flag that indicates if the condition was executed correctly
      * @throws EscrowRewardException
      */
-    public boolean fulfillEscrowReward(String agreementId, BigInteger amount) throws  EscrowRewardException {
+    public boolean fulfillEscrowReward(String agreementId, Integer amount) throws  EscrowRewardException {
 
         AgreementData agreementData;
 
         try {
 
-            agreementData = getAgreementData(agreementId);
+            agreementData = getAgreementData(EthereumHelper.add0x(agreementId));
 
             return FulfillEscrowReward.executeFulfill(escrowReward,
                     agreementId,
-                    amount,
+                    BigInteger.valueOf(amount),
                     agreementData.getProviderAdress(),
                     agreementData.getConsumerAdress(),
-                    agreementData.getLockRewardConditionId(),
-                    agreementData.getAccessSecretStoreConditionId());
+                    agreementData.getLockRewardConditionIdBytes(),
+                    agreementData.getAccessSecretStoreConditionIdBytes());
 
         }catch (Exception e) {
             throw new EscrowRewardException("There was an exception getting the data of the agreement " + agreementId, e);
