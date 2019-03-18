@@ -8,6 +8,8 @@ import com.oceanprotocol.squid.core.sla.ServiceAgreementHandler;
 import com.oceanprotocol.squid.exceptions.*;
 import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.KeeperService;
+import com.oceanprotocol.squid.helpers.EncodingHelper;
+import com.oceanprotocol.squid.helpers.EthereumHelper;
 import com.oceanprotocol.squid.manager.ManagerHelper;
 import com.oceanprotocol.squid.manager.OceanManager;
 import com.oceanprotocol.squid.manager.SecretStoreManager;
@@ -104,7 +106,6 @@ public class AgreementConditionsApiIT {
     private static AccessSecretStoreCondition accessSecretStoreCondition;
     private static LockRewardCondition lockRewardCondition;
     private static EscrowAccessSecretStoreTemplate escrowAccessSecretStoreTemplate;
-    private static OceanToken oceanToken;
 
     private static Account consumerAccount;
 
@@ -139,14 +140,13 @@ public class AgreementConditionsApiIT {
         OCEAN_TOKEN_CONTRACT = config.getString("contract.OceanToken.address");
     }
 
-
     @BeforeClass
     public static void setUp() throws Exception {
 
         METADATA_JSON_CONTENT =  new String(Files.readAllBytes(Paths.get(METADATA_JSON_SAMPLE)));
         metadataBase = DDO.fromJSON(new TypeReference<AssetMetadata>() {}, METADATA_JSON_CONTENT);
 
-        String metadataUrl= "http://aquarius:5000/api/v1/aquarius/assets/ddo/{did}";
+        String metadataUrl= "http://172.15.0.15:5000/api/v1/aquarius/assets/ddo/{did}";
         String consumeUrl= "http://localhost:8030/api/v1/brizo/services/consume?consumerAddress=${consumerAddress}&serviceAgreementId=${serviceAgreementId}&url=${url}";
         String purchaseEndpoint= "http://localhost:8030/api/v1/brizo/services/access/initialize";
 
@@ -188,7 +188,6 @@ public class AgreementConditionsApiIT {
         accessSecretStoreCondition= ManagerHelper.loadAccessSecretStoreConditionContract(keeperConsumer, ACCESS_SS_CONDITION_CONTRACT);
         lockRewardCondition= ManagerHelper.loadLockRewardCondition(keeperConsumer, LOCK_REWARD_CONTRACT);
         escrowAccessSecretStoreTemplate= ManagerHelper.loadEscrowAccessSecretStoreTemplate(keeperConsumer, ESCROW_ACCESS_CONTRACT);
-        oceanToken = ManagerHelper.loadOceanTokenContract(keeperConsumer, OCEAN_TOKEN_CONTRACT);
 
         EvmDto evmDto = ManagerHelper.getEvmDto(config, ManagerHelper.VmClient.parity);
         consumerAccount = new Account(config.getString("account.parity.address2"), config.getString("account.parity.password2"));
@@ -225,13 +224,18 @@ public class AgreementConditionsApiIT {
         Boolean result = oceanAPIConsumer.getAgreementConditionsAPI().lockReward(serviceAgreementId,Integer.valueOf(ddo.metadata.base.price));
         assertEquals(true, result);
 
+        /*
+        IT DOESN'T WORK BECAUSE BRIZO FULFILL THESE CONDITIONS
         result = oceanAPI.getAgreementConditionsAPI().grantAccess(serviceAgreementId, did.getHash(), oceanAPIConsumer.getMainAccount().getAddress());
         assertEquals(true, result);
 
         result = oceanAPI.getAgreementConditionsAPI().releaseReward(serviceAgreementId, Integer.valueOf(ddo.metadata.base.price));
         assertEquals(true, result);
+        */
 
 
     }
+
+
 
 }
