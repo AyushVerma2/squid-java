@@ -151,9 +151,9 @@ public class OceanManagerIT {
 
         metadataBase = DDO.fromJSON(new TypeReference<AssetMetadata>() {}, METADATA_JSON_CONTENT);
 
-        String metadataUrl= "http://172.15.0.15:5000/api/v1/aquarius/assets/ddo/{did}";
-        String consumeUrl= "http://localhost:8030/api/v1/brizo/services/consume?consumerAddress=${consumerAddress}&serviceAgreementId=${serviceAgreementId}&url=${url}";
-        String purchaseEndpoint= "http://localhost:8030/api/v1/brizo/services/access/initialize";
+        String metadataUrl= config.getString("aquarius-internal.url") + "/api/v1/aquarius/assets/ddo/{did}";
+        String consumeUrl= config.getString("brizo.url") + "/api/v1/brizo/services/consume?consumerAddress=${consumerAddress}&serviceAgreementId=${serviceAgreementId}&url=${url}";
+        String purchaseEndpoint= config.getString("brizo.url") + "/api/v1/brizo/services/access/initialize";
 
         ServiceEndpoints serviceEndpoints= new ServiceEndpoints(consumeUrl, purchaseEndpoint, metadataUrl);
 
@@ -166,9 +166,9 @@ public class OceanManagerIT {
     @Test
     public void registerAsset() throws Exception {
 
-        String metadataUrl= "http://172.15.0.15:5000/api/v1/aquarius/assets/ddo/{did}";
-        String consumeUrl= "http://localhost:8030/api/v1/brizo/services/consume?consumerAddress=${consumerAddress}&serviceAgreementId=${serviceAgreementId}&url=${url}";
-        String purchaseEndpoint= "http://localhost:8030/api/v1/brizo/services/access/initialize";
+        String metadataUrl= config.getString("aquarius-internal.url") + "/api/v1/aquarius/assets/ddo/{did}";
+        String consumeUrl= config.getString("brizo.url") + "/api/v1/brizo/services/consume?consumerAddress=${consumerAddress}&serviceAgreementId=${serviceAgreementId}&url=${url}";
+        String purchaseEndpoint= config.getString("brizo.url") + "/api/v1/brizo/services/access/initialize";
         String secretStoreEndpoint= config.getString("secretstore.url");
 
         //String serviceAgreementAddress = saContract.getContractAddress();
@@ -193,7 +193,7 @@ public class OceanManagerIT {
 
         DID did= DID.builder();
         String oldUrl= "http://mymetadata.io/api";
-        String newUrl= "http://172.15.0.15:5000/api/v1/aquarius/assets/ddo/{did}";
+        String newUrl= config.getString("aquarius-internal.url") + "/api/v1/aquarius/assets/ddo/{did}";
 
         String checksum = "0xd190bc85ee50643baffe7afe84ec6a9dd5212b67223523cd8e4d88f9069255fb";
 

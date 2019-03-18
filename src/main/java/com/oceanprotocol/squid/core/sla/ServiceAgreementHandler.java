@@ -150,7 +150,7 @@ public class ServiceAgreementHandler {
                     StandardCharsets.UTF_8);
 
         } catch (IOException ex) {}
-        
+
         try {
 
             if (conditionsTemplate == null)
