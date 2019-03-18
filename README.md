@@ -207,6 +207,12 @@ You can run the unit and integration tests running:
 mvn clean verify -P all-test
 ```
 
+You can run the integration tests in Nile environment using the command:
+```bash
+mvn verify  -P integration-test -Dconfig.file=src/test/resources/networks/nile-application.conf
+```
+
+
 ### Code Coverage
 
 The code coverage reports are generated using the JaCoCo Maven plugin. Reports are generated in the `target/site` folder.
