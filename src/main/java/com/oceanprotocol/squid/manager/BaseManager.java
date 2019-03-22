@@ -54,6 +54,7 @@ public abstract class BaseManager {
     protected Config config= ConfigFactory.load();
 
     protected Account mainAccount;
+    protected String providerAddress;
 
     public static class ContractAddresses {
 
@@ -344,6 +345,16 @@ public abstract class BaseManager {
 
     public BaseManager setMainAccount(Account mainAccount) {
         this.mainAccount = mainAccount;
+        return this;
+    }
+
+
+    public String getProviderAddress() {
+        return providerAddress;
+    }
+
+    public BaseManager setProviderAddress(String providerAddress) {
+        this.providerAddress = providerAddress;
         return this;
     }
 

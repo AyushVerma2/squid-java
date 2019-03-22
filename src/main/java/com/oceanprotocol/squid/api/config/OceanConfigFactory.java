@@ -40,6 +40,7 @@ public class OceanConfigFactory {
         oceanConfig.setKeeperGasPrice(new BigInteger((String)properties.getOrDefault(OceanConfig.KEEPER_GAS_PRICE, DEFAULT_KEEPER_GAS_PRICE.toString())));
         oceanConfig.setAquariusUrl((String)properties.getOrDefault(OceanConfig.AQUARIUS_URL, DEFAULT_AQUARIUS_URL));
         oceanConfig.setSecretStoreUrl((String)properties.getOrDefault(OceanConfig.SECRETSTORE_URL, DEFAULT_SECRET_STORE_URL));
+        oceanConfig.setProviderAddress((String)properties.getOrDefault(OceanConfig.PROVIDER_ADDRESS, ""));
         oceanConfig.setDidRegistryAddress((String)properties.getOrDefault(OceanConfig.DID_REGISTRY_ADDRESS, ""));
         oceanConfig.setEscrowRewardConditionsAddress((String)properties.getOrDefault(OceanConfig.ESCROWREWARD_CONDITIONS_ADDRESS, ""));
         oceanConfig.setEscrowAccessSecretStoreTemplateAddress((String)properties.getOrDefault(OceanConfig.ESCROW_ACCESS_SS_CONDITIONS_ADDRESS, ""));

@@ -64,6 +64,7 @@ public class OceanAPI {
     private TemplatesAPI templatesAPI;
 
     private Account mainAccount;
+    private String providerAddress;
 
     private static OceanAPI oceanAPI = null;
 
@@ -155,6 +156,7 @@ public class OceanAPI {
             oceanAPI.secretStoreDto = oceanInitializationHelper.getSecretStoreDto();
             oceanAPI.evmDto = oceanInitializationHelper.getEvmDto();
             oceanAPI.secretStoreManager = oceanInitializationHelper.getSecretStoreManager(oceanAPI.secretStoreDto, oceanAPI.evmDto);
+            oceanAPI.providerAddress = oceanConfig.getProviderAddress();
 
             oceanAPI.didRegistryContract = oceanInitializationHelper.loadDIDRegistryContract(oceanAPI.keeperService);
             oceanAPI.escrowAccessSecretStoreTemplate = oceanInitializationHelper.loadEscrowAccessSecretStoreTemplate(oceanAPI.keeperService);
@@ -175,20 +177,24 @@ public class OceanAPI {
                     .setTokenContract(oceanAPI.tokenContract)
                     .setTemplateStoreManagerContract(oceanAPI.templateStoreManagerContract)
                     .setMainAccount(oceanAPI.mainAccount)
-                    .setEvmDto(oceanAPI.evmDto);
+                    .setEvmDto(oceanAPI.evmDto)
+                    .setProviderAddress(oceanAPI.providerAddress);
 
 
             oceanAPI.accountsManager = oceanInitializationHelper.getAccountsManager(oceanAPI.keeperService, oceanAPI.aquariusService);
             oceanAPI.accountsManager.setTokenContract(oceanAPI.tokenContract);
             oceanAPI.accountsManager.setDispenserContract(oceanAPI.dispenser);
-            oceanAPI.accountsManager .setMainAccount(oceanAPI.mainAccount);
+            oceanAPI.accountsManager.setMainAccount(oceanAPI.mainAccount);
+            oceanAPI.accountsManager.setProviderAddress(oceanAPI.providerAddress);
 
             oceanAPI.assetsManager = oceanInitializationHelper.getAssetsManager(oceanAPI.keeperService, oceanAPI.aquariusService);
             oceanAPI.assetsManager.setMainAccount(oceanAPI.mainAccount);
+            oceanAPI.assetsManager.setProviderAddress(oceanAPI.providerAddress);
 
             oceanAPI.templatesManager = oceanInitializationHelper.getTemplatesManager(oceanAPI.keeperService, oceanAPI.aquariusService);
             oceanAPI.templatesManager.setMainAccount(oceanAPI.mainAccount);
             oceanAPI.templatesManager.setTemplateStoreManagerContract(oceanAPI.templateStoreManagerContract);
+            oceanAPI.templatesManager.setProviderAddress(oceanAPI.providerAddress);
 
             oceanAPI.accountsAPI = new AccountsImpl(oceanAPI.accountsManager);
             oceanAPI.tokensAPI = new TokensImpl(oceanAPI.accountsManager);

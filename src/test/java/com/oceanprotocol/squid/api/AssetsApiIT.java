@@ -91,6 +91,7 @@ public class AssetsApiIT {
         properties.put(OceanConfig.TEMPLATE_STORE_MANAGER_ADDRESS,config.getString("contract.TemplateStoreManager.address"));
         properties.put(OceanConfig.TOKEN_ADDRESS, config.getString("contract.OceanToken.address"));
         properties.put(OceanConfig.DISPENSER_ADDRESS, config.getString("contract.Dispenser.address"));
+        properties.put(OceanConfig.PROVIDER_ADDRESS, config.getString("provider.address"));
 
         oceanAPIConsumer = OceanAPI.getInstance(properties);
 
