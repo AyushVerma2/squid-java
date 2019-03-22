@@ -8,7 +8,6 @@ package com.oceanprotocol.squid.core.sla.functions;
 import com.oceanprotocol.keeper.contracts.EscrowReward;
 import com.oceanprotocol.squid.exceptions.EscrowRewardException;
 import com.oceanprotocol.squid.helpers.EncodingHelper;
-import com.oceanprotocol.squid.models.Account;
 import com.oceanprotocol.squid.models.asset.BasicAssetInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,7 +44,6 @@ public class FulfillEscrowReward {
         byte[] serviceId;
         byte[] lockConditionIdBytes;
         byte[] releaseConditionIdBytes;
-        Integer price = -1;
 
         try {
 

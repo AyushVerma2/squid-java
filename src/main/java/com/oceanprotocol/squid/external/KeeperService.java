@@ -7,6 +7,7 @@ package com.oceanprotocol.squid.external;
 
 import com.oceanprotocol.keeper.contracts.OceanToken;
 import com.oceanprotocol.squid.exceptions.TokenApproveException;
+import com.oceanprotocol.squid.external.web3.PersonalTransactionManager;
 import com.oceanprotocol.squid.models.Account;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +20,6 @@ import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
-import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
@@ -84,7 +84,16 @@ public class KeeperService {
 
         this.web3 = Admin.build(new HttpService(this.keeperUrl));
 
-        this.txManager= new RawTransactionManager(this.web3, getCredentials());
+        //this.chainId= this.web3.netVersion().send().getNetVersion();
+
+        // TODO: Web3j only supports a ChainId in byte format, so any ChainId of a
+        // private network is not supported. By the time being we can't specify that
+        // parameter in the TranssactionManager
+        // https://github.com/web3j/web3j/issues/234
+
+
+        //this.txManager= new RawTransactionManager(this.web3, getCredentials());
+        this.txManager= new PersonalTransactionManager(this.web3, getCredentials(), password);
         this.gasProvider= new StaticGasProvider(this.gasPrice, this.gasLimit);
 
     }
