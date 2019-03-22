@@ -19,9 +19,13 @@ import com.oceanprotocol.squid.exceptions.InvalidConfiguration;
 import com.oceanprotocol.squid.manager.*;
 import com.oceanprotocol.squid.models.Account;
 import com.typesafe.config.Config;
+import io.reactivex.exceptions.UndeliverableException;
+import io.reactivex.plugins.RxJavaPlugins;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+import java.net.SocketException;
 import java.util.Properties;
 
 /**
@@ -83,6 +87,41 @@ public class OceanAPI {
         return properties;
     }
 
+    private static void setRxUndeliverableExceptionHandler(){
+
+        RxJavaPlugins.setErrorHandler(e -> {
+            if (e instanceof UndeliverableException) {
+                e = e.getCause();
+            }
+            if ((e instanceof IOException) || (e instanceof SocketException)) {
+                // fine, irrelevant network problem or API that throws on cancellation
+                return;
+            }
+            if (e instanceof InterruptedException) {
+                // fine, some blocking code was interrupted by a dispose call
+                return;
+            }
+            if ((e instanceof NullPointerException) || (e instanceof IllegalArgumentException)) {
+
+                // that's likely a bug in the application
+                Thread.currentThread().getUncaughtExceptionHandler()
+                .uncaughtException(Thread.currentThread(), e);
+
+                       // .handleException(Thread.currentThread(), e);
+                return;
+            }
+            if (e instanceof IllegalStateException) {
+                // that's a bug in RxJava or in a custom operator
+                Thread.currentThread().getUncaughtExceptionHandler()
+                        .uncaughtException(Thread.currentThread(), e);
+                //        .handleException(Thread.currentThread(), e);
+                return;
+            }
+
+            log.warn("Undeliverable exception received:  " +e.getMessage());
+        });
+    }
+
     /**
      * Build an Instance of Ocean API from a Properties object
      * @param properties values of the configuration
@@ -91,6 +130,8 @@ public class OceanAPI {
      * @throws InvalidConfiguration InvalidConfiguration
      */
     public static OceanAPI getInstance(Properties properties) throws InitializationException, InvalidConfiguration {
+
+        setRxUndeliverableExceptionHandler();
 
         OceanConfig oceanConfig = OceanConfigFactory.getOceanConfig(properties);
         OceanConfig.OceanConfigValidation validation = OceanConfig.validate(oceanConfig);

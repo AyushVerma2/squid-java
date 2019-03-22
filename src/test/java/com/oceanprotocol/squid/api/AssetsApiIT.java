@@ -25,6 +25,7 @@ import io.reactivex.Flowable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.math.BigInteger;
@@ -131,9 +132,9 @@ public class AssetsApiIT {
 
         Flowable<OrderResult> response = oceanAPIConsumer.getAssetsAPI().order(did, Service.DEFAULT_ACCESS_SERVICE_ID);
 
-        Balance balanceAfter= oceanAPIConsumer.getAccountsAPI().balance(oceanAPIConsumer.getMainAccount());
+        //Balance balanceAfter= oceanAPIConsumer.getAccountsAPI().balance(oceanAPIConsumer.getMainAccount());
 
-        log.debug("Account " + oceanAPIConsumer.getMainAccount().address + " balance is: " + balance.toString());
+        //log.debug("Account " + oceanAPIConsumer.getMainAccount().address + " balance is: " + balance.toString());
 
         OrderResult result = response.blockingFirst();
         assertNotNull(result.getServiceAgreementId());
@@ -164,6 +165,7 @@ public class AssetsApiIT {
     }
 
     @Test
+    @Ignore
     public void search() throws Exception {
 
         oceanAPI.getAssetsAPI().create(metadataBase, serviceEndpoints);
