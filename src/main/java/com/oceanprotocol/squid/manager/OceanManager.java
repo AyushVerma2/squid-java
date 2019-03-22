@@ -142,11 +142,15 @@ public class OceanManager extends BaseManager {
     public boolean registerDID(DID did, String url, String checksum) throws DIDRegisterException{
         log.debug("Registering DID " + did.getHash() + " into Registry " + didRegistry.getContractAddress());
 
+        String providerAddress = Keys.toChecksumAddress(this.providerAddress);
+        List<String> providers = Arrays.asList(providerAddress);
+
         try {
 
             TransactionReceipt receipt = didRegistry.registerAttribute(
                     EncodingHelper.hexStringToBytes(did.getHash()),
                     EncodingHelper.hexStringToBytes(checksum.replace("0x", "")),
+                    providers,
                     url
             ).send();
 
