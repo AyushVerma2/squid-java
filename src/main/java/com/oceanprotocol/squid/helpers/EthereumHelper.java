@@ -8,7 +8,6 @@ package com.oceanprotocol.squid.helpers;
 import org.web3j.crypto.*;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.EthSign;
-import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -19,7 +18,6 @@ import java.util.List;
 public abstract class EthereumHelper {
 
     static final String MESSAGE_PREFIX = "\u0019Ethereum Signed Message:\n";
-
 
     /**
      * Given a String message, return the prefixed message hashed

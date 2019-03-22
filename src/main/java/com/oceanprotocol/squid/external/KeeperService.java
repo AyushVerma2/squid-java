@@ -20,8 +20,6 @@ import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.admin.methods.response.PersonalUnlockAccount;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.http.HttpService;
-import org.web3j.tx.ChainId;
-import org.web3j.tx.RawTransactionManager;
 import org.web3j.tx.TransactionManager;
 import org.web3j.tx.gas.ContractGasProvider;
 import org.web3j.tx.gas.StaticGasProvider;
@@ -37,7 +35,6 @@ public class KeeperService {
     private String keeperUrl;
     private String address;
     private String password;
-    //private String chainId;
     private Credentials credentials= null;
     private String credentialsFile;
 

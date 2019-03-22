@@ -23,7 +23,6 @@ import java.io.IOException;
  */
 public class OceanInitializationHelper {
 
-    private static final Logger log = LogManager.getLogger(OceanInitializationHelper.class);
     private OceanConfig oceanConfig;
 
     /**
