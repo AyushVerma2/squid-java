@@ -23,7 +23,6 @@ import java.io.IOException;
  */
 public class OceanInitializationHelper {
 
-    private static final Logger log = LogManager.getLogger(OceanInitializationHelper.class);
     private OceanConfig oceanConfig;
 
     /**
@@ -149,10 +148,12 @@ public class OceanInitializationHelper {
      * @throws CipherException CipherException
      */
     public OceanToken loadOceanTokenContract(KeeperService keeper) throws IOException, CipherException {
+
         return OceanToken.load(
                 oceanConfig.getTokenAddress(),
                 keeper.getWeb3(),
-                keeper.getCredentials(),
+//                keeper.getCredentials(),
+                keeper.getTxManager(),
                 keeper.getContractGasProvider());
     }
 
@@ -167,7 +168,8 @@ public class OceanInitializationHelper {
         return TemplateStoreManager.load(
                 oceanConfig.getTemplateStoreManagerAddress(),
                 keeper.getWeb3(),
-                keeper.getCredentials(),
+//                keeper.getCredentials(),
+                keeper.getTxManager(),
                 keeper.getContractGasProvider());
     }
 
@@ -183,7 +185,8 @@ public class OceanInitializationHelper {
         return Dispenser.load(
                 oceanConfig.getDispenserAddress(),
                 keeper.getWeb3(),
-                keeper.getCredentials(),
+//                keeper.getCredentials(),
+                keeper.getTxManager(),
                 keeper.getContractGasProvider()
         );
     }
@@ -201,7 +204,8 @@ public class OceanInitializationHelper {
         return DIDRegistry.load(
                 oceanConfig.getDidRegistryAddress(),
                 keeper.getWeb3(),
-                keeper.getCredentials(),
+//                keeper.getCredentials(),
+                keeper.getTxManager(),
                 keeper.getContractGasProvider()
         );
     }
@@ -217,7 +221,8 @@ public class OceanInitializationHelper {
         return EscrowAccessSecretStoreTemplate.load(
                 oceanConfig.getEscrowAccessSecretStoreTemplateAddress(),
                 keeper.getWeb3(),
-                keeper.getCredentials(),
+//                keeper.getCredentials(),
+                keeper.getTxManager(),
                 keeper.getContractGasProvider());
     }
 
@@ -232,7 +237,8 @@ public class OceanInitializationHelper {
         return LockRewardCondition.load(
                 oceanConfig.getLockrewardConditionsAddress(),
                 keeper.getWeb3(),
-                keeper.getCredentials(),
+//                keeper.getCredentials(),
+                keeper.getTxManager(),
                 keeper.getContractGasProvider()
         );
     }
@@ -248,7 +254,8 @@ public class OceanInitializationHelper {
         return EscrowReward.load(
                 oceanConfig.getEscrowRewardConditionsAddress(),
                 keeper.getWeb3(),
-                keeper.getCredentials(),
+//                keeper.getCredentials(),
+                keeper.getTxManager(),
                 keeper.getContractGasProvider()
         );
     }
@@ -264,7 +271,8 @@ public class OceanInitializationHelper {
         return AgreementStoreManager.load(
                 oceanConfig.getAgreementStoreManagerAddress(),
                 keeper.getWeb3(),
-                keeper.getCredentials(),
+//                keeper.getCredentials(),
+                keeper.getTxManager(),
                 keeper.getContractGasProvider()
         );
     }
@@ -280,7 +288,8 @@ public class OceanInitializationHelper {
         return AccessSecretStoreCondition.load(
                 oceanConfig.getAccessSsConditionsAddress(),
                 keeper.getWeb3(),
-                keeper.getCredentials(),
+//                keeper.getCredentials(),
+                keeper.getTxManager(),
                 keeper.getContractGasProvider()
         );
     }

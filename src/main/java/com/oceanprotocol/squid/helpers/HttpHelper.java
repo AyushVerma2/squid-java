@@ -5,7 +5,6 @@
 
 package com.oceanprotocol.squid.helpers;
 
-import com.oceanprotocol.squid.exceptions.OceanException;
 import com.oceanprotocol.squid.models.HttpResponse;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.httpclient.HttpClient;
