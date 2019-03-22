@@ -11,21 +11,19 @@ import com.oceanprotocol.keeper.contracts.TemplateStoreManager;
 import com.oceanprotocol.squid.api.config.OceanConfig;
 import com.oceanprotocol.squid.external.KeeperService;
 import com.oceanprotocol.squid.manager.ManagerHelper;
-import com.oceanprotocol.squid.models.Account;
 import com.oceanprotocol.squid.models.Balance;
 import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.asset.AssetMetadata;
 import com.oceanprotocol.squid.models.asset.OrderResult;
 import com.oceanprotocol.squid.models.service.Service;
-import com.oceanprotocol.squid.models.service.ServiceEndpoints;
+import com.oceanprotocol.squid.models.service.ProviderConfig;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import io.reactivex.Flowable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.math.BigInteger;
@@ -45,7 +43,7 @@ public class AssetsApiIT {
     private static String METADATA_JSON_SAMPLE = "src/test/resources/examples/metadata.json";
     private static String METADATA_JSON_CONTENT;
     private static AssetMetadata metadataBase;
-    private static ServiceEndpoints serviceEndpoints;
+    private static ProviderConfig providerConfig;
     private static OceanAPI oceanAPI;
     private static OceanAPI oceanAPIConsumer;
 
@@ -63,9 +61,10 @@ public class AssetsApiIT {
         String metadataUrl= config.getString("aquarius-internal.url") + "/api/v1/aquarius/assets/ddo/{did}";
         String consumeUrl= config.getString("brizo.url") + "/api/v1/brizo/services/consume?consumerAddress=${consumerAddress}&serviceAgreementId=${serviceAgreementId}&url=${url}";
         String purchaseEndpoint= config.getString("brizo.url") + "/api/v1/brizo/services/access/initialize";
+        String secretStoreEndpoint= config.getString("secretstore.url");
+        String providerAddress= config.getString("provider.address");
 
-        serviceEndpoints= new ServiceEndpoints(consumeUrl, purchaseEndpoint, metadataUrl);
-
+        providerConfig = new ProviderConfig(consumeUrl, purchaseEndpoint, metadataUrl, secretStoreEndpoint, providerAddress);
 
         oceanAPI = OceanAPI.getInstance(config);
 
@@ -111,19 +110,19 @@ public class AssetsApiIT {
     @Test
     public void create() throws Exception {
 
-        DDO ddo = oceanAPI.getAssetsAPI().create(metadataBase, serviceEndpoints);
+        DDO ddo = oceanAPI.getAssetsAPI().create(metadataBase, providerConfig);
 
         DID did= new DID(ddo.id);
         DDO resolvedDDO= oceanAPI.getAssetsAPI().resolve(did);
         assertEquals(ddo.id, resolvedDDO.id);
-        assertTrue( resolvedDDO.services.size() == 2);
+        assertTrue( resolvedDDO.services.size() == 3);
 
     }
 
     @Test
     public void order() throws Exception {
 
-        DDO ddo= oceanAPI.getAssetsAPI().create(metadataBase, serviceEndpoints);
+        DDO ddo= oceanAPI.getAssetsAPI().create(metadataBase, providerConfig);
         DID did= new DID(ddo.id);
 
         oceanAPIConsumer.getAccountsAPI().requestTokens(BigInteger.valueOf(9000000));
@@ -146,9 +145,9 @@ public class AssetsApiIT {
     @Test
     public void consume() throws Exception {
 
-        serviceEndpoints.setSecretStoreEndpoint(config.getString("secretstore.url"));
+        providerConfig.setSecretStoreEndpoint(config.getString("secretstore.url"));
 
-        DDO ddo= oceanAPI.getAssetsAPI().create(metadataBase, serviceEndpoints);
+        DDO ddo= oceanAPI.getAssetsAPI().create(metadataBase, providerConfig);
         DID did= new DID(ddo.id);
 
         log.debug("DDO registered!");
@@ -166,10 +165,9 @@ public class AssetsApiIT {
     }
 
     @Test
-    @Ignore
     public void search() throws Exception {
 
-        oceanAPI.getAssetsAPI().create(metadataBase, serviceEndpoints);
+        oceanAPI.getAssetsAPI().create(metadataBase, providerConfig);
         log.debug("DDO registered!");
 
         String searchText = "Weather";
@@ -182,7 +180,7 @@ public class AssetsApiIT {
     @Test
     public void query() throws Exception {
 
-        oceanAPI.getAssetsAPI().create(metadataBase, serviceEndpoints);
+        oceanAPI.getAssetsAPI().create(metadataBase, providerConfig);
         log.debug("DDO registered!");
 
         Map<String, Object> params = new HashMap<>();

@@ -9,12 +9,11 @@ import com.oceanprotocol.squid.exceptions.ConsumeServiceException;
 import com.oceanprotocol.squid.exceptions.DDOException;
 import com.oceanprotocol.squid.exceptions.EthereumException;
 import com.oceanprotocol.squid.exceptions.OrderException;
-import com.oceanprotocol.squid.models.Account;
 import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.asset.AssetMetadata;
 import com.oceanprotocol.squid.models.asset.OrderResult;
-import com.oceanprotocol.squid.models.service.ServiceEndpoints;
+import com.oceanprotocol.squid.models.service.ProviderConfig;
 import io.reactivex.Flowable;
 
 import java.util.List;
@@ -28,21 +27,21 @@ public interface AssetsAPI {
     /**
      * Creates a new DDO, registering it on-chain through DidRegistry contract and off-chain in Aquarius
      * @param metadata the metadata of the DDO
-     * @param serviceEndpoints the endpoints of the DDO's services
+     * @param providerConfig the endpoints of the DDO's services
      * @param threshold the secret store threshold
      * @return an instance of the DDO created
      * @throws DDOException DDOException
      */
-    public DDO create(AssetMetadata metadata,  ServiceEndpoints serviceEndpoints, int threshold) throws DDOException;
+    public DDO create(AssetMetadata metadata, ProviderConfig providerConfig, int threshold) throws DDOException;
 
     /**
      *  Creates a new DDO, registering it on-chain through DidRegistry contract and off-chain in Aquarius
      * @param metadata the metadata of the DDO
-     * @param serviceEndpoints the endpoints of the DDO's services
+     * @param providerConfig the endpoints of the DDO's services
      * @return an instance of the DDO created
      * @throws DDOException DDOException
      */
-    public DDO create(AssetMetadata metadata, ServiceEndpoints serviceEndpoints) throws DDOException;
+    public DDO create(AssetMetadata metadata, ProviderConfig providerConfig) throws DDOException;
 
     /**
      * Gets a DDO from a DID

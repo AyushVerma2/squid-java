@@ -114,7 +114,7 @@ Once you have initialized the API you can call the methods through their corresp
 If you are using [Barge](https://github.com/oceanprotocol/barge/) for playing with the Ocean Protocol stack, you can use the following command to run the components 
 necessary to have a fully functional environment:
 
-`KEEPER_VERSION=v0.8.5 bash start_ocean.sh --latest --no-pleuston --local-spree-node`
+`KEEPER_VERSION=v0.8.7 bash start_ocean.sh --latest --no-pleuston --local-spree-node`
 
 After a few minutes, when Keeper has deployed the contracts, the ABI files describing the Smart Contracts can be found 
 in the `${HOME}/.ocean/keeper-contracts/artifacts/` folder. Depending on the network you are using, each ABI includes the 

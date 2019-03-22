@@ -16,7 +16,7 @@ import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.asset.AssetMetadata;
 import com.oceanprotocol.squid.models.asset.OrderResult;
-import com.oceanprotocol.squid.models.service.ServiceEndpoints;
+import com.oceanprotocol.squid.models.service.ProviderConfig;
 import io.reactivex.Flowable;
 
 import java.util.List;
@@ -43,13 +43,13 @@ public class AssetsImpl implements AssetsAPI {
 
 
     @Override
-    public DDO create(AssetMetadata metadata, ServiceEndpoints serviceEndpoints, int threshold) throws DDOException{
-        return oceanManager.registerAsset(metadata, serviceEndpoints, threshold);
+    public DDO create(AssetMetadata metadata, ProviderConfig providerConfig, int threshold) throws DDOException{
+        return oceanManager.registerAsset(metadata, providerConfig, threshold);
     }
 
     @Override
-    public DDO create(AssetMetadata metadata, ServiceEndpoints serviceEndpoints) throws DDOException{
-        return this.create(metadata, serviceEndpoints, 0);
+    public DDO create(AssetMetadata metadata, ProviderConfig providerConfig) throws DDOException{
+        return this.create(metadata, providerConfig, 0);
     }
 
     @Override

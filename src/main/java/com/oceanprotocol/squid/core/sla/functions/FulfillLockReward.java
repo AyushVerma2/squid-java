@@ -18,7 +18,7 @@ import java.math.BigInteger;
 
 public class FulfillLockReward {
 
-    static final Logger log= LogManager.getLogger(FulfillLockReward.class);
+    private static final Logger log= LogManager.getLogger(FulfillLockReward.class);
 
     /**
      * Executes a fulfill function of a LockReward Condition
