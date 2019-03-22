@@ -11,9 +11,11 @@ import org.web3j.crypto.Credentials;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.request.Transaction;
+import org.web3j.protocol.core.methods.response.EthEstimateGas;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.tx.TransactionManager;
+import org.web3j.utils.Numeric;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -42,13 +44,21 @@ public class PersonalTransactionManager extends TransactionManager {
         return ethGetTransactionCount.getTransactionCount();
     }
 
+    protected BigInteger getEstimatedGas(String to, String data) throws IOException {
+        Transaction tx= Transaction.createEthCallTransaction( getFromAddress(), to, data);
+        EthEstimateGas estimateGas= web3j.ethEstimateGas(tx).send();
+        return estimateGas.getAmountUsed();
+    }
+
     @Override
     public EthSendTransaction sendTransaction(BigInteger gasPrice, BigInteger gasLimit, String to, String data, BigInteger value) throws IOException {
 
         Transaction transaction = new Transaction(
-                getFromAddress(), getNonce(), gasPrice, gasLimit, to, value, data);
+                getFromAddress(), getNonce(), getEstimatedGas(to, data), gasLimit, to, value, data);
 
-        log.debug("Sending Personal Transaction " + transaction.getNonce());
+        log.debug("Sending Personal Transaction " + transaction.getNonce()
+                + " - Gas Price: " + Numeric.decodeQuantity(transaction.getGasPrice()));
+
         EthSendTransaction ethSendTransaction = web3j.personalSendTransaction(transaction, password).send();
 
         return ethSendTransaction;

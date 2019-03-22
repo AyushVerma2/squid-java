@@ -93,6 +93,8 @@ public class KeeperService {
         // private network is not supported. By the time being we can't specify that
         // parameter in the TranssactionManager
         // https://github.com/web3j/web3j/issues/234
+
+
         //this.txManager= new RawTransactionManager(this.web3, getCredentials());
         this.txManager= new PersonalTransactionManager(this.web3, getCredentials(), password);
         this.gasProvider= new StaticGasProvider(this.gasPrice, this.gasLimit);
