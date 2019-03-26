@@ -11,11 +11,11 @@
     },
     {
       "name": "keeper-contracts",
-      "version": "0.8.7"
+      "version": "0.8.8"
     },
     {
       "name": "brizo",
-      "version": ">0.2.9"
+      "version": ">0.2.10"
     }
   ]
 }
