@@ -8,7 +8,6 @@ package com.oceanprotocol.squid.models.service;
 import org.web3j.crypto.Keys;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ProviderConfig {
