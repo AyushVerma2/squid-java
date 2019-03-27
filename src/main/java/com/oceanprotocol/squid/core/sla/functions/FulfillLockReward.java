@@ -41,6 +41,10 @@ public class FulfillLockReward {
             String escrowRewardAddressChecksum = Keys.toChecksumAddress(escrowRewardAddress);
             serviceId = EncodingHelper.hexStringToBytes(serviceAgreementId);
 
+            log.debug("serviceID:" + serviceId);
+            log.debug("EscrowRewardAddress: " + escrowRewardAddressChecksum);
+            log.debug("Price: " + BigInteger.valueOf(assetInfo.getPrice()));
+
             TransactionReceipt receipt= lockRewardCondition.fulfill(
                     serviceId,
                     escrowRewardAddressChecksum,

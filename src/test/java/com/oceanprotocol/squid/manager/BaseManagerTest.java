@@ -100,7 +100,7 @@ public class BaseManagerTest {
         String metadataUrl= config.getString("aquarius-internal.url") + "/api/v1/aquarius/assets/ddo/{did}";
         MetadataService metadataService = new MetadataService(metadataBase, metadataUrl);
 
-        String serviceEndpoint = "http://localhost:12001";
+        String serviceEndpoint =  config.getString("secretstore.url");
 
         AuthorizationService authorizationService = new AuthorizationService(Service.serviceTypes.Authorization, serviceEndpoint, Service.DEFAULT_AUTHORIZATION_SERVICE_ID);
 
