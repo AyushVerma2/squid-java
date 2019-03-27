@@ -330,23 +330,6 @@ public class OceanManager extends BaseManager {
             throws  DDOException, ServiceException, ServiceAgreementException {
 
 
-        // We need to unlock the account before calling the purchase method
-        // to be able to generate the sign of the serviceAgreement
-        try {
-            boolean accountUnlocked = this.getKeeperService().unlockAccount(getMainAccount());
-            if (!accountUnlocked) {
-                String msg = "Account " + getMainAccount().address + " has not been unlocked";
-                log.error(msg);
-                throw new ServiceAgreementException(serviceAgreementId, "Account " + getMainAccount().address + " has not been unlocked");
-            }
-
-        }
-        catch (Exception e){
-            String msg = "Account " + getMainAccount().address + " has not been unlocked";
-            log.error(msg+ ": " + e.getMessage());
-            throw new ServiceAgreementException(serviceAgreementId, "Account " + getMainAccount().address + " has not been unlocked");
-        }
-
         AccessService accessService= ddo.getAccessService(serviceDefinitionId);
 
         //  Consumer sign service details. It includes:
