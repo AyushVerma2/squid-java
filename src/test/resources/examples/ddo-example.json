@@ -53,7 +53,6 @@
           "copyrightHolder": "Met Office",
           "dateCreated": "2019-02-08T08:13:49Z",
           "description": "Weather information of UK including temperature and humidity",
-          "encoding": "UTF-8",
           "files": [
             {
               "url": "https://raw.githubusercontent.com/tbertinmahieux/MSongsDB/master/Tasks_Demos/CoverSongs/shs_dataset_test.txt",
