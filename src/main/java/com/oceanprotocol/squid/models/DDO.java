@@ -272,4 +272,15 @@ public class DDO extends AbstractModel implements FromJsonToModel {
        return null;
     }
 
+    @JsonIgnore
+    public MetadataService getMetadataService() {
+        for (Service service: services) {
+            if (service.type.equals(Service.serviceTypes.Metadata.toString())) {
+                return (MetadataService) service;
+            }
+        }
+
+        return null;
+    }
+
 }

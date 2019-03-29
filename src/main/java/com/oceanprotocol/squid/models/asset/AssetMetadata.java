@@ -6,7 +6,10 @@
 package com.oceanprotocol.squid.models.asset;
 
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.Metadata;
 import org.web3j.crypto.Hash;
@@ -16,8 +19,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static com.oceanprotocol.squid.models.AbstractModel.DATE_PATTERN;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder(alphabetic=true)
@@ -164,7 +165,7 @@ public class AssetMetadata extends Metadata {
         @JsonProperty
         public String contentLength;
 
-        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+        @JsonProperty//(access = JsonProperty.Access.READ_ONLY)
         public String url;
 
         public File() {}
@@ -184,6 +185,13 @@ public class AssetMetadata extends Metadata {
 
     }
 
+    public AssetMetadata eraseFileUrls() {
+        this.base.files.forEach( f -> {
+            f.url= null;
+        });
+
+        return this;
+    }
 
 
 }
