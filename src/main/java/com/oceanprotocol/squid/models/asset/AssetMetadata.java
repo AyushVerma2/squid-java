@@ -69,9 +69,6 @@ public class AssetMetadata extends Metadata {
         public Date dateCreated;
 
         @JsonProperty
-        public String size;
-
-        @JsonProperty
         public String author;
 
         @JsonProperty
@@ -81,18 +78,9 @@ public class AssetMetadata extends Metadata {
         public String copyrightHolder;
 
         @JsonProperty
-        public String encoding;
-
-        @JsonProperty
-        public String compression;
-
-        @JsonProperty
-        public String contentType;
-
-        @JsonProperty
         public String workExample;
 
-        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+        @JsonProperty
         public ArrayList<File> files= new ArrayList<>();
 
         @JsonProperty
@@ -159,13 +147,25 @@ public class AssetMetadata extends Metadata {
     public static class File {
 
         @JsonProperty
-        public String url;
+        public String contentType;
+
+        @JsonProperty
+        public Integer index;
+
+        @JsonProperty
+        public String encoding;
+
+        @JsonProperty
+        public String compression;
 
         @JsonProperty
         public String checksum;
 
         @JsonProperty
         public String contentLength;
+
+        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+        public String url;
 
         public File() {}
     }
