@@ -98,7 +98,7 @@ public class AssetsApiIT {
         EscrowAccessSecretStoreTemplate escrowAccessSecretStoreTemplate = ManagerHelper.loadEscrowAccessSecretStoreTemplate(keeper, config.getString("contract.EscrowAccessSecretStoreTemplate.address"));
         TemplateStoreManager templateManager = ManagerHelper.loadTemplateStoreManager(keeper, config.getString("contract.TemplateStoreManager.address"));
 
-        oceanAPIConsumer.getAccountsAPI().requestTokens(BigInteger.valueOf(11));
+        oceanAPIConsumer.getTokensAPI().request(BigInteger.TEN);
         Balance balance= oceanAPIConsumer.getAccountsAPI().balance(oceanAPIConsumer.getMainAccount());
 
         log.debug("Account " + oceanAPIConsumer.getMainAccount().address + " balance is: " + balance.toString());
