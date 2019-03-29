@@ -251,6 +251,7 @@ public class DDO extends AbstractModel implements FromJsonToModel {
         throw new ServiceException("Access Service with serviceDefinitionId=" + serviceDefinitionId + " not found");
     }
 
+    @JsonIgnore
     public AuthorizationService getAuthorizationService(String serviceDefinitionId) {
         for (Service service: services) {
             if (service.serviceDefinitionId.equals(serviceDefinitionId) && service.type.equals(Service.serviceTypes.Authorization.toString())) {
@@ -260,6 +261,7 @@ public class DDO extends AbstractModel implements FromJsonToModel {
         return null;
     }
 
+    @JsonIgnore
     public AuthorizationService getAuthorizationService() {
         for (Service service: services) {
             if (service.type.equals(Service.serviceTypes.Authorization.toString())) {
