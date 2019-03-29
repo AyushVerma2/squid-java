@@ -150,6 +150,9 @@ public class AssetMetadata extends Metadata {
         public String contentType;
 
         @JsonProperty
+        public Integer index;
+
+        @JsonProperty
         public String encoding;
 
         @JsonProperty
