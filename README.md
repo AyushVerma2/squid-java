@@ -1,26 +1,30 @@
 [![banner](https://raw.githubusercontent.com/oceanprotocol/art/master/github/repo-banner%402x.png)](https://oceanprotocol.com)
 
-# Squid-java
-🦑 Java client library for Ocean Protocol
+# squid-java
 
-> 🐳 Ocean client Library (Java)
+> 🦑 Java client library for Ocean Protocol
 > [oceanprotocol.com](https://oceanprotocol.com)
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a2285f0f3a664cf091c8e00a243898ce)](https://app.codacy.com/app/ocean-protocol/squid-java?utm_source=github.com&utm_medium=referral&utm_content=oceanprotocol/squid-java&utm_campaign=Badge_Grade_Dashboard) [![Build Status](https://travis-ci.com/oceanprotocol/squid-java.svg?branch=develop)](https://travis-ci.com/oceanprotocol/squid-java) 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a2285f0f3a664cf091c8e00a243898ce)](https://app.codacy.com/app/ocean-protocol/squid-java?utm_source=github.com&utm_medium=referral&utm_content=oceanprotocol/squid-java&utm_campaign=Badge_Grade_Dashboard)
+[![Build Status](https://travis-ci.com/oceanprotocol/squid-java.svg?branch=develop)](https://travis-ci.com/oceanprotocol/squid-java)
+[![Javadocs](http://javadoc.io/badge/com.oceanprotocol/squid.svg)](http://javadoc.io/doc/com.oceanprotocol/squid)
+
 ---
 
 ## Table of Contents
 
-   * [Squid-java](#squid-java)
-      * [Table of Contents](#table-of-contents)
-      * [Features](#features)
-      * [Using the API](#using-the-api)
-        * [Dealing with Flowables](#dealing-with-flowables)
-        * [Installing the library](#installing-the-library)
-      * [How to run the integration tests](#how-to-run-the-integration-tests)
-      * [New Version](#new-version)
-      * [License](#license)
-
+* [Features](#features)
+* [Installation](#installation)
+* [Configuration](#configuration)
+  * [Using Squid-Java with Barge](#using-squid-java-with-barge)
+  * [Dealing with Flowables](#dealing-with-flowables)
+* [Documentation](#documentation)
+* [Testing](#testing)
+  * [Unit Tests](#unit-tests)
+  * [Integration Tests](#integration-tests)
+  * [Code Coverage](#code-coverage)
+* [New Release](#new-release)
+* [License](#license)
 
 ---
 
@@ -30,8 +34,19 @@ This library enables to integrate the Ocean Protocol capabilities from JVM clien
 
 Currently squid-java implements the last version of the [squid-spec (v0.2)](https://github.com/oceanprotocol/dev-ocean/blob/master/doc/architecture/squid.md).
 
+## Installation
 
-## Using the API
+Typically in Maven you can add squid-java as a dependency:
+
+```xml
+<dependency>
+  <groupId>com.oceanprotocol</groupId>
+  <artifactId>squid-java</artifactId>
+  <version>0.4.0</version>
+</dependency>
+```
+
+## Configuration
 
 You can configure the library using TypeSafe Config or a Java Properties Object
 
@@ -75,28 +90,27 @@ And you can instantiate the API with the following lines:
  OceanAPI oceanAPI = OceanAPI.getInstance(config);
 ```
 
-Remember that TypeSafe Config allows you to overwrite the values using Environment Variables or arguments passed to the JVM.
+Remember that TypeSafe Config allows you to overwrite the values using environment variables or arguments passed to the JVM.
 
-If you want to use Java's Properties, you just need to create a Properties Object with the same properties of the application.conf.
-You can read this Properties from a properties file, or define the values of these properties in your code
+If you want to use Java's Properties, you just need to create a Properties object with the same properties of the application.conf. You can read these Properties from a properties file, or define the values of these properties in your code:
 
 ```java
-    // Default values for KEEPER_URL, KEEPER_GAS_LIMIT, KEEPER_GAS_PRICE, AQUARIUS_URL, SECRETSTORE_URL, CONSUME_BASE_PATH
-    Properties properties = new Properties();
-    properties.put(OceanConfig.MAIN_ACCOUNT_ADDRESS, "0xaabbcc");
-    properties.put(OceanConfig.MAIN_ACCOUNT_PASSWORD,"pass");
-    properties.put(OceanConfig.MAIN_ACCOUNT_CREDENTIALS_FILE,"/accounts/parity/aabbcc.json.testaccount");
-    properties.put(OceanConfig.DID_REGISTRY_ADDRESS, "0x01daE123504DDf108E0C65a42190516E5c5dfc07");
-    properties.put(OceanConfig.SERVICE_EXECUTION_AGREEMENT_ADDRESS, "0x21668cE2116Dbc48AC116F31678CfaaeF911F7aA");
-    properties.put(OceanConfig.PAYMENT_CONDITIONS_ADDRESS, "0x38A531cc85A58adCb01D6a249E33c27CE277a2D1");
-    properties.put(OceanConfig.ACCESS_CONDITIONS_ADDRESS, "0x605FAF898Fc7c2Aa847Ba0D558b5251c0F128Fd7");
-    properties.put(OceanConfig.TOKEN_ADDRESS, "0xe749e2f8482810b11b838ae8c5eb69e54d610411");
-    properties.put(OceanConfig.OCEAN_MARKET_ADDRESS, "0xf9e633cbeeb2a474d3fe22261046c99e805beec4");
+// Default values for KEEPER_URL, KEEPER_GAS_LIMIT, KEEPER_GAS_PRICE, AQUARIUS_URL, SECRETSTORE_URL, CONSUME_BASE_PATH
+Properties properties = new Properties();
+properties.put(OceanConfig.MAIN_ACCOUNT_ADDRESS, "0xaabbcc");
+properties.put(OceanConfig.MAIN_ACCOUNT_PASSWORD,"pass");
+properties.put(OceanConfig.MAIN_ACCOUNT_CREDENTIALS_FILE,"/accounts/parity/aabbcc.json.testaccount");
+properties.put(OceanConfig.DID_REGISTRY_ADDRESS, "0x01daE123504DDf108E0C65a42190516E5c5dfc07");
+properties.put(OceanConfig.SERVICE_EXECUTION_AGREEMENT_ADDRESS, "0x21668cE2116Dbc48AC116F31678CfaaeF911F7aA");
+properties.put(OceanConfig.PAYMENT_CONDITIONS_ADDRESS, "0x38A531cc85A58adCb01D6a249E33c27CE277a2D1");
+properties.put(OceanConfig.ACCESS_CONDITIONS_ADDRESS, "0x605FAF898Fc7c2Aa847Ba0D558b5251c0F128Fd7");
+properties.put(OceanConfig.TOKEN_ADDRESS, "0xe749e2f8482810b11b838ae8c5eb69e54d610411");
+properties.put(OceanConfig.OCEAN_MARKET_ADDRESS, "0xf9e633cbeeb2a474d3fe22261046c99e805beec4");
 
-    OceanAPI oceanAPIFromProperties = OceanAPI.getInstance(properties);
+OceanAPI oceanAPIFromProperties = OceanAPI.getInstance(properties);
 ```
 
-Once you have initialized the API you can call the methods through their correspondent API class. For instance:
+Once you have initialized the API you can call the methods through their corresponding API class. For instance:
 
 ```java
  Balance balance = oceanAPI.getAccountsAPI().balance(oceanAPI.getMainAccount());
@@ -111,8 +125,7 @@ Once you have initialized the API you can call the methods through their corresp
 
 ### Using Squid-Java with Barge
 
-If you are using [Barge](https://github.com/oceanprotocol/barge/) for playing with the Ocean Protocol stack, you can use the following command to run the components 
-necessary to have a fully functional environment:
+If you are using [Barge](https://github.com/oceanprotocol/barge/) for playing with the Ocean Protocol stack, you can use the following command to run the components necessary to have a fully functional environment:
 
 `KEEPER_VERSION=v0.8.5 bash start_ocean.sh --latest --no-pleuston --local-spree-node`
 
@@ -120,19 +133,22 @@ After a few minutes, when Keeper has deployed the contracts, the ABI files descr
 in the `${HOME}/.ocean/keeper-contracts/artifacts/` folder. Depending on the network you are using, each ABI includes the 
 address where the Smart Contract is deployed in each network.
 
-If you want to run the integration tests in your local, you can execute the Bash Script `src/test/resources/scripts/updateConfAddresses.sh`
+If you want to run the integration tests on your local machine, you can execute the Bash script `src/test/resources/scripts/updateConfAddresses.sh`
 to update the addresses to use in your `src/test/resources/application.conf` file.
 
 ### Dealing with Flowables
 
 Squid-java uses web3j to interact with Solidity's Smart Contracts. It relies on [RxJava](https://github.com/ReactiveX/RxJava) to deal with asynchronous calls.
+
 The order method in AssetsAPI returns a Flowable over an OrderResult object. It's your choice if you want to handle this in a synchronous or asynchronous fashion.
+
 If you prefer to deal with this method in a synchronous way, you will need to block the current thread until you get a response:
 
 ```java
  Flowable<OrderResult> response = oceanAPI.getAssetsAPI().order(did, SERVICE_DEFINITION_ID);
  OrderResult orderResult = response.blockingFirst();
 ```
+
 On the contrary, if you want to handle the response asynchronously, you will need to subscribe to the Flowable:
 
 ```java
@@ -149,25 +165,29 @@ response.subscribe(
 The subscribe method will launch a new Thread to react to the events of the Flowable.
 More information: [RxJava](https://github.com/ReactiveX/RxJava/wiki) , [Flowable](http://reactivex.io/RxJava/2.x/javadoc/)
 
+## Documentation
 
-### Installing the library
+All the API documentation is hosted of javadoc.io:
 
-Typically in Maven you could add the dependency:
+- **[https://www.javadoc.io/doc/com.oceanprotocol/squid](https://www.javadoc.io/doc/com.oceanprotocol/squid)**
 
-```xml
-<dependency>
-  <groupId>com.oceanprotocol</groupId>
-  <artifactId>squid-java</artifactId>
-  <version>0.4.0</version>
-</dependency>
+You can also generate the Javadoc locally using the following command:
+
+```bash
+mvn javadoc:javadoc
 ```
 
+## Testing
 
-## How to run the tests
+You can run both, the unit and integration tests by using:
+
+```bash
+mvn clean verify -P all-test
+```
 
 ### Unit Tests
 
-You can execute the unit tests using the following command:
+You can execute the unit tests only using the following command:
 
 ```bash
 mvn clean test
@@ -191,31 +211,13 @@ You can execute the integration tests using the following command:
 mvn clean verify -P integration-test
 ```
 
-### Documentation
-
-You can generate the Javadoc using the following command:
-
-```bash
-mvn javadoc:javadoc
-```
-
-### All the tests
-
-You can run the unit and integration tests running:
-
-```bash
-mvn clean verify -P all-test
-```
-
 ### Code Coverage
 
 The code coverage reports are generated using the JaCoCo Maven plugin. Reports are generated in the `target/site` folder.
 
-
-## New Version
+## New Release
 
 The `bumpversion.sh` script helps to bump the project version. You can execute the script using as first argument {major|minor|patch} to bump accordingly the version.
-
 
 ## License
 
