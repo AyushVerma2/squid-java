@@ -496,6 +496,12 @@ public class OceanManager extends BaseManager {
             try {
 
                 String url = file.url;
+                if (null == url)    {
+                    String msg = "Error Decrypting URL for Asset: " + did.getDid() +" and Service Agreement " + serviceAgreementId
+                            + " URL received: " + file.url;
+                    log.error(msg);
+                    throw new ConsumeServiceException(msg);
+                }
                 String fileName = url.substring(url.lastIndexOf("/") + 1);
                 String destinationPath = basePath + File.separator + fileName;
 
