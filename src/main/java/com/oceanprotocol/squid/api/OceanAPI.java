@@ -33,7 +33,7 @@ import java.util.Properties;
  */
 public class OceanAPI {
 
-    static final Logger log= LogManager.getLogger(OceanAPI.class);
+    private static final Logger log= LogManager.getLogger(OceanAPI.class);
 
     private OceanConfig oceanConfig;
 

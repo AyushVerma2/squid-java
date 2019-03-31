@@ -165,7 +165,7 @@ public class AssetsApiIT {
                 orderResult.getServiceAgreementId(),
                 did,
                 Service.DEFAULT_ACCESS_SERVICE_ID, "/tmp");
-        
+
         assertEquals(true, result);
 
     }

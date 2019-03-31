@@ -32,7 +32,6 @@ public class KeeperService {
     protected static final Logger log = LogManager.getLogger(KeeperService.class);
 
     private Admin web3 = null;
-    private String keeperUrl;
     private String address;
     private String password;
     private Credentials credentials= null;
@@ -77,19 +76,18 @@ public class KeeperService {
         log.debug("Initializing KeeperService: " + url);
         this.address= address;
         this.password= password;
-        this.keeperUrl= url;
         this.credentialsFile= credentialsFile;
         this.gasPrice= DEFAULT_GAS_PRICE;
         this.gasLimit= DEFAULT_GAS_LIMIT;
+        String keeperUrl = url;
 
-        this.web3 = Admin.build(new HttpService(this.keeperUrl));
-
-        //this.chainId= this.web3.netVersion().send().getNetVersion();
+        this.web3 = Admin.build(new HttpService(keeperUrl));
 
         // TODO: Web3j only supports a ChainId in byte format, so any ChainId of a
         // private network is not supported. By the time being we can't specify that
         // parameter in the TranssactionManager
         // https://github.com/web3j/web3j/issues/234
+        //this.chainId= this.web3.netVersion().send().getNetVersion();
 
 
         //this.txManager= new RawTransactionManager(this.web3, getCredentials());

@@ -13,12 +13,12 @@ import com.typesafe.config.ConfigFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.web3j.crypto.CipherException;
-import org.web3j.crypto.Hash;
 import org.web3j.crypto.Sign;
-import java.io.IOException;
-import java.math.BigInteger;
 
-import static org.junit.Assert.*;
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class EthereumHelperTestIT {
 

@@ -29,8 +29,6 @@ public class AquariusService {
     private static final String DDO_URI = "/api/v1/aquarius/assets/ddo";
     private String ddoEndpoint;
 
-    private String url;
-
     /**
      * Builds an instance of AquariusService
      * @param url url of aquarius
@@ -46,8 +44,8 @@ public class AquariusService {
      * @param url the url of aquarius
      */
     private AquariusService(String url) {
-        this.url= url.replaceAll("/$", "");
-        this.ddoEndpoint = this.url + DDO_URI;
+        String url1 = url.replaceAll("/$", "");
+        this.ddoEndpoint = url1 + DDO_URI;
     }
 
     public String getDdoEndpoint() {
