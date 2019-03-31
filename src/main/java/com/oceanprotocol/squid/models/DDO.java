@@ -283,4 +283,20 @@ public class DDO extends AbstractModel implements FromJsonToModel {
         return null;
     }
 
+    @JsonIgnore
+    public static DDO cleanFileUrls(DDO ddo) {
+        ddo.metadata.base.files.forEach( f -> {
+            f.url= null;
+        });
+        ddo.services.forEach( service -> {
+            if (service.type.equals(Service.serviceTypes.Metadata.toString())) {
+                ((MetadataService) service).metadata.base.files.forEach( f -> {
+                    f.url= null;
+                });
+            }
+        });
+
+        return ddo;
+    }
+
 }

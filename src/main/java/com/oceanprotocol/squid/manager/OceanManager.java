@@ -495,17 +495,16 @@ public class OceanManager extends BaseManager {
             // For each url we call to consume Brizo endpoint that requires consumerAddress, serviceAgreementId and url as a parameters
             try {
 
-                String url = file.url;
-                if (null == url)    {
+                if (null == file.url)    {
                     String msg = "Error Decrypting URL for Asset: " + did.getDid() +" and Service Agreement " + serviceAgreementId
                             + " URL received: " + file.url;
                     log.error(msg);
                     throw new ConsumeServiceException(msg);
                 }
-                String fileName = url.substring(url.lastIndexOf("/") + 1);
+                String fileName = file.url.substring(file.url.lastIndexOf("/") + 1);
                 String destinationPath = basePath + File.separator + fileName;
 
-                HttpHelper.DownloadResult downloadResult = BrizoService.consumeUrl(serviceEndpoint, checkConsumerAddress, serviceAgreementId, url, destinationPath);
+                HttpHelper.DownloadResult downloadResult = BrizoService.consumeUrl(serviceEndpoint, checkConsumerAddress, serviceAgreementId, file.url, destinationPath);
                 if (!downloadResult.getResult()){
                     String msg = "Error consuming asset with DID " + did.getDid() +" and Service Agreement " + serviceAgreementId
                             + ". Http Code: " + downloadResult.getCode() + " . Message: " + downloadResult.getMessage();

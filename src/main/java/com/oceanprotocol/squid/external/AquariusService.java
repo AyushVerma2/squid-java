@@ -65,9 +65,9 @@ public class AquariusService {
         log.debug("Creating DDO: " + ddo.id);
 
         try {
-            ddo.getMetadataService().metadata.eraseFileUrls();
+
             HttpResponse response= HttpHelper.httpClientPost(
-                    this.ddoEndpoint, new ArrayList<>(), ddo.toJson());
+                    this.ddoEndpoint, new ArrayList<>(), DDO.cleanFileUrls(ddo).toJson());
 
             if (response.getStatusCode() != 201)    {
                 throw new DDOException("Unable to create DDO: " + response.toString());

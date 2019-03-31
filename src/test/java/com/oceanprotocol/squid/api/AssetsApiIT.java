@@ -147,7 +147,9 @@ public class AssetsApiIT {
 
         providerConfig.setSecretStoreEndpoint(config.getString("secretstore.url"));
 
-        DDO ddo= oceanAPI.getAssetsAPI().create(metadataBase, providerConfig);
+        AssetMetadata metadata = DDO.fromJSON(new TypeReference<AssetMetadata>() {}, METADATA_JSON_CONTENT);
+
+        DDO ddo= oceanAPI.getAssetsAPI().create(metadata, providerConfig);
         DID did= new DID(ddo.id);
 
         log.debug("DDO registered!");
@@ -159,7 +161,11 @@ public class AssetsApiIT {
         assertEquals(true, orderResult.isAccessGranted());
         log.debug("Granted Access Received for the service Agreement " + orderResult.getServiceAgreementId());
 
-        boolean result = oceanAPIConsumer.getAssetsAPI().consume(orderResult.getServiceAgreementId(), did, Service.DEFAULT_ACCESS_SERVICE_ID, "/tmp");
+        boolean result = oceanAPIConsumer.getAssetsAPI().consume(
+                orderResult.getServiceAgreementId(),
+                did,
+                Service.DEFAULT_ACCESS_SERVICE_ID, "/tmp");
+        
         assertEquals(true, result);
 
     }
