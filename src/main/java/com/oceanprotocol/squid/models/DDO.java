@@ -162,7 +162,7 @@ public class DDO extends AbstractModel implements FromJsonToModel {
         this.services.add(metadataService);
 
         this.proof= new Proof(UUID_PROOF_TYPE, publicKey, signature);
-        this.publicKeys.add( new DDO.PublicKey(this.id, ETHEREUM_KEY_TYPE, this.id));
+        this.publicKeys.add( new DDO.PublicKey(this.id, ETHEREUM_KEY_TYPE, publicKey));
     }
 
     @JsonSetter("id")
@@ -251,6 +251,7 @@ public class DDO extends AbstractModel implements FromJsonToModel {
         throw new ServiceException("Access Service with serviceDefinitionId=" + serviceDefinitionId + " not found");
     }
 
+    @JsonIgnore
     public AuthorizationService getAuthorizationService(String serviceDefinitionId) {
         for (Service service: services) {
             if (service.serviceDefinitionId.equals(serviceDefinitionId) && service.type.equals(Service.serviceTypes.Authorization.toString())) {
@@ -260,6 +261,7 @@ public class DDO extends AbstractModel implements FromJsonToModel {
         return null;
     }
 
+    @JsonIgnore
     public AuthorizationService getAuthorizationService() {
         for (Service service: services) {
             if (service.type.equals(Service.serviceTypes.Authorization.toString())) {
@@ -268,6 +270,33 @@ public class DDO extends AbstractModel implements FromJsonToModel {
         }
 
        return null;
+    }
+
+    @JsonIgnore
+    public MetadataService getMetadataService() {
+        for (Service service: services) {
+            if (service.type.equals(Service.serviceTypes.Metadata.toString())) {
+                return (MetadataService) service;
+            }
+        }
+
+        return null;
+    }
+
+    @JsonIgnore
+    public static DDO cleanFileUrls(DDO ddo) {
+        ddo.metadata.base.files.forEach( f -> {
+            f.url= null;
+        });
+        ddo.services.forEach( service -> {
+            if (service.type.equals(Service.serviceTypes.Metadata.toString())) {
+                ((MetadataService) service).metadata.base.files.forEach( f -> {
+                    f.url= null;
+                });
+            }
+        });
+
+        return ddo;
     }
 
 }

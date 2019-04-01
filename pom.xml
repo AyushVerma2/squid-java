@@ -21,7 +21,7 @@
         <java.version>1.8</java.version>
         <final-name>squid</final-name>
         <web3j.version>4.1.1</web3j.version>
-        <ocean.keeper.version>0.8.5</ocean.keeper.version>
+        <ocean.keeper.version>0.9.0</ocean.keeper.version>
         <ocean.secretstore.version>0.1.4</ocean.secretstore.version>
         <eddsa.version>0.3.0</eddsa.version>
         <jackson.version>2.9.8</jackson.version>
@@ -352,6 +352,21 @@
                     <nohelp>true</nohelp>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>1.19</version>
+                <executions>
+                    <execution>
+                        <id>aggregate-download-licenses</id>
+                        <goals>
+                            <goal>aggregate-download-licenses</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
     <dependencies>
@@ -481,6 +496,8 @@
                     <show>public</show>
                 </configuration>
             </plugin>
+
+
         </plugins>
     </reporting>
 </project>

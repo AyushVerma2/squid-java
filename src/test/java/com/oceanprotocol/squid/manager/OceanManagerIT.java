@@ -15,7 +15,7 @@ import com.oceanprotocol.squid.models.Account;
 import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.asset.AssetMetadata;
-import com.oceanprotocol.squid.models.service.ServiceEndpoints;
+import com.oceanprotocol.squid.models.service.ProviderConfig;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
@@ -25,6 +25,8 @@ import org.junit.Test;
 import org.web3j.protocol.admin.Admin;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -48,6 +50,7 @@ public class OceanManagerIT {
 
     private static AquariusService aquarius;
     private static SecretStoreManager secretStore;
+    private static String providerAddress;
 
     private static DIDRegistry didRegistry;
     private static EscrowReward escrowReward;
@@ -98,6 +101,8 @@ public class OceanManagerIT {
         aquarius= ManagerHelper.getAquarius(config);
         EvmDto evmDto = ManagerHelper.getEvmDto(config, ManagerHelper.VmClient.parity);
         secretStore= ManagerHelper.getSecretStoreController(config, evmDto);
+
+        providerAddress= config.getString("provider.address");
 
         didRegistry= ManagerHelper.loadDIDRegistryContract(keeperPublisher, DID_REGISTRY_CONTRACT);
         escrowReward= ManagerHelper.loadEscrowRewardContract(keeperPublisher, ESCROW_REWARD_CONTRACT);
@@ -151,14 +156,16 @@ public class OceanManagerIT {
 
         metadataBase = DDO.fromJSON(new TypeReference<AssetMetadata>() {}, METADATA_JSON_CONTENT);
 
-        String metadataUrl= "http://172.15.0.15:5000/api/v1/aquarius/assets/ddo/{did}";
-        String consumeUrl= "http://localhost:8030/api/v1/brizo/services/consume?consumerAddress=${consumerAddress}&serviceAgreementId=${serviceAgreementId}&url=${url}";
-        String purchaseEndpoint= "http://localhost:8030/api/v1/brizo/services/access/initialize";
+        String metadataUrl= config.getString("aquarius-internal.url") + "/api/v1/aquarius/assets/ddo/{did}";
+        String consumeUrl= config.getString("brizo.url") + "/api/v1/brizo/services/consume?consumerAddress=${consumerAddress}&serviceAgreementId=${serviceAgreementId}&url=${url}";
+        String purchaseEndpoint= config.getString("brizo.url") + "/api/v1/brizo/services/access/initialize";
+        String secretStoreEndpoint= config.getString("secretstore.url");
+        String providerAddress= config.getString("provider.address");
 
-        ServiceEndpoints serviceEndpoints= new ServiceEndpoints(consumeUrl, purchaseEndpoint, metadataUrl);
+        ProviderConfig providerConfig = new ProviderConfig(consumeUrl, purchaseEndpoint, metadataUrl, secretStoreEndpoint, providerAddress);
 
         return managerPublisher.registerAsset(metadataBase,
-                serviceEndpoints,
+                providerConfig,
                 0);
 
     }
@@ -166,17 +173,17 @@ public class OceanManagerIT {
     @Test
     public void registerAsset() throws Exception {
 
-        String metadataUrl= "http://172.15.0.15:5000/api/v1/aquarius/assets/ddo/{did}";
-        String consumeUrl= "http://localhost:8030/api/v1/brizo/services/consume?consumerAddress=${consumerAddress}&serviceAgreementId=${serviceAgreementId}&url=${url}";
-        String purchaseEndpoint= "http://localhost:8030/api/v1/brizo/services/access/initialize";
+        String metadataUrl= config.getString("aquarius-internal.url") + "/api/v1/aquarius/assets/ddo/{did}";
+        String consumeUrl= config.getString("brizo.url") + "/api/v1/brizo/services/consume?consumerAddress=${consumerAddress}&serviceAgreementId=${serviceAgreementId}&url=${url}";
+        String purchaseEndpoint= config.getString("brizo.url") + "/api/v1/brizo/services/access/initialize";
         String secretStoreEndpoint= config.getString("secretstore.url");
+        String providerAddress= config.getString("provider.address");
 
-        //String serviceAgreementAddress = saContract.getContractAddress();
 
-        ServiceEndpoints serviceEndpoints= new ServiceEndpoints(consumeUrl, purchaseEndpoint, metadataUrl, secretStoreEndpoint);
+        ProviderConfig providerConfig = new ProviderConfig(consumeUrl, purchaseEndpoint, metadataUrl, secretStoreEndpoint, providerAddress);
 
         DDO ddo= managerPublisher.registerAsset(metadataBase,
-                serviceEndpoints,
+                providerConfig,
                 0);
 
         DID did= new DID(ddo.id);
@@ -193,7 +200,7 @@ public class OceanManagerIT {
 
         DID did= DID.builder();
         String oldUrl= "http://mymetadata.io/api";
-        String newUrl= "http://172.15.0.15:5000/api/v1/aquarius/assets/ddo/{did}";
+        String newUrl= config.getString("aquarius-internal.url") + "/api/v1/aquarius/assets/ddo/{did}";
 
         String checksum = "0xd190bc85ee50643baffe7afe84ec6a9dd5212b67223523cd8e4d88f9069255fb";
 
@@ -202,11 +209,11 @@ public class OceanManagerIT {
         ddoBase.services.get(0).serviceEndpoint = newUrl;
         aquarius.createDDO(ddoBase);
 
-        boolean didRegistered= managerPublisher.registerDID(did, oldUrl, checksum);
+        boolean didRegistered= managerPublisher.registerDID(did, oldUrl, checksum, Arrays.asList(providerAddress));
         assertTrue(didRegistered);
 
         log.debug("Registering " + did.toString());
-        managerPublisher.registerDID(did, newUrl, checksum);
+        managerPublisher.registerDID(did, newUrl, checksum, Arrays.asList(providerAddress));
 
         DDO ddo= managerPublisher.resolveDID(did);
         assertEquals(did.getDid(), ddo.id);
@@ -224,16 +231,11 @@ public class OceanManagerIT {
         ddoBase.services.get(0).serviceEndpoint = url;
         aquarius.createDDO(ddoBase);
 
-        boolean didRegistered= managerPublisher.registerDID(did, url, checksum);
+        boolean didRegistered= managerPublisher.registerDID(did, url, checksum, Arrays.asList(providerAddress));
         assertTrue(didRegistered);
 
         DDO ddo= managerPublisher.resolveDID(did);
 
-    }
-
-
-    @Test
-    public void getOrder() {
     }
 
     @Test

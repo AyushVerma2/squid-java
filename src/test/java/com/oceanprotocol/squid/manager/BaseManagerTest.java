@@ -85,7 +85,7 @@ public class BaseManagerTest {
     @Test
     public void buildDDO() throws DDOException {
 
-        String metadataUrl= "http://172.15.0.15:5000/api/v1/aquarius/assets/ddo/{did}";
+        String metadataUrl= config.getString("aquarius-internal.url") + "/api/v1/aquarius/assets/ddo/{did}";
         MetadataService metadataService = new MetadataService(metadataBase, metadataUrl);
 
         DDO ddo = baseManager.buildDDO(metadataService, null, SERVICE_AGREEMENT_ADDRESS);
@@ -97,10 +97,10 @@ public class BaseManagerTest {
     @Test
     public void buildDDOWithAuthorizationService() throws Exception {
 
-        String metadataUrl= "http://172.15.0.15:5000/api/v1/aquarius/assets/ddo/{did}";
+        String metadataUrl= config.getString("aquarius-internal.url") + "/api/v1/aquarius/assets/ddo/{did}";
         MetadataService metadataService = new MetadataService(metadataBase, metadataUrl);
 
-        String serviceEndpoint = "http://localhost:12001";
+        String serviceEndpoint =  config.getString("secretstore.url");
 
         AuthorizationService authorizationService = new AuthorizationService(Service.serviceTypes.Authorization, serviceEndpoint, Service.DEFAULT_AUTHORIZATION_SERVICE_ID);
 

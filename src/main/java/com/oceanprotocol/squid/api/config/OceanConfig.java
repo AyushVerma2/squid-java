@@ -20,6 +20,7 @@ public class OceanConfig {
     public static final String KEEPER_GAS_PRICE = "keeper.gasPrice";
     public static final String AQUARIUS_URL = "aquarius.url";
     public static final String SECRETSTORE_URL = "secretstore.url";
+    public static final String PROVIDER_ADDRESS = "provider.address";
     public static final String MAIN_ACCOUNT_ADDRESS = "account.main.address";
     public static final String MAIN_ACCOUNT_PASSWORD = "account.main.password";
     public static final String MAIN_ACCOUNT_CREDENTIALS_FILE = "account.main.credentialsFile";
@@ -40,6 +41,7 @@ public class OceanConfig {
     private BigInteger keeperGasPrice;
     private String aquariusUrl;
     private String secretStoreUrl;
+    private String providerAddress;
     private String mainAccountAddress;
     private String mainAccountPassword;
     private String mainAccountCredentialsFile;
@@ -154,6 +156,12 @@ public class OceanConfig {
             validation.setValid(false);
             validation.addErrorMessage("The Credentials File of the Main Account must be set with the property "
                     + OceanConfig.MAIN_ACCOUNT_CREDENTIALS_FILE);
+        }
+
+        if (oceanConfig.getProviderAddress() == null || oceanConfig.getProviderAddress().isEmpty()) {
+            validation.setValid(false);
+            validation.addErrorMessage("The Address of the Provider must be set with the property "
+                    + OceanConfig.PROVIDER_ADDRESS);
         }
 
         return validation;
@@ -319,5 +327,13 @@ public class OceanConfig {
 
     public void setEscrowAccessSecretStoreTemplateAddress(String escrowAccessSecretStoreTemplateAddress) {
         this.escrowAccessSecretStoreTemplateAddress = escrowAccessSecretStoreTemplateAddress;
+    }
+
+    public String getProviderAddress() {
+        return providerAddress;
+    }
+
+    public void setProviderAddress(String providerAddress) {
+        this.providerAddress = providerAddress;
     }
 }

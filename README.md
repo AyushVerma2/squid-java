@@ -200,7 +200,7 @@ The execution of the integration tests require to have running the complete Ocea
 After having `barge` in your environment, you can run the components needed running:
 
 ```bash
-KEEPER_VERSION=v0.8.0 bash start_ocean.sh --latest --no-pleuston --local-spree-node --force-pull
+KEEPER_VERSION=v0.9.0 bash start_ocean.sh --latest --no-pleuston --local-spree-node --force-pull
 ```
 
 If you have older versions of the docker images is recommended to delete all them to be sure you are running the last version of the stack.
@@ -209,6 +209,27 @@ You can execute the integration tests using the following command:
 
 ```bash
 mvn clean verify -P integration-test
+```
+
+### Documentation
+
+You can generate the Javadoc using the following command:
+
+```bash
+mvn javadoc:javadoc
+```
+
+### All the tests
+
+You can run the unit and integration tests running:
+
+```bash
+mvn clean verify -P all-test
+```
+
+You can run the integration tests in Nile environment using the command:
+```bash
+mvn verify  -P integration-test -Dconfig.file=src/test/resources/networks/nile-application.conf
 ```
 
 ### Code Coverage

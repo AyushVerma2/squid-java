@@ -6,7 +6,10 @@
 package com.oceanprotocol.squid.models.asset;
 
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.Metadata;
 import org.web3j.crypto.Hash;
@@ -16,8 +19,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static com.oceanprotocol.squid.models.AbstractModel.DATE_PATTERN;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder(alphabetic=true)
@@ -69,9 +70,6 @@ public class AssetMetadata extends Metadata {
         public Date dateCreated;
 
         @JsonProperty
-        public String size;
-
-        @JsonProperty
         public String author;
 
         @JsonProperty
@@ -81,18 +79,9 @@ public class AssetMetadata extends Metadata {
         public String copyrightHolder;
 
         @JsonProperty
-        public String encoding;
-
-        @JsonProperty
-        public String compression;
-
-        @JsonProperty
-        public String contentType;
-
-        @JsonProperty
         public String workExample;
 
-        @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+        @JsonProperty
         public ArrayList<File> files= new ArrayList<>();
 
         @JsonProperty
@@ -159,13 +148,25 @@ public class AssetMetadata extends Metadata {
     public static class File {
 
         @JsonProperty
-        public String url;
+        public String contentType;
+
+        @JsonProperty
+        public Integer index;
+
+        @JsonProperty
+        public String encoding;
+
+        @JsonProperty
+        public String compression;
 
         @JsonProperty
         public String checksum;
 
         @JsonProperty
         public String contentLength;
+
+        @JsonProperty//(access = JsonProperty.Access.READ_ONLY)
+        public String url;
 
         public File() {}
     }
@@ -184,6 +185,13 @@ public class AssetMetadata extends Metadata {
 
     }
 
+    public AssetMetadata eraseFileUrls() {
+        this.base.files.forEach( f -> {
+            f.url= null;
+        });
+
+        return this;
+    }
 
 
 }

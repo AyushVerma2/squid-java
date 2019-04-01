@@ -139,14 +139,18 @@ public class OceanManager extends BaseManager {
      * @return boolean success
      * @throws DIDRegisterException DIDRegisterException
      */
-    public boolean registerDID(DID did, String url, String checksum) throws DIDRegisterException{
+    public boolean registerDID(DID did, String url, String checksum, List<String> providers) throws DIDRegisterException{
         log.debug("Registering DID " + did.getHash() + " into Registry " + didRegistry.getContractAddress());
+
+//        String providerAddress = Keys.toChecksumAddress(this.providerAddress);
+//        List<String> providers = Arrays.asList(providerAddress);
 
         try {
 
             TransactionReceipt receipt = didRegistry.registerAttribute(
                     EncodingHelper.hexStringToBytes(did.getHash()),
                     EncodingHelper.hexStringToBytes(checksum.replace("0x", "")),
+                    providers,
                     url
             ).send();
 
@@ -160,21 +164,21 @@ public class OceanManager extends BaseManager {
     /**
      * Creates a new DDO, registering it on-chain through DidRegistry contract and off-chain in Aquarius
      * @param metadata the metadata
-     * @param serviceEndpoints the service Endpoints
+     * @param providerConfig the service Endpoints
      * @param threshold secret store threshold
      * @return an instance of the DDO created
      * @throws DDOException DDOException
      */
-    public DDO registerAsset(AssetMetadata metadata, ServiceEndpoints serviceEndpoints, int threshold) throws DDOException {
+    public DDO registerAsset(AssetMetadata metadata, ProviderConfig providerConfig, int threshold) throws DDOException {
 
         try {
 
             // Definition of service endpoints
             String metadataEndpoint;
-            if (serviceEndpoints.getMetadataEndpoint() == null)
+            if (providerConfig.getMetadataEndpoint() == null)
                 metadataEndpoint = getAquariusService().getDdoEndpoint() + "/{did}";
             else
-                metadataEndpoint = serviceEndpoints.getMetadataEndpoint();
+                metadataEndpoint = providerConfig.getMetadataEndpoint();
 
             // Initialization of services supported for this asset
             MetadataService metadataService = new MetadataService(metadata, metadataEndpoint, Service.DEFAULT_METADATA_SERVICE_ID);
@@ -182,8 +186,8 @@ public class OceanManager extends BaseManager {
 
             AuthorizationService authorizationService = null;
             //Adding the authorization service if the endpoint is defined
-            if (serviceEndpoints.getSecretStoreEndpoint()!=null && !serviceEndpoints.getSecretStoreEndpoint().equals("")){
-                authorizationService = new AuthorizationService(Service.serviceTypes.Authorization, serviceEndpoints.getSecretStoreEndpoint(), Service.DEFAULT_AUTHORIZATION_SERVICE_ID);
+            if (providerConfig.getSecretStoreEndpoint()!=null && !providerConfig.getSecretStoreEndpoint().equals("")){
+                authorizationService = new AuthorizationService(Service.serviceTypes.Authorization, providerConfig.getSecretStoreEndpoint(), Service.DEFAULT_AUTHORIZATION_SERVICE_ID);
             }
 
             // Initializing DDO
@@ -208,11 +212,11 @@ public class OceanManager extends BaseManager {
 
             // The templateId of the AccessService is the address of the escrowAccessSecretStoreTemplate contract
             String accessServiceTemplateId = escrowAccessSecretStoreTemplate.getContractAddress();
-            AccessService accessService = new AccessService(serviceEndpoints.getAccessEndpoint(),
+            AccessService accessService = new AccessService(providerConfig.getAccessEndpoint(),
                     Service.DEFAULT_ACCESS_SERVICE_ID,
                     serviceAgreementTemplate,
                     accessServiceTemplateId);
-            accessService.purchaseEndpoint = serviceEndpoints.getPurchaseEndpoint();
+            accessService.purchaseEndpoint = providerConfig.getPurchaseEndpoint();
             accessService.name = "dataAssetAccessServiceAgreement";
 
             // Initializing conditions and adding to Access service
@@ -231,7 +235,7 @@ public class OceanManager extends BaseManager {
             DDO createdDDO = getAquariusService().createDDO(ddo);
 
             // Registering DID
-            registerDID(ddo.getDid(), metadataEndpoint, metadata.base.checksum);
+            registerDID(ddo.getDid(), metadataEndpoint, metadata.base.checksum, providerConfig.getProviderAddresses());
 
             return createdDDO;
         }catch (DDOException e) {
@@ -491,11 +495,16 @@ public class OceanManager extends BaseManager {
             // For each url we call to consume Brizo endpoint that requires consumerAddress, serviceAgreementId and url as a parameters
             try {
 
-                String url = file.url;
-                String fileName = url.substring(url.lastIndexOf("/") + 1);
+                if (null == file.url)    {
+                    String msg = "Error Decrypting URL for Asset: " + did.getDid() +" and Service Agreement " + serviceAgreementId
+                            + " URL received: " + file.url;
+                    log.error(msg);
+                    throw new ConsumeServiceException(msg);
+                }
+                String fileName = file.url.substring(file.url.lastIndexOf("/") + 1);
                 String destinationPath = basePath + File.separator + fileName;
 
-                HttpHelper.DownloadResult downloadResult = BrizoService.consumeUrl(serviceEndpoint, checkConsumerAddress, serviceAgreementId, url, destinationPath);
+                HttpHelper.DownloadResult downloadResult = BrizoService.consumeUrl(serviceEndpoint, checkConsumerAddress, serviceAgreementId, file.url, destinationPath);
                 if (!downloadResult.getResult()){
                     String msg = "Error consuming asset with DID " + did.getDid() +" and Service Agreement " + serviceAgreementId
                             + ". Http Code: " + downloadResult.getCode() + " . Message: " + downloadResult.getMessage();

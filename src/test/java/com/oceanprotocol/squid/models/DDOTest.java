@@ -25,8 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import static com.oceanprotocol.squid.models.AbstractModel.DATE_FORMAT;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class DDOTest {
 
@@ -186,5 +185,12 @@ public class DDOTest {
 
     }
 
+    @Test
+    public void cleanUrls() throws Exception {
+        DDO ddo = DDO.fromJSON(new TypeReference<DDO>() {}, DDO_JSON_CONTENT);
+
+        DDO newDdo= DDO.cleanFileUrls(ddo);
+        assertNull(newDdo.getMetadataService().metadata.base.files.get(0).url);
+    }
 
 }

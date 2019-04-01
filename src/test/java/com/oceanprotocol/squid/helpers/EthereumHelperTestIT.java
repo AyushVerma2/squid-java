@@ -7,25 +7,34 @@ package com.oceanprotocol.squid.helpers;
 
 import com.oceanprotocol.squid.external.KeeperService;
 import com.oceanprotocol.squid.manager.ManagerHelper;
+import com.oceanprotocol.squid.models.Account;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.web3j.crypto.CipherException;
-import org.web3j.crypto.Hash;
 import org.web3j.crypto.Sign;
+
 import java.io.IOException;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class EthereumHelperTestIT {
 
     private static final Config config = ConfigFactory.load();
     private static KeeperService keeper;
+    private static Account account;
 
 
     @BeforeClass
     public static void setUp() throws Exception {
         keeper = ManagerHelper.getKeeper(config, ManagerHelper.VmClient.parity);
+
+        String accountAddress = config.getString("account." + ManagerHelper.VmClient.parity.toString() + ".address");
+        String accountPassword = config.getString("account." + ManagerHelper.VmClient.parity.toString() + ".password");
+
+        account = new Account(accountAddress, accountPassword);
     }
 
     @Test
@@ -50,8 +59,10 @@ public class EthereumHelperTestIT {
     }
 
     @Test
-    public void ethSignMessage() throws IOException, CipherException {
+    public void ethSignMessage() throws Exception {
         String message = "Hi there";
+
+        keeper.unlockAccount(account);
 
         String signedMaessage= EthereumHelper.ethEncodeAndSignMessage(keeper.getWeb3(), message, keeper.getCredentials().getAddress());
 

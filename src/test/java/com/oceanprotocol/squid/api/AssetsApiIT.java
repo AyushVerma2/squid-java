@@ -11,14 +11,13 @@ import com.oceanprotocol.keeper.contracts.TemplateStoreManager;
 import com.oceanprotocol.squid.api.config.OceanConfig;
 import com.oceanprotocol.squid.external.KeeperService;
 import com.oceanprotocol.squid.manager.ManagerHelper;
-import com.oceanprotocol.squid.models.Account;
 import com.oceanprotocol.squid.models.Balance;
 import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.asset.AssetMetadata;
 import com.oceanprotocol.squid.models.asset.OrderResult;
 import com.oceanprotocol.squid.models.service.Service;
-import com.oceanprotocol.squid.models.service.ServiceEndpoints;
+import com.oceanprotocol.squid.models.service.ProviderConfig;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import io.reactivex.Flowable;
@@ -44,7 +43,7 @@ public class AssetsApiIT {
     private static String METADATA_JSON_SAMPLE = "src/test/resources/examples/metadata.json";
     private static String METADATA_JSON_CONTENT;
     private static AssetMetadata metadataBase;
-    private static ServiceEndpoints serviceEndpoints;
+    private static ProviderConfig providerConfig;
     private static OceanAPI oceanAPI;
     private static OceanAPI oceanAPIConsumer;
 
@@ -55,16 +54,18 @@ public class AssetsApiIT {
     @BeforeClass
     public static void setUp() throws Exception {
 
+        config = ConfigFactory.load();
         METADATA_JSON_CONTENT =  new String(Files.readAllBytes(Paths.get(METADATA_JSON_SAMPLE)));
         metadataBase = DDO.fromJSON(new TypeReference<AssetMetadata>() {}, METADATA_JSON_CONTENT);
 
-        String metadataUrl= "http://172.15.0.15:5000/api/v1/aquarius/assets/ddo/{did}";
-        String consumeUrl= "http://localhost:8030/api/v1/brizo/services/consume?consumerAddress=${consumerAddress}&serviceAgreementId=${serviceAgreementId}&url=${url}";
-        String purchaseEndpoint= "http://localhost:8030/api/v1/brizo/services/access/initialize";
+        String metadataUrl= config.getString("aquarius-internal.url") + "/api/v1/aquarius/assets/ddo/{did}";
+        String consumeUrl= config.getString("brizo.url") + "/api/v1/brizo/services/consume?consumerAddress=${consumerAddress}&serviceAgreementId=${serviceAgreementId}&url=${url}";
+        String purchaseEndpoint= config.getString("brizo.url") + "/api/v1/brizo/services/access/initialize";
+        String secretStoreEndpoint= config.getString("secretstore.url");
+        String providerAddress= config.getString("provider.address");
 
-        serviceEndpoints= new ServiceEndpoints(consumeUrl, purchaseEndpoint, metadataUrl);
+        providerConfig = new ProviderConfig(consumeUrl, purchaseEndpoint, metadataUrl, secretStoreEndpoint, providerAddress);
 
-        config = ConfigFactory.load();
         oceanAPI = OceanAPI.getInstance(config);
 
         assertNotNull(oceanAPI.getAssetsAPI());
@@ -89,6 +90,7 @@ public class AssetsApiIT {
         properties.put(OceanConfig.TEMPLATE_STORE_MANAGER_ADDRESS,config.getString("contract.TemplateStoreManager.address"));
         properties.put(OceanConfig.TOKEN_ADDRESS, config.getString("contract.OceanToken.address"));
         properties.put(OceanConfig.DISPENSER_ADDRESS, config.getString("contract.Dispenser.address"));
+        properties.put(OceanConfig.PROVIDER_ADDRESS, config.getString("provider.address"));
 
         oceanAPIConsumer = OceanAPI.getInstance(properties);
 
@@ -96,7 +98,7 @@ public class AssetsApiIT {
         EscrowAccessSecretStoreTemplate escrowAccessSecretStoreTemplate = ManagerHelper.loadEscrowAccessSecretStoreTemplate(keeper, config.getString("contract.EscrowAccessSecretStoreTemplate.address"));
         TemplateStoreManager templateManager = ManagerHelper.loadTemplateStoreManager(keeper, config.getString("contract.TemplateStoreManager.address"));
 
-        oceanAPIConsumer.getAccountsAPI().requestTokens(BigInteger.valueOf(1000));
+        oceanAPIConsumer.getTokensAPI().request(BigInteger.TEN);
         Balance balance= oceanAPIConsumer.getAccountsAPI().balance(oceanAPIConsumer.getMainAccount());
 
         log.debug("Account " + oceanAPIConsumer.getMainAccount().address + " balance is: " + balance.toString());
@@ -108,19 +110,19 @@ public class AssetsApiIT {
     @Test
     public void create() throws Exception {
 
-        DDO ddo = oceanAPI.getAssetsAPI().create(metadataBase, serviceEndpoints);
+        DDO ddo = oceanAPI.getAssetsAPI().create(metadataBase, providerConfig);
 
         DID did= new DID(ddo.id);
         DDO resolvedDDO= oceanAPI.getAssetsAPI().resolve(did);
         assertEquals(ddo.id, resolvedDDO.id);
-        assertTrue( resolvedDDO.services.size() == 2);
+        assertTrue( resolvedDDO.services.size() == 3);
 
     }
 
     @Test
     public void order() throws Exception {
 
-        DDO ddo= oceanAPI.getAssetsAPI().create(metadataBase, serviceEndpoints);
+        DDO ddo= oceanAPI.getAssetsAPI().create(metadataBase, providerConfig);
         DID did= new DID(ddo.id);
 
         oceanAPIConsumer.getAccountsAPI().requestTokens(BigInteger.valueOf(9000000));
@@ -130,9 +132,9 @@ public class AssetsApiIT {
 
         Flowable<OrderResult> response = oceanAPIConsumer.getAssetsAPI().order(did, Service.DEFAULT_ACCESS_SERVICE_ID);
 
-        Balance balanceAfter= oceanAPIConsumer.getAccountsAPI().balance(oceanAPIConsumer.getMainAccount());
+        //Balance balanceAfter= oceanAPIConsumer.getAccountsAPI().balance(oceanAPIConsumer.getMainAccount());
 
-        log.debug("Account " + oceanAPIConsumer.getMainAccount().address + " balance is: " + balance.toString());
+        //log.debug("Account " + oceanAPIConsumer.getMainAccount().address + " balance is: " + balance.toString());
 
         OrderResult result = response.blockingFirst();
         assertNotNull(result.getServiceAgreementId());
@@ -143,9 +145,11 @@ public class AssetsApiIT {
     @Test
     public void consume() throws Exception {
 
-        serviceEndpoints.setSecretStoreEndpoint(config.getString("secretstore.url"));
+        providerConfig.setSecretStoreEndpoint(config.getString("secretstore.url"));
 
-        DDO ddo= oceanAPI.getAssetsAPI().create(metadataBase, serviceEndpoints);
+        AssetMetadata metadata = DDO.fromJSON(new TypeReference<AssetMetadata>() {}, METADATA_JSON_CONTENT);
+
+        DDO ddo= oceanAPI.getAssetsAPI().create(metadata, providerConfig);
         DID did= new DID(ddo.id);
 
         log.debug("DDO registered!");
@@ -157,7 +161,11 @@ public class AssetsApiIT {
         assertEquals(true, orderResult.isAccessGranted());
         log.debug("Granted Access Received for the service Agreement " + orderResult.getServiceAgreementId());
 
-        boolean result = oceanAPIConsumer.getAssetsAPI().consume(orderResult.getServiceAgreementId(), did, Service.DEFAULT_ACCESS_SERVICE_ID, "/tmp");
+        boolean result = oceanAPIConsumer.getAssetsAPI().consume(
+                orderResult.getServiceAgreementId(),
+                did,
+                Service.DEFAULT_ACCESS_SERVICE_ID, "/tmp");
+
         assertEquals(true, result);
 
     }
@@ -165,7 +173,7 @@ public class AssetsApiIT {
     @Test
     public void search() throws Exception {
 
-        oceanAPI.getAssetsAPI().create(metadataBase, serviceEndpoints);
+        oceanAPI.getAssetsAPI().create(metadataBase, providerConfig);
         log.debug("DDO registered!");
 
         String searchText = "Weather";
@@ -178,7 +186,7 @@ public class AssetsApiIT {
     @Test
     public void query() throws Exception {
 
-        oceanAPI.getAssetsAPI().create(metadataBase, serviceEndpoints);
+        oceanAPI.getAssetsAPI().create(metadataBase, providerConfig);
         log.debug("DDO registered!");
 
         Map<String, Object> params = new HashMap<>();

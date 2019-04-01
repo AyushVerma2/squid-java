@@ -74,7 +74,7 @@ public abstract class HttpHelper {
 
     static class DownloadResponseHandler implements ResponseHandler<DownloadResult> {
 
-        String destinationPath;
+        private String destinationPath;
 
         public DownloadResponseHandler(String  destinationPath) {
 

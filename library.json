@@ -10,12 +10,20 @@
       "version": "0.2"
     },
     {
+      "name": "OEP-8",
+      "version": "0.3"
+    },
+    {
       "name": "keeper-contracts",
-      "version": "0.8.5"
+      "version": "0.9.0"
+    },
+    {
+      "name": "aquarius",
+      "version": "0.2.0"
     },
     {
       "name": "brizo",
-      "version": ">0.2.4"
+      "version": "0.3.0"
     }
   ]
 }

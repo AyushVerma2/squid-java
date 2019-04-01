@@ -18,7 +18,7 @@ import java.math.BigInteger;
 
 public class FulfillLockReward {
 
-    static final Logger log= LogManager.getLogger(FulfillLockReward.class);
+    private static final Logger log= LogManager.getLogger(FulfillLockReward.class);
 
     /**
      * Executes a fulfill function of a LockReward Condition
@@ -40,6 +40,11 @@ public class FulfillLockReward {
 
             String escrowRewardAddressChecksum = Keys.toChecksumAddress(escrowRewardAddress);
             serviceId = EncodingHelper.hexStringToBytes(serviceAgreementId);
+
+            log.debug("service Agreement String: " + serviceAgreementId );
+            log.debug("serviceID Bytes:" + serviceId);
+            log.debug("EscrowRewardAddress: " + escrowRewardAddressChecksum);
+            log.debug("Price: " + BigInteger.valueOf(assetInfo.getPrice()));
 
             TransactionReceipt receipt= lockRewardCondition.fulfill(
                     serviceId,
