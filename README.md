@@ -61,6 +61,8 @@ aquarius.url="http://localhost:5000"
 
 secretstore.url="http://localhost:12001"
 
+provider.address="0x413c9ba0a05b8a600899b41b0c62dd661e689354"
+
 # Contracts addresses
 contract.SignCondition.address="0xEEE56e2a630DD29F9A628d618E58bb173911F393"
 contract.HashLockCondition.address="0x85cCa2B01adddCA8Df221e6027EE0D7716224202"
@@ -78,9 +80,9 @@ contract.AgreementStoreManager.address="0x645439117eB378a6d35148452E287a038666Ed
 consume.basePath = "/tmp"
 
 ## Main account
-account.main.address="0xaabbcc"
+account.main.address="0x0207cb2f99eb2e005893d6108e2633641ca9dd3e"
 account.main.password="pass"
-account.main.credentialsFile="/accounts/parity/aabbcc.json.testaccount"
+account.main.credentialsFile="/accounts/parity/0x0207cb2f99eb2e005893d6108e2633641ca9dd3e.json.testaccount"
 ```
 
 And you can instantiate the API with the following lines:
@@ -97,15 +99,19 @@ If you want to use Java's Properties, you just need to create a Properties objec
 ```java
 // Default values for KEEPER_URL, KEEPER_GAS_LIMIT, KEEPER_GAS_PRICE, AQUARIUS_URL, SECRETSTORE_URL, CONSUME_BASE_PATH
 Properties properties = new Properties();
-properties.put(OceanConfig.MAIN_ACCOUNT_ADDRESS, "0xaabbcc");
+properties.put(OceanConfig.MAIN_ACCOUNT_ADDRESS, "0x0207cb2f99eb2e005893d6108e2633641ca9dd3e");
 properties.put(OceanConfig.MAIN_ACCOUNT_PASSWORD,"pass");
-properties.put(OceanConfig.MAIN_ACCOUNT_CREDENTIALS_FILE,"/accounts/parity/aabbcc.json.testaccount");
-properties.put(OceanConfig.DID_REGISTRY_ADDRESS, "0x01daE123504DDf108E0C65a42190516E5c5dfc07");
-properties.put(OceanConfig.SERVICE_EXECUTION_AGREEMENT_ADDRESS, "0x21668cE2116Dbc48AC116F31678CfaaeF911F7aA");
-properties.put(OceanConfig.PAYMENT_CONDITIONS_ADDRESS, "0x38A531cc85A58adCb01D6a249E33c27CE277a2D1");
-properties.put(OceanConfig.ACCESS_CONDITIONS_ADDRESS, "0x605FAF898Fc7c2Aa847Ba0D558b5251c0F128Fd7");
-properties.put(OceanConfig.TOKEN_ADDRESS, "0xe749e2f8482810b11b838ae8c5eb69e54d610411");
-properties.put(OceanConfig.OCEAN_MARKET_ADDRESS, "0xf9e633cbeeb2a474d3fe22261046c99e805beec4");
+properties.put(OceanConfig.MAIN_ACCOUNT_CREDENTIALS_FILE,"/accounts/parity/0x0207cb2f99eb2e005893d6108e2633641ca9dd3e.json.testaccount");
+properties.put(OceanConfig.DID_REGISTRY_ADDRESS,"0x4A0f7F763B1A7937aED21D63b2A78adc89c5Db23");
+properties.put(OceanConfig.AGREEMENT_STORE_MANAGER_ADDRESS, "0x62f84700b1A0ea6Bfb505aDC3c0286B7944D247C");
+properties.put(OceanConfig.LOCKREWARD_CONDITIONS_ADDRESS, "0xE30FC30c678437e0e8F78C52dE9db8E2752781a0");
+properties.put(OceanConfig.ESCROWREWARD_CONDITIONS_ADDRESS, "0xeD4Ef53376C6f103d2d7029D7E702e082767C6ff");
+properties.put(OceanConfig.ESCROW_ACCESS_SS_CONDITIONS_ADDRESS, "0xfA16d26e9F4fffC6e40963B281a0bB08C31ed40C");
+properties.put(OceanConfig.ACCESS_SS_CONDITIONS_ADDRESS, "0x45DE141F8Efc355F1451a102FB6225F1EDd2921d");
+properties.put(OceanConfig.TEMPLATE_STORE_MANAGER_ADDRESS, "0x9768c8ae44f1dc81cAA98F48792aA5730cAd2F73");
+properties.put(OceanConfig.TOKEN_ADDRESS, "0x9861Da395d7da984D5E8C712c2EDE44b41F777Ad");
+properties.put(OceanConfig.DISPENSER_ADDRESS, "0x865396b7ddc58C693db7FCAD1168E3BD95Fe3368");
+properties.put(OceanConfig.PROVIDER_ADDRESS, "0x413c9ba0a05b8a600899b41b0c62dd661e689354");
 
 OceanAPI oceanAPIFromProperties = OceanAPI.getInstance(properties);
 ```
@@ -156,7 +162,7 @@ response.subscribe(
      orderResultEvent -> {
          if (orderResultEvent.isAccessGranted())
              System.out.println("Access Granted for Service Agreement " + orderResultEvent.getServiceAgreementId());
-         else if (orderResultEvent.isPaymentRefund())
+         else if (orderResultEvent.isRefund())
              System.out.println("There was a problem with Service Agreement " + orderResultEvent.getServiceAgreementId() + " .Payment Refund");
      }
  );
