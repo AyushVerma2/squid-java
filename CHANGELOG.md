@@ -1,6 +1,12 @@
 History
 =======
 
+0.4.1 (April 3th, 2019)
+-------------------------
+
+* Implementation of Personal Sign
+
+
 0.4.0 (April 2nd, 2019)
 -------------------------
 

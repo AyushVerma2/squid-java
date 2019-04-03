@@ -7,6 +7,7 @@ package com.oceanprotocol.squid.external;
 
 import com.oceanprotocol.keeper.contracts.OceanToken;
 import com.oceanprotocol.squid.exceptions.TokenApproveException;
+import com.oceanprotocol.squid.external.parity.JsonRpcSquidAdmin;
 import com.oceanprotocol.squid.external.web3.PersonalTransactionManager;
 import com.oceanprotocol.squid.models.Account;
 import org.apache.logging.log4j.LogManager;
@@ -81,7 +82,7 @@ public class KeeperService {
         this.gasLimit= DEFAULT_GAS_LIMIT;
         String keeperUrl = url;
 
-        this.web3 = Admin.build(new HttpService(keeperUrl));
+        this.web3 = new JsonRpcSquidAdmin(new HttpService(keeperUrl));//Admin.build(new HttpService(keeperUrl));
 
         // TODO: Web3j only supports a ChainId in byte format, so any ChainId of a
         // private network is not supported. By the time being we can't specify that
