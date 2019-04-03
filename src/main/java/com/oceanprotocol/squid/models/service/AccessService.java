@@ -220,19 +220,17 @@ public class AccessService extends Service {
 
     }
 
-    public String generateServiceAgreementSignature(Web3j web3, String consumerAddress, String publisherAddress,  String serviceAgreementId,
+    public String generateServiceAgreementSignature(Web3j web3, String consumerAddress, String consumerPassword, String publisherAddress,  String serviceAgreementId,
                                                    String lockRewardConditionAddress, String accessSecretStoreConditionAddress,  String escrowRewardAddress) throws IOException {
 
         String hash= generateServiceAgreementHash(serviceAgreementId, consumerAddress, publisherAddress, lockRewardConditionAddress, accessSecretStoreConditionAddress, escrowRewardAddress);
-        return EthereumHelper.ethSignMessage(web3, hash, consumerAddress);
-
+        return this.generateServiceAgreementSignatureFromHash(web3, consumerAddress, consumerPassword, hash);
     }
 
 
-    public String generateServiceAgreementSignatureFromHash(Web3j web3, String consumerAddress, String hash) throws IOException {
-        return EthereumHelper.ethSignMessage(web3, hash, consumerAddress);
+    public String generateServiceAgreementSignatureFromHash(Web3j web3, String consumerAddress, String consumerPassword, String hash) throws IOException {
+        return EthereumHelper.ethSignMessage(web3, hash, consumerAddress, consumerPassword);
     }
-
 
     public String fetchConditionValues() throws UnsupportedEncodingException {
 

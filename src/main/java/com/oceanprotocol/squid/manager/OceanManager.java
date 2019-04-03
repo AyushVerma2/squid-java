@@ -329,24 +329,6 @@ public class OceanManager extends BaseManager {
     private Flowable<EscrowAccessSecretStoreTemplate.AgreementCreatedEventResponse> initializeServiceAgreement(DID did, DDO ddo, String serviceDefinitionId, String serviceAgreementId)
             throws  DDOException, ServiceException, ServiceAgreementException {
 
-
-        // We need to unlock the account before calling the purchase method
-        // to be able to generate the sign of the serviceAgreement
-        try {
-            boolean accountUnlocked = this.getKeeperService().unlockAccount(getMainAccount());
-            if (!accountUnlocked) {
-                String msg = "Account " + getMainAccount().address + " has not been unlocked";
-                log.error(msg);
-                throw new ServiceAgreementException(serviceAgreementId, "Account " + getMainAccount().address + " has not been unlocked");
-            }
-
-        }
-        catch (Exception e){
-            String msg = "Account " + getMainAccount().address + " has not been unlocked";
-            log.error(msg+ ": " + e.getMessage());
-            throw new ServiceAgreementException(serviceAgreementId, "Account " + getMainAccount().address + " has not been unlocked");
-        }
-
         AccessService accessService= ddo.getAccessService(serviceDefinitionId);
 
         //  Consumer sign service details. It includes:
@@ -356,6 +338,7 @@ public class OceanManager extends BaseManager {
             agreementSignature = accessService.generateServiceAgreementSignature(
                     getKeeperService().getWeb3(),
                     getMainAccount().getAddress(),
+                    getMainAccount().getPassword(),
                     ddo.proof.creator,
                     serviceAgreementId,
                     lockRewardCondition.getContractAddress(),
