@@ -62,10 +62,7 @@ public class EthereumHelperTestIT {
     public void ethSignMessage() throws Exception {
         String message = "Hi there";
 
-        keeper.unlockAccount(account);
-
-        String signedMaessage= EthereumHelper.ethEncodeAndSignMessage(keeper.getWeb3(), message, keeper.getCredentials().getAddress());
-
+        String signedMaessage= EthereumHelper.ethEncodeAndSignMessage(keeper.getWeb3(), message, keeper.getCredentials().getAddress(), account.password);
         assertTrue( signedMaessage.length() == 132);
     }
 

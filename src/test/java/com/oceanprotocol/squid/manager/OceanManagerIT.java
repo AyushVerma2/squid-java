@@ -11,6 +11,7 @@ import com.oceanprotocol.secretstore.core.EvmDto;
 import com.oceanprotocol.squid.exceptions.DDOException;
 import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.KeeperService;
+import com.oceanprotocol.squid.external.parity.JsonRpcSquidAdmin;
 import com.oceanprotocol.squid.models.Account;
 import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.DID;
@@ -146,7 +147,7 @@ public class OceanManagerIT {
     public void getInstance() {
         // Checking if web3j driver included in KeeperService implements the Web3j interface
         assertTrue(
-                managerPublisher.getKeeperService().getWeb3().getClass().getInterfaces()[0].isAssignableFrom(Admin.class));
+                managerPublisher.getKeeperService().getWeb3().getClass().isAssignableFrom(JsonRpcSquidAdmin.class));
         assertTrue(
                 managerPublisher.getAquariusService().getClass().isAssignableFrom(AquariusService.class));
     }

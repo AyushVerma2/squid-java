@@ -5,6 +5,8 @@
 
 package com.oceanprotocol.squid.helpers;
 
+import com.oceanprotocol.squid.external.parity.JsonRpcSquidAdmin;
+import com.oceanprotocol.squid.external.parity.methods.response.ParitySquidPersonalSign;
 import org.web3j.crypto.*;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.EthSign;
@@ -91,12 +93,15 @@ public abstract class EthereumHelper {
      * @param web3  web3j
      * @param message message to sign
      * @param address address to use for signing
+     * @param password password to use for signing
      * @return signed message
      * @throws IOException IOException
      */
-    public static String ethSignMessage(Web3j web3, String message, String address) throws IOException {
-        EthSign ethSign= web3.ethSign(address, message).send();
-        return ethSign.getResult();
+    public static String ethSignMessage(Web3j web3, String message, String address, String password) throws IOException {
+
+        JsonRpcSquidAdmin squidAdmin = (JsonRpcSquidAdmin)web3;
+        ParitySquidPersonalSign response = squidAdmin.parityPersonalSign(message, address, password).send();
+        return response.getSign();
     }
 
     /**
@@ -104,12 +109,13 @@ public abstract class EthereumHelper {
      * @param web3 web3j
      * @param message message to hash and sign
      * @param address address to use for signing
+     * @param password password to use for signing
      * @return signed message
      * @throws IOException IOException
      */
-    public static String ethEncodeAndSignMessage(Web3j web3, String message, String address) throws IOException {
+    public static String ethEncodeAndSignMessage(Web3j web3, String message, String address, String password) throws IOException {
         String hash= Hash.sha3(EncodingHelper.encodeToHex(message));
-        return ethSignMessage(web3, hash, address);
+        return ethSignMessage(web3, hash, address, password);
     }
 
     /**

@@ -10,6 +10,7 @@ import com.oceanprotocol.keeper.contracts.OceanToken;
 import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.KeeperService;
 import com.oceanprotocol.squid.exceptions.EthereumException;
+import com.oceanprotocol.squid.external.parity.JsonRpcSquidAdmin;
 import com.oceanprotocol.squid.models.Account;
 import com.oceanprotocol.squid.models.Balance;
 import com.typesafe.config.Config;
@@ -78,7 +79,7 @@ public class AccountsManagerIT {
     public void getInstance() {
         // Checking if web3j driver included in KeeperService implements the Web3j interface
         assertTrue(
-                manager.getKeeperService().getWeb3().getClass().getInterfaces()[0].isAssignableFrom(Admin.class));
+                manager.getKeeperService().getWeb3().getClass().isAssignableFrom(JsonRpcSquidAdmin.class));
         assertTrue(
                 manager.getAquariusService().getClass().isAssignableFrom(AquariusService.class));
     }

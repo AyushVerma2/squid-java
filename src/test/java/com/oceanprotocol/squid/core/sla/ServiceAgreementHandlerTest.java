@@ -8,6 +8,7 @@ package com.oceanprotocol.squid.core.sla;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.oceanprotocol.squid.external.KeeperService;
 import com.oceanprotocol.squid.manager.ManagerHelper;
+import com.oceanprotocol.squid.models.Account;
 import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.service.AccessService;
 import com.typesafe.config.Config;
@@ -32,6 +33,7 @@ public class ServiceAgreementHandlerTest {
 
     private static final Config config = ConfigFactory.load();
     private static KeeperService keeper;
+    private static Account account;
 
     private static final String TEMPLATE_ID= "";
     private static final String SERVICEAGREEMENT_ID= "0xf136d6fadecb48fdb2fc1fb420f5a5d1c32d22d9424e47ab9461556e058fefaa";
@@ -48,6 +50,11 @@ public class ServiceAgreementHandlerTest {
     public static void setUp() throws Exception {
         sla= new ServiceAgreementHandler();
         keeper = ManagerHelper.getKeeper(config, ManagerHelper.VmClient.parity);
+
+        String accountAddress = config.getString("account." + ManagerHelper.VmClient.parity.toString() + ".address");
+        String accountPassword = config.getString("account." + ManagerHelper.VmClient.parity.toString() + ".password");
+
+        account = new Account(accountAddress, accountPassword);
 
         jsonContent = new String(Files.readAllBytes(Paths.get(DDO_JSON_SAMPLE)));
         ddo= DDO.fromJSON(new TypeReference<DDO>() {}, jsonContent);
@@ -106,7 +113,7 @@ public class ServiceAgreementHandlerTest {
 
         String hash= accessService.generateServiceAgreementHash(SERVICEAGREEMENT_ID, "consumerAddress", "publisherAddress", "lockRewardAddress",
                 "accessSecretStoreADdress", "escrowRewardAddredd");
-        String signature= accessService.generateServiceAgreementSignatureFromHash(keeper.getWeb3(), keeper.getAddress(), hash);
+        String signature= accessService.generateServiceAgreementSignatureFromHash(keeper.getWeb3(), keeper.getAddress(), account.password, hash);
 
         final String hashTemplateId= Hash.sha3(TEMPLATE_ID);
         //final String hashConditionKeys= Hash.sha3(accessService.fetchConditionKeys());
