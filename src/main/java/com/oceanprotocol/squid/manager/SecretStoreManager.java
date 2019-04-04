@@ -11,8 +11,6 @@ import com.oceanprotocol.secretstore.auth.PublisherWorker;
 import com.oceanprotocol.secretstore.core.EvmDto;
 import com.oceanprotocol.secretstore.core.SecretStoreDto;
 import com.oceanprotocol.squid.exceptions.EncryptionException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 

@@ -17,7 +17,6 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.List;
 
 import static org.junit.Assert.*;
 

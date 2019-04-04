@@ -17,7 +17,6 @@ import org.web3j.utils.Numeric;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
 
 public abstract class EncodingHelper {
 
