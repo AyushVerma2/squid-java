@@ -8,8 +8,8 @@ package com.oceanprotocol.squid.models.service;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.oceanprotocol.squid.models.FromJsonToModel;
 import com.oceanprotocol.squid.models.AbstractModel;
+import com.oceanprotocol.squid.models.FromJsonToModel;
 
 //@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder(alphabetic=true)

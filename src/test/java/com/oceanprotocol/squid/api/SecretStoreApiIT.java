@@ -12,8 +12,6 @@ import com.oceanprotocol.squid.models.asset.AssetMetadata;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import com.typesafe.config.ConfigValueFactory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -26,7 +24,6 @@ import static org.junit.Assert.assertNotNull;
 
 public class SecretStoreApiIT {
 
-    private static final Logger log = LogManager.getLogger(SecretStoreApiIT.class);
 
     private static String METADATA_JSON_SAMPLE = "src/test/resources/examples/metadata.json";
     private static String METADATA_JSON_CONTENT;

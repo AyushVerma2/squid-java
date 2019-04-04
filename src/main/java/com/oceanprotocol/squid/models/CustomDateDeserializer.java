@@ -26,12 +26,12 @@ public class CustomDateDeserializer extends StdDeserializer<Date> {
     }
 
     @Override
-    public Date deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, RuntimeException {
+    public Date deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         String date = jsonParser.getText();
         try {
             return formatter.parse(date);
         } catch (ParseException e) {
-            throw new RuntimeException(e);
+            throw new IOException(e);
         }
     }
 

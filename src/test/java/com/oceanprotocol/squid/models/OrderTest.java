@@ -8,7 +8,7 @@ package com.oceanprotocol.squid.models;
 import com.oceanprotocol.squid.models.asset.AssetMetadata;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 public class OrderTest {
 

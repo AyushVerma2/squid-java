@@ -12,8 +12,6 @@ import com.oceanprotocol.squid.api.config.OceanConfig;
 import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.KeeperService;
 import com.oceanprotocol.squid.manager.*;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.web3j.crypto.CipherException;
 
 import java.io.IOException;

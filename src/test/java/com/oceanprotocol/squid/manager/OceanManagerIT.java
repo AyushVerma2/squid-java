@@ -23,7 +23,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.web3j.protocol.admin.Admin;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -235,7 +235,7 @@ public class OceanManagerIT {
         boolean didRegistered= managerPublisher.registerDID(did, url, checksum, Arrays.asList(providerAddress));
         assertTrue(didRegistered);
 
-        DDO ddo= managerPublisher.resolveDID(did);
+        managerPublisher.resolveDID(did);
 
     }
 

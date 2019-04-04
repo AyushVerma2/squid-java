@@ -13,7 +13,8 @@ import org.web3j.abi.datatypes.generated.Uint64;
 import java.math.BigInteger;
 import java.util.ArrayList;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class CryptoHelperTest {
 

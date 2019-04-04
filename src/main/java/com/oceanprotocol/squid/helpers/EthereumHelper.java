@@ -9,7 +9,6 @@ import com.oceanprotocol.squid.external.parity.JsonRpcSquidAdmin;
 import com.oceanprotocol.squid.external.parity.methods.response.ParitySquidPersonalSign;
 import org.web3j.crypto.*;
 import org.web3j.protocol.Web3j;
-import org.web3j.protocol.core.methods.response.EthSign;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -161,7 +160,7 @@ public abstract class EthereumHelper {
 
     public static String encodeParameterValue(String type, Object value) throws UnsupportedEncodingException {
 
-        if (type.equals("string"))
+        if ("string".equals(type))
            return EthereumHelper.remove0x((String) value);
         else if (type.contains("bytes32"))
             return EthereumHelper.remove0x((String) value);
