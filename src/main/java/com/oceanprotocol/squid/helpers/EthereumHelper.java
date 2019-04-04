@@ -160,7 +160,7 @@ public abstract class EthereumHelper {
 
     public static String encodeParameterValue(String type, Object value) throws UnsupportedEncodingException {
 
-        if (type.equals("string"))
+        if ("string".equals(type))
            return EthereumHelper.remove0x((String) value);
         else if (type.contains("bytes32"))
             return EthereumHelper.remove0x((String) value);

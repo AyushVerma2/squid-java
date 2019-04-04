@@ -6,15 +6,12 @@
 package com.oceanprotocol.squid.models;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oceanprotocol.squid.exceptions.DIDFormatException;
 import com.oceanprotocol.squid.models.asset.AssetMetadata;
 import com.oceanprotocol.squid.models.service.AccessService;
 import com.oceanprotocol.squid.models.service.AuthorizationService;
 import com.oceanprotocol.squid.models.service.MetadataService;
 import com.oceanprotocol.squid.models.service.Service;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -38,16 +35,10 @@ public class DDOTest {
     private static final String DDO_JSON_AUTH_SAMPLE = "src/test/resources/examples/ddo-example-authorization.json";
     private static String DDO_JSON_AUTH_CONTENT;
 
-    private static ObjectMapper objectMapper;
-
-    private static final Config config = ConfigFactory.load();
-
-
     @BeforeClass
     public static void setUp() throws Exception {
         DDO_JSON_CONTENT = new String(Files.readAllBytes(Paths.get(DDO_JSON_SAMPLE)));
         DDO_JSON_AUTH_CONTENT = new String(Files.readAllBytes(Paths.get(DDO_JSON_AUTH_SAMPLE)));
-        objectMapper = new ObjectMapper();
     }
 
     @Test
@@ -59,7 +50,7 @@ public class DDOTest {
 
     @Test(expected = DIDFormatException.class)
     public void badDID() throws Exception {
-        DID did= new DID("did:kkdid:123");
+        new DID("did:kkdid:123");
     }
 
     @Test

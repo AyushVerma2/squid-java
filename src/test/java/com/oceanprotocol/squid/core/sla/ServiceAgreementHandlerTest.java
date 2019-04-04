@@ -29,8 +29,6 @@ public class ServiceAgreementHandlerTest {
 
     private static final Logger log= LogManager.getLogger(ServiceAgreementHandlerTest.class);
 
-    private static ServiceAgreementHandler sla;
-
     private static final Config config = ConfigFactory.load();
     private static KeeperService keeper;
     private static Account account;
@@ -48,7 +46,6 @@ public class ServiceAgreementHandlerTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        sla= new ServiceAgreementHandler();
         keeper = ManagerHelper.getKeeper(config, ManagerHelper.VmClient.parity);
 
         String accountAddress = config.getString("account." + ManagerHelper.VmClient.parity.toString() + ".address");
@@ -126,7 +123,6 @@ public class ServiceAgreementHandlerTest {
         log.debug("Hash conditionValues: " + hashConditionValues);
         log.debug("Hash Timeouts: " + hashTimeouts);
         log.debug("Hash ServiceAgreementId: " + hashServiceAgreementId);
-
 
 
         log.debug("\n-------\n");

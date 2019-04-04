@@ -117,7 +117,7 @@ public class AccountsManagerIT {
     public void getAccountsBalanceError() throws EthereumException, CipherException, IOException {
         managerError.requestTokens(BigInteger.valueOf(100));
 
-        Balance balance= managerError.getAccountBalance(TEST_ADDRESS);
+        managerError.getAccountBalance(TEST_ADDRESS);
     }
 
 }

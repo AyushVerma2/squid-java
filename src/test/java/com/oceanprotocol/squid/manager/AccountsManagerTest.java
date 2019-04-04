@@ -5,12 +5,12 @@
 
 package com.oceanprotocol.squid.manager;
 
-import com.oceanprotocol.squid.external.KeeperService;
-import com.oceanprotocol.squid.external.AquariusService;
+import com.oceanprotocol.keeper.contracts.OceanToken;
 import com.oceanprotocol.squid.exceptions.EthereumException;
+import com.oceanprotocol.squid.external.AquariusService;
+import com.oceanprotocol.squid.external.KeeperService;
 import com.oceanprotocol.squid.models.Account;
 import com.oceanprotocol.squid.models.Balance;
-import com.oceanprotocol.keeper.contracts.OceanToken;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
@@ -25,10 +25,12 @@ import org.web3j.protocol.core.RemoteCall;
 import org.web3j.protocol.core.Request;
 import org.web3j.protocol.core.methods.response.EthAccounts;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
+
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;

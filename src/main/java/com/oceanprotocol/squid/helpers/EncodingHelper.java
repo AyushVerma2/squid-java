@@ -131,7 +131,7 @@ public abstract class EncodingHelper {
             return TypeEncoder.encode(new Address((String) value));
         else if (type.contains("bytes"))
             return encodeToHex((String) value);
-        else if (type.equals("string"))
+        else if ("string".equals(type))
             return encodeToHex((String) value);
 
         return encodeToHex((String) value);

@@ -6,6 +6,7 @@
 package com.oceanprotocol.squid.external;
 
 import com.oceanprotocol.squid.helpers.HttpHelper;
+import com.oceanprotocol.squid.helpers.HttpHelper.DownloadResult;
 import com.oceanprotocol.squid.helpers.StringsHelper;
 import com.oceanprotocol.squid.models.HttpResponse;
 import com.oceanprotocol.squid.models.brizo.InitializeAccessSLA;
@@ -18,8 +19,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.oceanprotocol.squid.helpers.HttpHelper.*;
 
 /**
  * Service for Brizo's Integration

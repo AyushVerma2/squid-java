@@ -235,7 +235,7 @@ public class OceanManagerIT {
         boolean didRegistered= managerPublisher.registerDID(did, url, checksum, Arrays.asList(providerAddress));
         assertTrue(didRegistered);
 
-        DDO ddo= managerPublisher.resolveDID(did);
+        managerPublisher.resolveDID(did);
 
     }
 

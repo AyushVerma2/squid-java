@@ -461,7 +461,7 @@ public class OceanManager extends BaseManager {
         String serviceEndpoint;
         List<AssetMetadata.File> files;
 
-        serviceAgreementId = EthereumHelper.add0x(serviceAgreementId);
+        String agreementId = EthereumHelper.add0x(serviceAgreementId);
 
         try {
 
@@ -471,7 +471,7 @@ public class OceanManager extends BaseManager {
             files = this.getMetadataFiles(ddo);
 
         }catch (EthereumException|DDOException|ServiceException|EncryptionException|IOException e) {
-            String msg = "Error consuming asset with DID " + did.getDid() +" and Service Agreement " + serviceAgreementId;
+            String msg = "Error consuming asset with DID " + did.getDid() +" and Service Agreement " + agreementId;
             log.error(msg+ ": " + e.getMessage());
             throw new ConsumeServiceException(msg, e);
         }
@@ -482,7 +482,7 @@ public class OceanManager extends BaseManager {
             try {
 
                 if (null == file.url)    {
-                    String msg = "Error Decrypting URL for Asset: " + did.getDid() +" and Service Agreement " + serviceAgreementId
+                    String msg = "Error Decrypting URL for Asset: " + did.getDid() +" and Service Agreement " + agreementId
                             + " URL received: " + file.url;
                     log.error(msg);
                     throw new ConsumeServiceException(msg);
@@ -490,9 +490,9 @@ public class OceanManager extends BaseManager {
                 String fileName = file.url.substring(file.url.lastIndexOf("/") + 1);
                 String destinationPath = basePath + File.separator + fileName;
 
-                HttpHelper.DownloadResult downloadResult = BrizoService.consumeUrl(serviceEndpoint, checkConsumerAddress, serviceAgreementId, file.url, destinationPath);
+                HttpHelper.DownloadResult downloadResult = BrizoService.consumeUrl(serviceEndpoint, checkConsumerAddress, agreementId, file.url, destinationPath);
                 if (!downloadResult.getResult()){
-                    String msg = "Error consuming asset with DID " + did.getDid() +" and Service Agreement " + serviceAgreementId
+                    String msg = "Error consuming asset with DID " + did.getDid() +" and Service Agreement " + agreementId
                             + ". Http Code: " + downloadResult.getCode() + " . Message: " + downloadResult.getMessage();
 
                     log.error(msg);
@@ -500,7 +500,7 @@ public class OceanManager extends BaseManager {
                 }
 
             } catch (URISyntaxException|IOException e) {
-                String msg = "Error consuming asset with DID " + did.getDid() +" and Service Agreement " + serviceAgreementId;
+                String msg = "Error consuming asset with DID " + did.getDid() +" and Service Agreement " + agreementId;
                 log.error(msg+ ": " + e.getMessage());
                 throw new ConsumeServiceException(msg, e);
             }
