@@ -12,6 +12,7 @@ import com.oceanprotocol.squid.models.AbstractModel;
 import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.HttpResponse;
 import com.oceanprotocol.squid.models.aquarius.SearchQuery;
+import com.oceanprotocol.squid.models.aquarius.SearchResult;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -143,7 +144,7 @@ public class AquariusService {
      * @return a List of all the DDOs found
      * @throws DDOException DDOException
      */
-    public ArrayList<DDO> searchDDO(String param, int offset, int page) throws DDOException  {
+    public SearchResult searchDDO(String param, int offset, int page) throws DDOException  {
 
         String url= this.ddoEndpoint + "/query?text=" + param + "&page=" + page + "&offset=" + offset;
         HttpResponse response;
@@ -161,7 +162,7 @@ public class AquariusService {
         try {
             return AbstractModel
                     .getMapperInstance()
-                    .readValue(response.getBody(), new TypeReference<ArrayList<DDO>>() {});
+                    .readValue(response.getBody(), new TypeReference<SearchResult>() {});
         } catch (IOException e) {
             throw new DDOException("Unable to search for DDO's: ", e);
         }
@@ -174,7 +175,7 @@ public class AquariusService {
      * @return a List of all the DDOs found
      * @throws DDOException DDOException
      */
-    public ArrayList<DDO> searchDDO(SearchQuery searchQuery) throws DDOException {
+    public SearchResult searchDDO(SearchQuery searchQuery) throws DDOException {
 
         HttpResponse response;
 
@@ -192,7 +193,7 @@ public class AquariusService {
         try {
             return AbstractModel
                     .getMapperInstance()
-                    .readValue(response.getBody(), new TypeReference<ArrayList<DDO>>() {});
+                    .readValue(response.getBody(), new TypeReference<SearchResult>() {});
         } catch (IOException e) {
             throw new DDOException("Unable to search for DDO's", e);
         }
