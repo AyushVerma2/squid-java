@@ -487,16 +487,18 @@ public class OceanManager extends BaseManager {
                 String fileName = file.url.substring(file.url.lastIndexOf("/") + 1);
                 String destinationPath = basePath + File.separator + fileName;
 
-                HttpHelper.DownloadResult downloadResult = BrizoService.consumeUrl(serviceEndpoint, checkConsumerAddress, serviceAgreementId, file.url, destinationPath);
-                if (!downloadResult.getResult()){
-                    String msg = "Error consuming asset with DID " + did.getDid() +" and Service Agreement " + serviceAgreementId
-                            + ". Http Code: " + downloadResult.getCode() + " . Message: " + downloadResult.getMessage();
+//                HttpHelper.DownloadResult downloadResult = BrizoService.consumeUrl(serviceEndpoint, checkConsumerAddress, serviceAgreementId, file.url, destinationPath);
+//                if (!downloadResult.getResult()){
+//                    String msg = "Error consuming asset with DID " + did.getDid() +" and Service Agreement " + serviceAgreementId
+//                            + ". Http Code: " + downloadResult.getCode() + " . Message: " + downloadResult.getMessage();
+//
+//                    log.error(msg);
+//                    throw new ConsumeServiceException(msg);
+//                }
 
-                    log.error(msg);
-                    throw new ConsumeServiceException(msg);
-                }
+                BrizoService.downloadUrl(serviceEndpoint, checkConsumerAddress, serviceAgreementId, file.url, destinationPath);
 
-            } catch (URISyntaxException|IOException e) {
+            } catch (IOException e) {
                 String msg = "Error consuming asset with DID " + did.getDid() +" and Service Agreement " + serviceAgreementId;
                 log.error(msg+ ": " + e.getMessage());
                 throw new ConsumeServiceException(msg, e);

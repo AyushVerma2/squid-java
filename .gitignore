@@ -28,3 +28,6 @@ target
 /.project
 /.settings/
 /.classpath
+
+# Avoiding to upload nile credentials
+src/test/resources/accounts/nile/
