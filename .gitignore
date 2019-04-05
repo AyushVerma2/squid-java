@@ -31,3 +31,4 @@ target
 
 # Avoiding to upload nile credentials
 src/test/resources/accounts/nile/
+src/test/resources/networks/
