@@ -84,5 +84,30 @@ public class BrizoService {
 
     }
 
+    /**
+     * Calls a Brizo´s endpoint to download an asset
+     * @param serviceEndpoint the service endpoint
+     * @param consumerAddress the address of the consumer
+     * @param serviceAgreementId the serviceAgreement Id
+     * @param url the url
+     * @param destinationPath the path to download the resource
+     * @return a DownloadResult object that indicates if the download was correct
+     * @throws IOException IOException
+     * @throws URISyntaxException URISyntaxException
+     */
+    public static void downloadUrl(String serviceEndpoint, String consumerAddress, String serviceAgreementId, String url, String destinationPath) throws IOException {
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(Service.CONSUMER_ADDRESS_PARAM, consumerAddress);
+        parameters.put(Service.SERVICE_AGREEMENT_PARAM, serviceAgreementId);
+        parameters.put(Service.URL_PARAM, url);
+
+        String endpoint = StringsHelper.format(serviceEndpoint, parameters);
+
+        log.debug("Consuming URL[" + url + "]: for service Agreement " + serviceAgreementId);
+
+        HttpHelper.download(endpoint, destinationPath);
+
+    }
 
 }

@@ -24,10 +24,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.util.ArrayList;
 
 /**
@@ -294,6 +297,32 @@ public abstract class HttpHelper {
         }
 
     }
+
+    /**
+     * Download the content of a resource
+     * @param url the url of the resource
+     * @param destinationPath the path where the resource will be downloaded
+     * @return Boolean flag
+     * @throws IOException IOException
+     * @throws URISyntaxException URISyntaxException
+     */
+    public static void download(final String url, final String destinationPath) throws IOException {
+
+        log.debug("Downloading url:" + url + " to " + destinationPath);
+
+        try {
+            URL contentUrl= new URL(url);
+            ReadableByteChannel readableByteChannel = Channels.newChannel(contentUrl.openStream());
+            FileOutputStream fileOutputStream = new FileOutputStream(destinationPath);
+            fileOutputStream.getChannel()
+                    .transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
+
+        } catch (IOException e) {
+            throw e;
+        }
+
+    }
+
 
 
 }
