@@ -1,10 +1,11 @@
 History
 =======
 
-0.4.2 (April xx, 2019)
+0.4.2 (April 5th, 2019)
 -------------------------
 
 * Support of bigger files
+* Bugfixes
 
 
 0.4.1 (April 3th, 2019)
