@@ -311,7 +311,6 @@ public abstract class HttpHelper {
         log.debug("Downloading url:" + url + " to " + destinationPath);
 
         try {
-            //URL contentUrl= new URL("https://speed.hetzner.de/1GB.bin");
             URL contentUrl= new URL(url);
             ReadableByteChannel readableByteChannel = Channels.newChannel(contentUrl.openStream());
             FileOutputStream fileOutputStream = new FileOutputStream(destinationPath);
