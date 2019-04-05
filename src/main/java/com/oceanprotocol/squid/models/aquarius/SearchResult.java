@@ -13,9 +13,7 @@ import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.FromJsonToModel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SearchResult extends AbstractModel implements FromJsonToModel {
