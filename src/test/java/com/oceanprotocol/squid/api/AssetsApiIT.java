@@ -146,8 +146,10 @@ public class AssetsApiIT {
     public void consume() throws Exception {
 
         providerConfig.setSecretStoreEndpoint(config.getString("secretstore.url"));
+        String basePath= config.getString("consume.basePath");
 
         AssetMetadata metadata = DDO.fromJSON(new TypeReference<AssetMetadata>() {}, METADATA_JSON_CONTENT);
+        //metadata.base.files.get(0).url= "https://speed.hetzner.de/100MB.bin";
 
         DDO ddo= oceanAPI.getAssetsAPI().create(metadata, providerConfig);
         DID did= new DID(ddo.id);
@@ -164,7 +166,7 @@ public class AssetsApiIT {
         boolean result = oceanAPIConsumer.getAssetsAPI().consume(
                 orderResult.getServiceAgreementId(),
                 did,
-                Service.DEFAULT_ACCESS_SERVICE_ID, "/tmp");
+                Service.DEFAULT_ACCESS_SERVICE_ID, basePath);
 
         assertEquals(true, result);
 
