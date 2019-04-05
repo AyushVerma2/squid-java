@@ -178,7 +178,7 @@ public class AssetsApiIT {
 
         String searchText = "Weather";
 
-        List<DDO> results = oceanAPI.getAssetsAPI().search(searchText);
+        List<DDO> results = oceanAPI.getAssetsAPI().search(searchText).getResults();
         assertNotNull(results);
 
     }
@@ -192,7 +192,7 @@ public class AssetsApiIT {
         Map<String, Object> params = new HashMap<>();
         params.put("license", "CC-BY");
 
-        List<DDO> results = oceanAPI.getAssetsAPI().query(params);
+        List<DDO> results = oceanAPI.getAssetsAPI().query(params).getResults();
         assertNotNull(results);
 
     }

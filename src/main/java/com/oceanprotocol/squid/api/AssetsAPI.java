@@ -11,6 +11,7 @@ import com.oceanprotocol.squid.exceptions.EthereumException;
 import com.oceanprotocol.squid.exceptions.OrderException;
 import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.DID;
+import com.oceanprotocol.squid.models.aquarius.SearchResult;
 import com.oceanprotocol.squid.models.asset.AssetMetadata;
 import com.oceanprotocol.squid.models.asset.OrderResult;
 import com.oceanprotocol.squid.models.service.ProviderConfig;
@@ -58,7 +59,7 @@ public interface AssetsAPI {
      * @return a List with all the DDOs found
      * @throws DDOException DDOException
      */
-    public List<DDO> search(String text) throws DDOException;
+    public SearchResult search(String text) throws DDOException;
 
     /**
      * Gets all the DDOs that match the search criteria
@@ -68,7 +69,7 @@ public interface AssetsAPI {
      * @return a List with all the DDOs found
      * @throws DDOException DDOException
      */
-    public List<DDO> search(String text,  int offset, int page) throws DDOException;
+    public SearchResult search(String text,  int offset, int page) throws DDOException;
 
     /**
      * Gets all the DDOs that match the parameters of the query
@@ -79,7 +80,7 @@ public interface AssetsAPI {
      * @return a List with all the DDOs found
      * @throws DDOException DDOException
      */
-    public List<DDO> query(Map<String, Object> params, int offset, int page, int sort) throws DDOException;
+    public SearchResult query(Map<String, Object> params, int offset, int page, int sort) throws DDOException;
 
     /**
      * Gets all the DDOs that match the parameters of the query
@@ -87,7 +88,7 @@ public interface AssetsAPI {
      * @return a List with all the DDOs found
      * @throws DDOException DDOException
      */
-    public List<DDO> query(Map<String, Object> params) throws DDOException;
+    public SearchResult query(Map<String, Object> params) throws DDOException;
 
     /**
      * Downloads an Asset previously ordered through a Service Agreement
