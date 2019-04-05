@@ -490,17 +490,11 @@ public class OceanManager extends BaseManager {
                 String fileName = file.url.substring(file.url.lastIndexOf("/") + 1);
                 String destinationPath = basePath + File.separator + fileName;
 
-                HttpHelper.DownloadResult downloadResult = BrizoService.consumeUrl(serviceEndpoint, checkConsumerAddress, agreementId, file.url, destinationPath);
-                if (!downloadResult.getResult()){
-                    String msg = "Error consuming asset with DID " + did.getDid() +" and Service Agreement " + agreementId
-                            + ". Http Code: " + downloadResult.getCode() + " . Message: " + downloadResult.getMessage();
+                BrizoService.downloadUrl(serviceEndpoint, checkConsumerAddress, serviceAgreementId, file.url, destinationPath);
 
-                    log.error(msg);
-                    throw new ConsumeServiceException(msg);
-                }
+            } catch (IOException e) {
+                String msg = "Error consuming asset with DID " + did.getDid() +" and Service Agreement " + serviceAgreementId;
 
-            } catch (URISyntaxException|IOException e) {
-                String msg = "Error consuming asset with DID " + did.getDid() +" and Service Agreement " + agreementId;
                 log.error(msg+ ": " + e.getMessage());
                 throw new ConsumeServiceException(msg, e);
             }
