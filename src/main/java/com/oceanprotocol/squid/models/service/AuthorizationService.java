@@ -9,14 +9,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder(alphabetic=true)
 public class AuthorizationService extends Service{
-
-    private static final Logger log = LogManager.getLogger(AuthorizationService.class);
 
     @JsonIgnore
     public static final String DEFAULT_SERVICE = "SecretStore";
