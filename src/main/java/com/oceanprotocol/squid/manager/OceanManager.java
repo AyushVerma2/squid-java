@@ -275,16 +275,16 @@ public class OceanManager extends BaseManager {
 
             return this.initializeServiceAgreement(did, ddo, serviceDefinitionId, serviceAgreementId)
                     .map(event -> EncodingHelper.toHexString(event._agreementId))
+                    .firstOrError()
+                    .toFlowable()
                     .switchMap(eventServiceAgreementId -> {
                         if (eventServiceAgreementId.isEmpty())
                             return Flowable.empty();
                         else {
                             log.debug("Received AgreementCreated Event with Id: " + eventServiceAgreementId);
-                            //getKeeperService().unlockAccount(getMainAccount());
                             getKeeperService().tokenApprove(this.tokenContract, lockRewardCondition.getContractAddress(), Integer.valueOf(ddo.metadata.base.price));
                             BigInteger balance = this.tokenContract.balanceOf(getMainAccount().address).send();
                             if (balance.compareTo(BigInteger.valueOf(Long.parseLong(ddo.metadata.base.price))) < 0) {
-//                            if (balance.intValue() < Integer.valueOf(ddo.metadata.base.price)) {
                                 log.warn("Consumer account does not have sufficient token balance to fulfill the " +
                                         "LockRewardCondition. Do `requestTokens` using the `dispenser` contract then try this again.");
                                 log.info("token balance is: " + balance + " price is: " + ddo.metadata.base.price);
