@@ -7,9 +7,9 @@ package com.oceanprotocol.squid.manager;
 
 import com.oceanprotocol.keeper.contracts.Dispenser;
 import com.oceanprotocol.keeper.contracts.OceanToken;
+import com.oceanprotocol.squid.exceptions.EthereumException;
 import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.KeeperService;
-import com.oceanprotocol.squid.exceptions.EthereumException;
 import com.oceanprotocol.squid.external.parity.JsonRpcSquidAdmin;
 import com.oceanprotocol.squid.models.Account;
 import com.oceanprotocol.squid.models.Balance;
@@ -21,7 +21,6 @@ import org.apache.logging.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.web3j.crypto.CipherException;
-import org.web3j.protocol.admin.Admin;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -118,7 +117,7 @@ public class AccountsManagerIT {
     public void getAccountsBalanceError() throws EthereumException, CipherException, IOException {
         managerError.requestTokens(BigInteger.valueOf(100));
 
-        Balance balance= managerError.getAccountBalance(TEST_ADDRESS);
+        managerError.getAccountBalance(TEST_ADDRESS);
     }
 
 }

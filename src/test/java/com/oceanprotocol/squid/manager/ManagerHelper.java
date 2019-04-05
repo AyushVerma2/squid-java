@@ -14,6 +14,7 @@ import com.typesafe.config.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.web3j.crypto.CipherException;
+
 import java.io.IOException;
 import java.math.BigInteger;
 

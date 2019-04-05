@@ -7,8 +7,8 @@ package com.oceanprotocol.squid.models.asset;
 
 public class BasicAssetInfo {
 
-    byte[] assetId;
-    Integer price;
+    public byte[] assetId;
+    public Integer price;
 
     public byte[] getAssetId() {
         return assetId;

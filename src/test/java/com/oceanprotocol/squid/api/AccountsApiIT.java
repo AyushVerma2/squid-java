@@ -9,8 +9,6 @@ import com.oceanprotocol.squid.models.Account;
 import com.oceanprotocol.squid.models.Balance;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -20,8 +18,6 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class AccountsApiIT {
-
-    private static final Logger log = LogManager.getLogger(AccountsApiIT.class);
 
     private static OceanAPI oceanAPI;
 
@@ -42,7 +38,7 @@ public class AccountsApiIT {
 
         List<Account> accounts = oceanAPI.getAccountsAPI().list();
         assertNotNull(accounts);
-        assertTrue(!accounts.isEmpty());
+        assertFalse(accounts.isEmpty());
     }
 
     @Test

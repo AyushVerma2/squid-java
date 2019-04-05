@@ -17,7 +17,6 @@ import org.web3j.utils.Numeric;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.nio.ByteBuffer;
 
 public abstract class EncodingHelper {
 
@@ -132,7 +131,7 @@ public abstract class EncodingHelper {
             return TypeEncoder.encode(new Address((String) value));
         else if (type.contains("bytes"))
             return encodeToHex((String) value);
-        else if (type.equals("string"))
+        else if ("string".equals(type))
             return encodeToHex((String) value);
 
         return encodeToHex((String) value);

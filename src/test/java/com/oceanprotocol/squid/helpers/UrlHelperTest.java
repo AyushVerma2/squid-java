@@ -6,8 +6,10 @@
 package com.oceanprotocol.squid.helpers;
 
 import org.junit.Test;
+
 import java.net.URISyntaxException;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
 
 public class UrlHelperTest {
 
