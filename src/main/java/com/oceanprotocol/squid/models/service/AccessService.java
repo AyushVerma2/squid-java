@@ -123,6 +123,8 @@ public class AccessService extends Service {
     public String generateServiceAgreementHash(String serviceAgreementId, String consumerAddress, String publisherAddress,
                                                String lockRewardConditionAddress,  String accessSecretStoreConditionAddress, String escrowRewardAddress) throws IOException {
 
+        log.debug("Generating Service Agreement Hash: " + serviceAgreementId);
+
         String lockRewardId = generateLockRewardId(serviceAgreementId, escrowRewardAddress, lockRewardConditionAddress);
         String accessSecretStoreId = generateAccessSecretStoreConditionId(serviceAgreementId, consumerAddress, accessSecretStoreConditionAddress);
         String escrowRewardId = generateEscrowRewardConditionId(serviceAgreementId, consumerAddress, publisherAddress, escrowRewardAddress, lockRewardId, accessSecretStoreId);

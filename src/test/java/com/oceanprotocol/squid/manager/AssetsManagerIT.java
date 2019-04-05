@@ -6,7 +6,6 @@
 package com.oceanprotocol.squid.manager;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.KeeperService;
 import com.oceanprotocol.squid.models.DDO;
@@ -18,12 +17,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class AssetsManagerIT {
 
@@ -37,7 +38,6 @@ public class AssetsManagerIT {
     private static final String DDO_JSON_SAMPLE = "src/test/resources/examples/ddo-example.json";
     private static String DDO_JSON_CONTENT;
 
-    private static ObjectMapper objectMapper;
 
     private static AssetMetadata metadataBase;
     private static DDO ddoBase;
@@ -59,7 +59,6 @@ public class AssetsManagerIT {
         ddoBase = DDO.fromJSON(new TypeReference<DDO>() {}, DDO_JSON_CONTENT);
 
         metadataBase = (AssetMetadata) ddoBase.metadata;
-        objectMapper = new ObjectMapper();
 
     }
 

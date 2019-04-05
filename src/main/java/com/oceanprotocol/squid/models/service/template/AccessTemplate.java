@@ -11,10 +11,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.oceanprotocol.squid.models.AbstractModel;
 import com.oceanprotocol.squid.models.FromJsonToModel;
 import com.oceanprotocol.squid.models.service.AccessService;
-import com.oceanprotocol.squid.models.service.Condition;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder(alphabetic=true)
