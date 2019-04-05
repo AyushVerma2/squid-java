@@ -145,7 +145,7 @@ public class AccountsManager extends BaseManager {
      * @param receiverAccount Address of the transfer receiver
      * @param amount Amount of tokens to transfer
      * @return TransactionReceipt tx receipt
-     * @throws EthereumException
+     * @throws EthereumException if the EVM throws an exception
      */
     public TransactionReceipt transfer(String receiverAccount, BigInteger amount) throws EthereumException {
         try{

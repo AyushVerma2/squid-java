@@ -139,14 +139,13 @@ public class OceanManager extends BaseManager {
      * @param did the did
      * @param url metadata url
      * @param checksum calculated hash of the metadata
+     * @param providers list of providers addresses to give access
      * @return boolean success
      * @throws DIDRegisterException DIDRegisterException
      */
     public boolean registerDID(DID did, String url, String checksum, List<String> providers) throws DIDRegisterException{
         log.debug("Registering DID " + did.getHash() + " into Registry " + didRegistry.getContractAddress());
 
-//        String providerAddress = Keys.toChecksumAddress(this.providerAddress);
-//        List<String> providers = Arrays.asList(providerAddress);
 
         try {
 

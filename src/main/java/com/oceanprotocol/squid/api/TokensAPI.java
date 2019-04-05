@@ -20,7 +20,7 @@ public interface TokensAPI {
      * Request a number of Ocean Tokens
      * @param amount Number of tokens requested
      * @return TransactionReceipt tx receipt
-     * @throws EthereumException
+     * @throws EthereumException EVM error
      */
     TransactionReceipt request(BigInteger amount) throws EthereumException;
 
@@ -29,7 +29,7 @@ public interface TokensAPI {
      * @param receiverAccount Address of the transfer receiver
      * @param amount Amount of tokens to transfer
      * @return boolean indicating success/failure of the transfer
-     * @throws EthereumException
+     * @throws EthereumException EVM error
      */
     TransactionReceipt transfer(String receiverAccount, BigInteger amount) throws EthereumException;
 

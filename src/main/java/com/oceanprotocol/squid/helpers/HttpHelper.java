@@ -302,9 +302,7 @@ public abstract class HttpHelper {
      * Download the content of a resource
      * @param url the url of the resource
      * @param destinationPath the path where the resource will be downloaded
-     * @return Boolean flag
-     * @throws IOException IOException
-     * @throws URISyntaxException URISyntaxException
+     * @throws IOException Exception during the download
      */
     public static void download(final String url, final String destinationPath) throws IOException {
 

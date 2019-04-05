@@ -296,6 +296,7 @@ public abstract class BaseManager {
     /**
      * It sets the LockRewardCondition instance
      * @param lockRewardCondition instance
+     * @return BaseManager instance
      */
     public BaseManager setLockRewardCondition(LockRewardCondition lockRewardCondition) {
         this.lockRewardCondition = lockRewardCondition;
@@ -312,8 +313,8 @@ public abstract class BaseManager {
 
     /**
      * It sets the EscrowReward instance
-     * @param escrowReward
-     * @return
+     * @param escrowReward EscrowReward instance
+     * @return BaseManager instance
      */
     public BaseManager setEscrowReward(EscrowReward escrowReward) {
         this.escrowReward = escrowReward;
@@ -330,8 +331,8 @@ public abstract class BaseManager {
 
     /**
      * It sets the EscrowReward instance
-     * @param accessSecretStoreCondition
-     * @return
+     * @param accessSecretStoreCondition AccessSecretStoreCondition instance
+     * @return BaseManager instance
      */
     public BaseManager setAccessSecretStoreCondition(AccessSecretStoreCondition accessSecretStoreCondition) {
         this.accessSecretStoreCondition = accessSecretStoreCondition;

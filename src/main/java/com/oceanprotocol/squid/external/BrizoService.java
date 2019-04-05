@@ -65,7 +65,7 @@ public class BrizoService {
      * @param serviceAgreementId the serviceAgreement Id
      * @param url the url
      * @param destinationPath the path to download the resource
-     * @return a DownloadResult object that indicates if the download was correct
+     * @return DownloadResult Instance of DownloadResult that indicates if the download was correct
      * @throws IOException IOException
      * @throws URISyntaxException URISyntaxException
      */
@@ -91,9 +91,7 @@ public class BrizoService {
      * @param serviceAgreementId the serviceAgreement Id
      * @param url the url
      * @param destinationPath the path to download the resource
-     * @return a DownloadResult object that indicates if the download was correct
-     * @throws IOException IOException
-     * @throws URISyntaxException URISyntaxException
+     * @throws IOException Exception during the download process
      */
     public static void downloadUrl(String serviceEndpoint, String consumerAddress, String serviceAgreementId, String url, String destinationPath) throws IOException {
 

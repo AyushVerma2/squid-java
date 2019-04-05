@@ -33,7 +33,7 @@ public class TemplatesManager extends BaseManager {
      * using them as attributes
      * @param keeperService Keeper Dto
      * @param aquariusService Provider Dto
-     * @return AccountsManager
+     * @return AccountsManager AccountsManager instance
      */
     public static TemplatesManager getInstance(KeeperService keeperService, AquariusService aquariusService) {
         return new TemplatesManager(keeperService, aquariusService);
@@ -44,7 +44,7 @@ public class TemplatesManager extends BaseManager {
      * Suggest an agreement template smart contract to include in the white listed agreement templates
      * @param templateAddress Hex str the ethereum address of the deployed template (smart contract address)
      * @return TransactionReceipt tx receipt
-     * @throws EthereumException
+     * @throws EthereumException EVM error
      */
     public TransactionReceipt proposeTemplate(String templateAddress) throws EthereumException {
         try{
@@ -61,7 +61,7 @@ public class TemplatesManager extends BaseManager {
      * Approve (whitelist) an already proposed template
      * @param templateAddress Hex str the ethereum address of the deployed template (smart contract address)
      * @return TransactionReceipt tx receipt
-     * @throws EthereumException
+     * @throws EthereumException EVM error
      */
     public TransactionReceipt approveTemplate(String templateAddress) throws EthereumException {
         try{
@@ -78,7 +78,7 @@ public class TemplatesManager extends BaseManager {
      * Cancel the propsed/approved template or essentially de-whitelist the template.
      * @param templateAddress Hex str the ethereum address of the deployed template (smart contract address)
      * @return TransactionReceipt tx receipt
-     * @throws EthereumException
+     * @throws EthereumException EVM error
      */
     public TransactionReceipt revokeTemplate(String templateAddress) throws EthereumException {
         try{
@@ -94,7 +94,7 @@ public class TemplatesManager extends BaseManager {
      * Returns true or false depending if the template was approved
      * @param templateAddress Hex str the ethereum address of the deployed template (smart contract address)
      * @return boolean is approved
-     * @throws EthereumException
+     * @throws EthereumException EVM error
      */
     public boolean isTemplateApproved(String templateAddress) throws EthereumException {
         try{
@@ -109,7 +109,7 @@ public class TemplatesManager extends BaseManager {
     /**
      * Returns the number of templates registered
      * @return boolean is approved
-     * @throws EthereumException
+     * @throws EthereumException EVM error
      */
     public BigInteger getTemplateListSize() throws EthereumException {
         try{
@@ -121,6 +121,12 @@ public class TemplatesManager extends BaseManager {
         }
     }
 
+    /**
+     * Getting template using an address given
+     * @param templateAddress template address
+     * @return TemplateSEA instance
+     * @throws EthereumException EVM error
+     */
     public TemplateSEA getTemplate(String templateAddress) throws EthereumException {
         try {
             Tuple4<BigInteger, String, String, BigInteger> tuple4 = templateStoreManager.getTemplate(templateAddress).send();
