@@ -14,6 +14,7 @@ import com.oceanprotocol.squid.manager.AssetsManager;
 import com.oceanprotocol.squid.manager.OceanManager;
 import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.DID;
+import com.oceanprotocol.squid.models.aquarius.SearchResult;
 import com.oceanprotocol.squid.models.asset.AssetMetadata;
 import com.oceanprotocol.squid.models.asset.OrderResult;
 import com.oceanprotocol.squid.models.service.ProviderConfig;
@@ -58,23 +59,23 @@ public class AssetsImpl implements AssetsAPI {
     }
 
     @Override
-    public List<DDO> search(String text) throws DDOException{
-        return this.search(text, 0, 0);
+    public SearchResult search(String text) throws DDOException{
+        return this.search(text, 20, 0);
     }
 
     @Override
-    public List<DDO> search(String text, int offset, int page) throws DDOException {
+    public SearchResult search(String text, int offset, int page) throws DDOException {
         return assetsManager.searchAssets(text, offset, page);
     }
 
     @Override
-    public List<DDO> query(Map<String, Object> params, int offset, int page, int sort)  throws DDOException {
+    public SearchResult query(Map<String, Object> params, int offset, int page, int sort)  throws DDOException {
         return assetsManager.searchAssets(params, offset, page, sort);
     }
 
     @Override
-    public List<DDO> query(Map<String, Object> params)  throws DDOException {
-        return this.query(params, 0, 0, 1);
+    public SearchResult query(Map<String, Object> params)  throws DDOException {
+        return this.query(params, 20, 0, 1);
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.KeeperService;
 import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.aquarius.SearchQuery;
+import com.oceanprotocol.squid.models.aquarius.SearchResult;
 import com.oceanprotocol.squid.models.asset.AssetMetadata;
 import com.oceanprotocol.squid.models.service.MetadataService;
 
@@ -87,10 +88,10 @@ public class AssetsManager extends BaseManager {
      * @param text contains the criteria
      * @param offset parameter to paginate the results
      * @param page parameter to paginate the results
-     * @return List of DDOs
+     * @return SearchResult including the list of DDOs
      * @throws DDOException if Aquairus fails searching the assets
      */
-    public List<DDO> searchAssets(String text, int offset, int page) throws DDOException {
+    public SearchResult searchAssets(String text, int offset, int page) throws DDOException {
             return getAquariusService().searchDDO(text, offset, page);
     }
 
@@ -103,7 +104,7 @@ public class AssetsManager extends BaseManager {
      * @return a List with all the DDOs found
      * @throws DDOException if Aquairus fails searching the assets
      */
-    public List<DDO> searchAssets(Map<String, Object> params, int offset, int page, int sort) throws DDOException  {
+    public SearchResult searchAssets(Map<String, Object> params, int offset, int page, int sort) throws DDOException  {
         SearchQuery searchQuery= new SearchQuery(params, offset, page, sort);
         return getAquariusService().searchDDO(searchQuery);
     }
