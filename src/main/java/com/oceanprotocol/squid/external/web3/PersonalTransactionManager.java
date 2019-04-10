@@ -11,7 +11,6 @@ import org.web3j.crypto.Credentials;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.request.Transaction;
-import org.web3j.protocol.core.methods.response.EthEstimateGas;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.tx.TransactionManager;
@@ -45,9 +44,12 @@ public class PersonalTransactionManager extends TransactionManager {
     }
 
     protected BigInteger getEstimatedGas(String to, String data) throws IOException {
-        Transaction tx= Transaction.createEthCallTransaction( getFromAddress(), to, data);
-        EthEstimateGas estimateGas= web3j.ethEstimateGas(tx).send();
-        return estimateGas.getAmountUsed();
+        // Transaction tx= Transaction.createEthCallTransaction( getFromAddress(), to, data);
+        // EthEstimateGas estimateGas= web3j.ethEstimateGas(tx).send();
+        //return estimateGas.getAmountUsed();
+
+        BigInteger gas =  web3j.ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send().getBlock().getGasLimit();
+        return gas;
     }
 
     @Override
