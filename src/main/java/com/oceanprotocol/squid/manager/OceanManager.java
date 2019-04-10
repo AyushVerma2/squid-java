@@ -36,6 +36,7 @@ import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.request.EthFilter;
 import org.web3j.protocol.core.methods.response.EthLog;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.tuples.generated.Tuple2;
 
 import java.io.File;
 import java.io.IOException;
@@ -258,6 +259,7 @@ public class OceanManager extends BaseManager {
             throws OrderException {
 
         String serviceAgreementId = ServiceAgreementHandler.generateSlaId();
+
         DDO ddo;
         // Checking if DDO is already there and serviceDefinitionId is included
         try {
@@ -360,10 +362,30 @@ public class OceanManager extends BaseManager {
         );
 
         // 3. Send agreement details to Publisher (Brizo endpoint)
-        boolean isInitialized= BrizoService.initializeAccessServiceAgreement(accessService.purchaseEndpoint, initializePayload);
+        BrizoService.ServiceAgreementResult result= BrizoService.initializeAccessServiceAgreement(accessService.purchaseEndpoint, initializePayload);
 
-        if (!isInitialized)  {
-            throw new ServiceAgreementException(serviceAgreementId, "Unable to initialize SLA using Brizo. Payload: " + initializePayload);
+        if (!result.getOk())  {
+
+            if (result.getCode()!= 401)
+                throw new ServiceAgreementException(serviceAgreementId, "Unable to initialize SA using Brizo. Payload: " + initializePayload);
+            else {
+
+                log.debug("Received a 401 code from Brizo. Checking if the SA " + serviceAgreementId + " is created in Keeper");
+                Boolean foundOnChain;
+
+                try {
+                    foundOnChain = ServiceAgreementHandler.checkAgreementStatus (serviceAgreementId, getMainAccount().address, escrowAccessSecretStoreTemplate, 2, 10000);
+                }
+                catch(Exception e){
+                    throw new ServiceAgreementException(serviceAgreementId, "Error trying to get the status of the SA. Unable to initialize SA using Brizo. Payload: " + initializePayload, e);
+                }
+
+                if (!foundOnChain)
+                        throw new ServiceAgreementException(serviceAgreementId, "SA is not created on-line. Unable to initialize SA using Brizo. Payload: " + initializePayload);
+
+                log.debug("The SA " + serviceAgreementId + " is created correctly in Keeper. Ignoring the error from Brizo");
+
+            }
         }
 
         // 4. Listening of events

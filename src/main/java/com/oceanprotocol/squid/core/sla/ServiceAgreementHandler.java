@@ -10,6 +10,7 @@ import com.oceanprotocol.keeper.contracts.AccessSecretStoreCondition;
 import com.oceanprotocol.keeper.contracts.EscrowAccessSecretStoreTemplate;
 import com.oceanprotocol.squid.exceptions.InitializeConditionsException;
 import com.oceanprotocol.squid.helpers.CryptoHelper;
+import com.oceanprotocol.squid.helpers.EncodingHelper;
 import com.oceanprotocol.squid.helpers.EthereumHelper;
 import com.oceanprotocol.squid.models.AbstractModel;
 import com.oceanprotocol.squid.models.service.Condition;
@@ -21,6 +22,7 @@ import org.web3j.abi.EventEncoder;
 import org.web3j.abi.datatypes.Event;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.request.EthFilter;
+import org.web3j.tuples.generated.Tuple2;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -105,6 +107,38 @@ public class ServiceAgreementHandler {
 
 
         return accessCondition.fulfilledEventFlowable(grantedFilter);
+    }
+
+
+    private static Tuple2<String, String> getAgreementData(String agreementId, EscrowAccessSecretStoreTemplate escrowAccessSecretStoreTemplate) throws Exception {
+
+        return escrowAccessSecretStoreTemplate.getAgreementData(EncodingHelper.hexStringToBytes(agreementId)).send();
+    }
+
+
+    public static Boolean checkAgreementStatus (String agreementId, String consumerAddress, EscrowAccessSecretStoreTemplate escrowAccessSecretStoreTemplate, Integer retries, Integer waitInMill)
+        throws Exception{
+
+        Tuple2<String, String> data;
+
+        for (int i= 0; i< retries+1; i++) {
+
+            log.debug("Searching SA " + agreementId + " on-chain");
+
+            data = getAgreementData(agreementId, escrowAccessSecretStoreTemplate);
+            if (data.getValue1().equalsIgnoreCase(consumerAddress))
+                return true;
+
+            log.debug("SA " + agreementId + " not found on-chain");
+
+            if(i < retries){
+                log.debug("Sleeping for " + waitInMill);
+                Thread.sleep(waitInMill);
+            }
+
+        }
+
+        return false;
     }
 
 

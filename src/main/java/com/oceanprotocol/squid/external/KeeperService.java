@@ -82,7 +82,7 @@ public class KeeperService {
         this.gasLimit= DEFAULT_GAS_LIMIT;
         String keeperUrl = url;
 
-        this.web3 = new JsonRpcSquidAdmin(new HttpService(keeperUrl));//Admin.build(new HttpService(keeperUrl));
+        this.web3 = new JsonRpcSquidAdmin(new HttpService(keeperUrl));
 
         // TODO: Web3j only supports a ChainId in byte format, so any ChainId of a
         // private network is not supported. By the time being we can't specify that
