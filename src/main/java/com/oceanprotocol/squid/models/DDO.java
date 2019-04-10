@@ -29,7 +29,7 @@ import static com.oceanprotocol.squid.models.DDO.PublicKey.ETHEREUM_KEY_TYPE;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DDO extends AbstractModel implements FromJsonToModel {
 
-    static final Logger log= LogManager.getLogger(DDO.class);
+    private static final Logger log= LogManager.getLogger(DDO.class);
 
     private static final String UUID_PROOF_TYPE= "DDOIntegritySignature";
 

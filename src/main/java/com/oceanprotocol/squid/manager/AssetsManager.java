@@ -14,7 +14,6 @@ import com.oceanprotocol.squid.models.aquarius.SearchResult;
 import com.oceanprotocol.squid.models.asset.AssetMetadata;
 import com.oceanprotocol.squid.models.service.MetadataService;
 
-import java.util.List;
 import java.util.Map;
 
 /**

@@ -27,16 +27,41 @@ public class BrizoService {
 
     private static final Logger log = LogManager.getLogger(BrizoService.class);
 
+    public static class ServiceAgreementResult {
+
+        private Boolean ok;
+        private Integer code;
+
+        public Boolean getOk() {
+            return ok;
+        }
+
+        public void setOk(Boolean ok) {
+            this.ok = ok;
+        }
+
+        public Integer getCode() {
+            return code;
+        }
+
+        public void setCode(Integer code) {
+            this.code = code;
+        }
+    }
+
 
     /**
      * Calls a Brizo's endpoint to request the initialization of a new Service Agreement
      * @param url the url
      * @param payload the payload
-     * @return a flag that indicates if Brizo initialized the Service Agreement correctly
+     * @return an object that indicates if Brizo initialized the Service Agreement correctly
      */
-    public static boolean initializeAccessServiceAgreement(String url, InitializeAccessSLA payload)  {
+    public static ServiceAgreementResult initializeAccessServiceAgreement(String url, InitializeAccessSLA payload)  {
 
         log.debug("Initializing SLA[" + payload.serviceAgreementId + "]: " + url);
+
+        ServiceAgreementResult result = new ServiceAgreementResult();
+
 
         try {
             String payloadJson= payload.toJson();
@@ -45,16 +70,21 @@ public class BrizoService {
             HttpResponse response = HttpHelper.httpClientPost(
                     url, new ArrayList<>(), payloadJson);
 
+            result.setCode(response.getStatusCode());
+
             if (response.getStatusCode() != 201) {
-                log.error("Unable to Initialize SLA: " + response.toString());
-                return false;
+                log.debug("Unable to Initialize SLA: " + response.toString());
+                result.setOk(false);
+                return result;
             }
         } catch (Exception e)   {
             log.error("Exception Initializing SLA: " + e.getMessage());
-
-            return false;
+            result.setOk(false);
+            return result;
         }
-        return true;
+
+        result.setOk(true);
+        return result;
     }
 
 
