@@ -1,6 +1,12 @@
 History
 =======
 
+0.4.4 (April 10th, 2019)
+-------------------------
+
+* Check the status of a SA if Brizo returns a 401 code
+
+
 0.4.3 (April 5th, 2019)
 -------------------------
 
