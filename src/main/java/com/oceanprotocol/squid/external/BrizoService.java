@@ -15,6 +15,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -135,6 +136,30 @@ public class BrizoService {
         log.debug("Consuming URL[" + url + "]: for service Agreement " + serviceAgreementId);
 
         HttpHelper.download(endpoint, destinationPath);
+
+    }
+
+    /**
+     * Calls a Brizo´s endpoint to download an asset
+     * @param serviceEndpoint the service endpoint
+     * @param consumerAddress the address of the consumer
+     * @param serviceAgreementId the serviceAgreement Id
+     * @param url the url
+     * @return an InputStream that represents the binary content
+     * @throws IOException Exception during the download process
+     */
+    public static InputStream downloadUrl(String serviceEndpoint, String consumerAddress, String serviceAgreementId, String url) throws IOException {
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put(Service.CONSUMER_ADDRESS_PARAM, consumerAddress);
+        parameters.put(Service.SERVICE_AGREEMENT_PARAM, serviceAgreementId);
+        parameters.put(Service.URL_PARAM, url);
+
+        String endpoint = StringsHelper.format(serviceEndpoint, parameters);
+
+        log.debug("Consuming URL[" + url + "]: for service Agreement " + serviceAgreementId);
+
+        return HttpHelper.download(endpoint);
 
     }
 

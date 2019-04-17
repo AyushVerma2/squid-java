@@ -23,10 +23,7 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.Channels;
@@ -315,6 +312,25 @@ public abstract class HttpHelper {
             fileOutputStream.getChannel()
                     .transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
 
+        } catch (IOException e) {
+            throw e;
+        }
+
+    }
+
+    /**
+     * Download the content of a resource
+     * @param url the url of the resource
+     * @return an InputStream that represents the binary content
+     * @throws IOException Exception during the download
+     */
+    public static InputStream download(final String url) throws IOException {
+
+        log.debug("Downloading url:" + url);
+
+        try {
+            URL contentUrl= new URL(url);
+            return contentUrl.openStream();
         } catch (IOException e) {
             throw e;
         }

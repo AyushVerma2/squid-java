@@ -1,6 +1,12 @@
 History
 =======
 
+0.4.5 (April 29th, 2019)
+-------------------------
+
+* Added new API method to allow to set an index parameter to consume a single file of the Asset
+* Added consume methods to get an InputStream of a file of the Asset
+
 0.4.4 (April 10th, 2019)
 -------------------------
 

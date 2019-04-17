@@ -20,6 +20,7 @@ import com.oceanprotocol.squid.models.asset.OrderResult;
 import com.oceanprotocol.squid.models.service.ProviderConfig;
 import io.reactivex.Flowable;
 
+import java.io.InputStream;
 import java.util.Map;
 
 /**
@@ -77,6 +78,7 @@ public class AssetsImpl implements AssetsAPI {
         return this.query(params, 20, 0, 1);
     }
 
+
     @Override
     public Boolean consume(String serviceAgreementId, DID did, String serviceDefinitionId, String basePath, int threshold) throws ConsumeServiceException {
         return oceanManager.consume(serviceAgreementId, did, serviceDefinitionId,  basePath, threshold);
@@ -85,6 +87,27 @@ public class AssetsImpl implements AssetsAPI {
     @Override
     public Boolean consume(String serviceAgreementId, DID did, String serviceDefinitionId,  String basePath) throws ConsumeServiceException {
         return this.consume(serviceAgreementId, did, serviceDefinitionId,  basePath, 0);
+    }
+
+    @Override
+    public Boolean consume(String serviceAgreementId, DID did, String serviceDefinitionId,  Integer index, String basePath) throws ConsumeServiceException {
+        return this.consume(serviceAgreementId, did, serviceDefinitionId, index, basePath, 0);
+    }
+
+    @Override
+    public Boolean consume(String serviceAgreementId, DID did, String serviceDefinitionId,  Integer index, String basePath, int threshold) throws ConsumeServiceException {
+        return oceanManager.consume(serviceAgreementId, did, serviceDefinitionId, index, basePath, threshold);
+    }
+
+
+    @Override
+    public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index) throws ConsumeServiceException{
+        return this.consumeBinary(serviceAgreementId, did, serviceDefinitionId, index, 0);
+    }
+
+    @Override
+    public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, int threshold) throws ConsumeServiceException{
+        return oceanManager.consumeBinary(serviceAgreementId, did, serviceDefinitionId,  index, threshold);
     }
 
     @Override

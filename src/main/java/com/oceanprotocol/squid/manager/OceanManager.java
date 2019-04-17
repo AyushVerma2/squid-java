@@ -39,6 +39,7 @@ import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.*;
@@ -447,6 +448,7 @@ public class OceanManager extends BaseManager {
     }
 
 
+
     /**
      *  Downloads an Asset previously ordered through a Service Agreement
      * @param serviceAgreementId the service agreement id
@@ -521,6 +523,126 @@ public class OceanManager extends BaseManager {
 
         return true;
     }
+
+
+    /**
+     *  Downloads a single file of an Asset previously ordered through a Service Agreement
+     * @param serviceAgreementId the service agreement id
+     * @param did the did
+     * @param serviceDefinitionId the service definition id
+     * @param index of the file inside the files definition in metadata
+     * @param basePath the path where the asset will be downloaded
+     * @param threshold secret store threshold
+     * @return a flag that indicates if the consume operation was executed correctly
+     * @throws ConsumeServiceException ConsumeServiceException
+     */
+    public boolean consume(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, String basePath, int threshold) throws ConsumeServiceException{
+
+        DDO ddo;
+        String checkConsumerAddress = Keys.toChecksumAddress(getMainAccount().address);
+        String serviceEndpoint;
+        List<AssetMetadata.File> files;
+
+        String agreementId = EthereumHelper.add0x(serviceAgreementId);
+
+        try {
+
+            ddo = resolveDID(did);
+            serviceEndpoint = ddo.getAccessService(serviceDefinitionId).serviceEndpoint;
+
+            files = this.getMetadataFiles(ddo);
+
+        }catch (EthereumException|DDOException|ServiceException|EncryptionException|IOException e) {
+            String msg = "Error consuming asset with DID " + did.getDid() +" and Service Agreement " + agreementId;
+            log.error(msg+ ": " + e.getMessage());
+            throw new ConsumeServiceException(msg, e);
+        }
+
+        AssetMetadata.File file = files.stream().filter(f -> f.index == index).findFirst().orElse(null);
+        if (file == null)
+            throw new ConsumeServiceException("File with index " + index + "not found in Asset with did " + did.getDid());
+
+        try {
+
+            if (null == file.url)    {
+                String msg = "Error Decrypting URL for Asset: " + did.getDid() +" and Service Agreement " + agreementId
+                        + " URL received: " + file.url;
+                log.error(msg);
+                throw new ConsumeServiceException(msg);
+            }
+            String fileName = file.url.substring(file.url.lastIndexOf("/") + 1);
+            String destinationPath = basePath + File.separator + fileName;
+
+            BrizoService.downloadUrl(serviceEndpoint, checkConsumerAddress, serviceAgreementId, file.url, destinationPath);
+
+        } catch (IOException e) {
+            String msg = "Error consuming asset with DID " + did.getDid() +" and Service Agreement " + serviceAgreementId;
+
+            log.error(msg+ ": " + e.getMessage());
+            throw new ConsumeServiceException(msg, e);
+        }
+
+        return true;
+    }
+
+
+    /**
+     * Downloads a single file of an Asset previously ordered through a Service Agreement
+     * @param serviceAgreementId the service agreement id
+     * @param did the did
+     * @param serviceDefinitionId the service definition id
+     * @param index of the file inside the files definition in metadata
+     * @param threshold secret store threshold
+     * @return  an InputStream that represents the binary content
+     * @throws ConsumeServiceException ConsumeServiceException
+     */
+    public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, int threshold) throws ConsumeServiceException{
+
+        DDO ddo;
+        String checkConsumerAddress = Keys.toChecksumAddress(getMainAccount().address);
+        String serviceEndpoint;
+        List<AssetMetadata.File> files;
+
+        String agreementId = EthereumHelper.add0x(serviceAgreementId);
+
+        try {
+
+            ddo = resolveDID(did);
+            serviceEndpoint = ddo.getAccessService(serviceDefinitionId).serviceEndpoint;
+
+            files = this.getMetadataFiles(ddo);
+
+        }catch (EthereumException|DDOException|ServiceException|EncryptionException|IOException e) {
+            String msg = "Error consuming asset with DID " + did.getDid() +" and Service Agreement " + agreementId;
+            log.error(msg+ ": " + e.getMessage());
+            throw new ConsumeServiceException(msg, e);
+        }
+
+        AssetMetadata.File file = files.stream().filter(f -> f.index == index).findFirst().orElse(null);
+        if (file == null)
+            throw new ConsumeServiceException("File with index " + index + "not found in Asset with did " + did.getDid());
+
+        try {
+
+            if (null == file.url)    {
+                String msg = "Error Decrypting URL for Asset: " + did.getDid() +" and Service Agreement " + agreementId
+                            + " URL received: " + file.url;
+                log.error(msg);
+                throw new ConsumeServiceException(msg);
+            }
+
+            return BrizoService.downloadUrl(serviceEndpoint, checkConsumerAddress, serviceAgreementId, file.url);
+
+        } catch (IOException e) {
+            String msg = "Error consuming asset with DID " + did.getDid() +" and Service Agreement " + serviceAgreementId;
+
+            log.error(msg+ ": " + e.getMessage());
+            throw new ConsumeServiceException(msg, e);
+        }
+
+    }
+
+
 
     // TODO: to be implemented
     public Order getOrder(String orderId)   {
