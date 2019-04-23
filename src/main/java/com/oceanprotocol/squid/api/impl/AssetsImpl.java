@@ -30,6 +30,9 @@ public class AssetsImpl implements AssetsAPI {
     private OceanManager oceanManager;
     private AssetsManager assetsManager;
 
+    private static final int DEFAULT_OFFSET= 20;
+    private static final int DEFAULT_PAGE= 1;
+
     /**
      * Constructor
      * @param oceanManager the oceanManager
@@ -59,7 +62,7 @@ public class AssetsImpl implements AssetsAPI {
 
     @Override
     public SearchResult search(String text) throws DDOException{
-        return this.search(text, 20, 0);
+        return this.search(text, DEFAULT_OFFSET, DEFAULT_PAGE);
     }
 
     @Override
@@ -74,7 +77,7 @@ public class AssetsImpl implements AssetsAPI {
 
     @Override
     public SearchResult query(Map<String, Object> params)  throws DDOException {
-        return this.query(params, 20, 0, 1);
+        return this.query(params, DEFAULT_OFFSET, DEFAULT_PAGE, 1);
     }
 
     @Override

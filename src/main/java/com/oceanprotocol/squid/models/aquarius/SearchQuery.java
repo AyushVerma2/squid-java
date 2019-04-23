@@ -21,7 +21,7 @@ public class SearchQuery extends AbstractModel implements FromJsonToModel {
     private static final int DEFAULT_OFFSET= 100;
 
     @JsonIgnore
-    private static final int DEFAULT_PAGE= 0;
+    private static final int DEFAULT_PAGE= 1;
 
     @JsonIgnore
     private static final int DEFAULT_SORT= 1;
