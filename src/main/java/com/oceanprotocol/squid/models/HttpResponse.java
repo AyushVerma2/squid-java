@@ -5,12 +5,15 @@
 
 package com.oceanprotocol.squid.models;
 
+import org.apache.commons.httpclient.Header;
+
 public class HttpResponse {
 
     private int statusCode;
     private String body;
     private String charset;
     private long contentLength;
+    private Header[] headers;
 
     /**
      * Constructor
@@ -88,6 +91,35 @@ public class HttpResponse {
      */
     public void setContentLength(long contentLength) {
         this.contentLength = contentLength;
+    }
+
+    /**
+     * Get HTTP response headers
+     * @return headers
+     */
+    public Header[] getHeaders() {
+        return headers;
+    }
+
+    /**
+     * Get HTTP response header giving a header name
+     * @return header
+     */
+    public Header getHeader(String name) {
+        for (Header header: headers)    {
+            if (header.getName().equalsIgnoreCase(name))
+                return header;
+        }
+        return null;
+    }
+
+
+    /**
+     * Set HTTP response headers
+     * @param headers headers
+     */
+    public void setHeaders(Header[] headers) {
+        this.headers = headers;
     }
 
     /**

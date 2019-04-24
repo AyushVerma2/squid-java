@@ -283,7 +283,7 @@ public abstract class HttpHelper {
                     method.getResponseCharSet(),
                     method.getResponseContentLength()
             );
-
+            method.getResponseHeaders();
         } catch (Exception e) {
             log.error("Error in HTTP request " + e.getMessage());
             throw new HttpException("Error in HTTP request");
