@@ -11,6 +11,7 @@ import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.HeadMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
@@ -56,7 +57,7 @@ public class HttpHelperTest {
 
 
     @Test
-    public void httpClientGenericMethod() throws HttpException, UnsupportedEncodingException, IOException {
+    public void httpClientGenericMethod() throws IOException {
 
         String payload= "{'message': 'hi there'}";
         ArrayList<NameValuePair> list= new ArrayList<>();
@@ -79,7 +80,7 @@ public class HttpHelperTest {
 
 
     @Test
-    public void httpClientGet() throws HttpException, IOException {
+    public void httpClientGet() throws IOException {
         HttpClient client= mock(HttpClient.class);
         GetMethod method= mock(GetMethod.class);
 
@@ -95,5 +96,22 @@ public class HttpHelperTest {
         assertEquals(200, response.getStatusCode());
     }
 
+
+    @Test
+    public void httpClientHead() throws IOException {
+        HttpClient client= mock(HttpClient.class);
+        HeadMethod method= mock(HeadMethod.class);
+
+        when(client.executeMethod(method)).thenReturn(1);
+
+        when(method.getStatusCode()).thenReturn(200);
+        when(method.getResponseBodyAsStream()).thenReturn(new ByteArrayInputStream( "".getBytes() ));
+        when(method.getResponseCharSet()).thenReturn("UTF-8");
+        when(method.getResponseContentLength()).thenReturn(0L);
+
+
+        HttpResponse response= HttpHelper.httpClientHead(client, method);
+        assertEquals(200, response.getStatusCode());
+    }
 
 }

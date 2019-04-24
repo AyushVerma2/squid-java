@@ -9,6 +9,7 @@ import com.oceanprotocol.squid.models.HttpResponse;
 import org.apache.commons.codec.Charsets;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.*;
 import org.apache.commons.io.FileUtils;
@@ -248,37 +249,59 @@ public abstract class HttpHelper {
      * @throws HttpException HttpException
      */
     public static final HttpResponse httpClientGet(HttpClient client, GetMethod getMethod) throws HttpException {
+        return httpClientRead(client, getMethod);
+    }
 
-        log.debug("Getting URL: "+ getMethod.getURI());
+    /**
+     * Send a HTTP HEAD request and return the HttpResponse object
+     * @param client HttpClient
+     * @param headMethod HeadMethod
+     * @return HttpResponse
+     * @throws HttpException HttpException
+     */
+    public static final HttpResponse httpClientHead(HttpClient client, HeadMethod headMethod) throws HttpException {
+        return httpClientRead(client, headMethod);
+    }
+
+    /**
+     * Send a HTTP GET or HEAD request and return the HttpResponse object
+     * @param client HttpClient
+     * @param method HttpMethodBase
+     * @return HttpResponse
+     * @throws HttpException HttpException
+     */
+    public static final HttpResponse httpClientRead(HttpClient client, HttpMethodBase method) throws HttpException {
+        log.debug("Getting URL: "+ method.getURI());
 
         HttpResponse response;
         try {
 
-            client.executeMethod(getMethod);
+            client.executeMethod(method);
             response = new HttpResponse(
-                    getMethod.getStatusCode(),
-                    IOUtils.toString(getMethod.getResponseBodyAsStream(), Charsets.UTF_8),
-                    getMethod.getResponseCharSet(),
-                    getMethod.getResponseContentLength()
+                    method.getStatusCode(),
+                    IOUtils.toString(method.getResponseBodyAsStream(), Charsets.UTF_8),
+                    method.getResponseCharSet(),
+                    method.getResponseContentLength()
             );
 
         } catch (Exception e) {
-            log.error("Error in HTTP GET request " + e.getMessage());
-            throw new HttpException("Error in HTTP GET request");
+            log.error("Error in HTTP request " + e.getMessage());
+            throw new HttpException("Error in HTTP request");
         } finally {
-            getMethod.releaseConnection();
+            method.releaseConnection();
         }
         return response;
+
     }
 
-    /**
-     * Download the content of a resource
-     * @param url the url of the resource
-     * @param destinationPath the path where the resource will be downloaded
-     * @return Boolean flag
-     * @throws IOException IOException
-     * @throws URISyntaxException URISyntaxException
-     */
+        /**
+         * Download the content of a resource
+         * @param url the url of the resource
+         * @param destinationPath the path where the resource will be downloaded
+         * @return Boolean flag
+         * @throws IOException IOException
+         * @throws URISyntaxException URISyntaxException
+         */
     public static DownloadResult downloadResource(String url, String destinationPath) throws IOException, URISyntaxException {
 
         CloseableHttpClient httpclient = HttpClients.custom()
