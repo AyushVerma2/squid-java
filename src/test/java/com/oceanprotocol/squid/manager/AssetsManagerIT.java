@@ -119,7 +119,7 @@ public class AssetsManagerIT {
         aquarius.createDDO(ddo4);
         aquarius.createDDO(ddo5);
 
-        List<DDO> result1= manager.searchAssets(randomParam, 10, 0).getResults();
+        List<DDO> result1= manager.searchAssets(randomParam, 10, 1).getResults();
 
         assertEquals(2, result1.size());
         assertEquals(randomParam,result1.get(0).metadata.base.type);
