@@ -13,9 +13,11 @@ import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.HttpResponse;
 import com.oceanprotocol.squid.models.aquarius.SearchQuery;
 import com.oceanprotocol.squid.models.aquarius.SearchResult;
+import com.oceanprotocol.squid.models.asset.AssetMetadata;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.web3j.protocol.parity.methods.response.VMTrace;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -200,4 +202,17 @@ public class AquariusService {
 
     }
 
+    public boolean retireAssetDDO(String id) throws Exception {
+        HttpResponse response= HttpHelper.httpClientDelete(this.ddoEndpoint + "/" + id);
+        if (response.getStatusCode() == 200 || response.getStatusCode() == 201)    {
+            return true;
+        }
+        throw new Exception("Unable to update DDO: " + response.toString());
+    }
+
+    public boolean validateMetadata(AssetMetadata metadata) throws Exception{
+        HttpResponse response = HttpHelper.httpClientPost(
+                this.ddoEndpoint + "/validate", new ArrayList<>(), metadata.toJson());
+        return response.getBody().contains("true");
+    }
 }

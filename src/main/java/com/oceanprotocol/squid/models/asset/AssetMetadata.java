@@ -94,10 +94,10 @@ public class AssetMetadata extends Metadata {
         public String inLanguage;
 
         @JsonProperty
-        public String tags;
+        public ArrayList<String> tags;
 
         @JsonProperty
-        public String price;
+        public Integer price;
 
         @JsonProperty
         public String checksum;
@@ -163,7 +163,7 @@ public class AssetMetadata extends Metadata {
         public String checksum;
 
         @JsonProperty
-        public String contentLength;
+        public Integer contentLength;
 
         @JsonProperty//(access = JsonProperty.Access.READ_ONLY)
         public String url;

@@ -9,6 +9,7 @@ import com.oceanprotocol.squid.exceptions.DDOException;
 import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.KeeperService;
 import com.oceanprotocol.squid.models.DDO;
+import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.aquarius.SearchQuery;
 import com.oceanprotocol.squid.models.aquarius.SearchResult;
 import com.oceanprotocol.squid.models.asset.AssetMetadata;
@@ -108,5 +109,14 @@ public class AssetsManager extends BaseManager {
         return getAquariusService().searchDDO(searchQuery);
     }
 
+    public Boolean deleteAsset(DID did) throws Exception {
+        return getAquariusService().retireAssetDDO(did.getDid());
+
+    }
+
+    public Boolean validateMetadata(AssetMetadata metadata) throws Exception {
+        return getAquariusService().validateMetadata(metadata);
+
+    }
 
 }

@@ -19,7 +19,9 @@ import com.oceanprotocol.squid.models.asset.AssetMetadata;
 import com.oceanprotocol.squid.models.asset.OrderResult;
 import com.oceanprotocol.squid.models.service.ProviderConfig;
 import io.reactivex.Flowable;
+import org.web3j.protocol.parity.methods.response.VMTrace;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -93,5 +95,30 @@ public class AssetsImpl implements AssetsAPI {
     @Override
     public Flowable<OrderResult> order(DID did, String serviceDefinitionId) throws OrderException{
         return oceanManager.purchaseAsset(did, serviceDefinitionId);
+    }
+
+    @Override
+    public Boolean retire(DID did) throws Exception{
+        return assetsManager.deleteAsset(did);
+    }
+
+    @Override
+    public List<DID> ownerAssets(String ownerAddress) throws Exception {
+        return oceanManager.getOwnerAssets(ownerAddress);
+    }
+
+    @Override
+    public List<DID> consumerAssets(String consumerAddress) throws Exception{
+        return oceanManager.getConsumerAssets(consumerAddress);
+    }
+
+    @Override
+    public String owner(DID did) throws Exception{
+        return oceanManager.getDIDOwner(did);
+    }
+
+    @Override
+    public Boolean validate(AssetMetadata metadata) throws Exception{
+        return assetsManager.validateMetadata(metadata);
     }
 }
