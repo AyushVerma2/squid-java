@@ -250,14 +250,15 @@ public class AssetsApiIT {
         assertEquals(true, orderResult.isAccessGranted());
         log.debug("Granted Access Received for the service Agreement " + orderResult.getServiceAgreementId());
 
-        oceanAPIConsumer.getAssetsAPI().consume(
+        Boolean result = oceanAPIConsumer.getAssetsAPI().consume(
                 orderResult.getServiceAgreementId(),
                 did,
                 Service.DEFAULT_ACCESS_SERVICE_ID, basePath);
+        assertEquals(true, result);
 
 
         int consumedAssetsAfter = oceanAPI.getAssetsAPI().consumerAssets(oceanAPIConsumer.getMainAccount().address).size();
-        assertEquals(consumedAssetsAfter, consumedAssetsBefore + 1);
+        assertEquals(consumedAssetsBefore + 1, consumedAssetsAfter);
 
     }
 
