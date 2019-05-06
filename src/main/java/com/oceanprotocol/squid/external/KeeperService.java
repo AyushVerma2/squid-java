@@ -186,7 +186,7 @@ public class KeeperService {
         return personalUnlockAccount.accountUnlocked();
     }
 
-    public boolean tokenApprove(OceanToken tokenContract, String spenderAddress, int price) throws TokenApproveException {
+    public boolean tokenApprove(OceanToken tokenContract, String spenderAddress, BigInteger price) throws TokenApproveException {
 
         String checksumAddress =  Keys.toChecksumAddress(spenderAddress);
 
@@ -194,7 +194,7 @@ public class KeeperService {
 
             TransactionReceipt receipt=  tokenContract.approve(
                     checksumAddress,
-                    BigInteger.valueOf(price)
+                    price
             ).send();
 
             if (!receipt.getStatus().equals("0x1")) {

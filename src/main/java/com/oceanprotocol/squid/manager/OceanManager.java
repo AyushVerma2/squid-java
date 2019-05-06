@@ -288,9 +288,9 @@ public class OceanManager extends BaseManager {
                             return Flowable.empty();
                         else {
                             log.debug("Received AgreementCreated Event with Id: " + eventServiceAgreementId);
-                            getKeeperService().tokenApprove(this.tokenContract, lockRewardCondition.getContractAddress(), Integer.valueOf(ddo.metadata.base.price));
+                            getKeeperService().tokenApprove(this.tokenContract, lockRewardCondition.getContractAddress(), ddo.metadata.base.price);
                             BigInteger balance = this.tokenContract.balanceOf(getMainAccount().address).send();
-                            if (balance.compareTo(BigInteger.valueOf(ddo.metadata.base.price)) < 0) {
+                            if (balance.compareTo(ddo.metadata.base.price) < 0) {
                                 log.warn("Consumer account does not have sufficient token balance to fulfill the " +
                                         "LockRewardCondition. Do `requestTokens` using the `dispenser` contract then try this again.");
                                 log.info("token balance is: " + balance + " price is: " + ddo.metadata.base.price);
@@ -551,7 +551,7 @@ public class OceanManager extends BaseManager {
      * @param price the price
      * @return a Map with the params of the Access Conditions
      */
-    private Map<String, Object> getAccessConditionParams(String did, int price) {
+    private Map<String, Object> getAccessConditionParams(String did, BigInteger price) {
         Map<String, Object> params = new HashMap<>();
         params.put("parameter.did", did);
         params.put("parameter.price", price);
