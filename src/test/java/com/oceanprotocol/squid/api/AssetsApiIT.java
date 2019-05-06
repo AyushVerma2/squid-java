@@ -26,7 +26,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.web3j.protocol.parity.methods.response.VMTrace;
 
 import java.math.BigInteger;
 import java.nio.file.Files;
@@ -224,7 +223,7 @@ public class AssetsApiIT {
     public void ownerAssets() throws Exception {
         int assetsOwnedBefore = (oceanAPI.getAssetsAPI().ownerAssets(oceanAPI.getMainAccount().address)).size();
 
-        DDO ddo = oceanAPI.getAssetsAPI().create(metadataBase, providerConfig);
+        oceanAPI.getAssetsAPI().create(metadataBase, providerConfig);
         log.debug("DDO registered!");
 
         int assetsOwnedAfter = oceanAPI.getAssetsAPI().ownerAssets(oceanAPI.getMainAccount().address).size();
@@ -251,7 +250,7 @@ public class AssetsApiIT {
         assertEquals(true, orderResult.isAccessGranted());
         log.debug("Granted Access Received for the service Agreement " + orderResult.getServiceAgreementId());
 
-        boolean result = oceanAPIConsumer.getAssetsAPI().consume(
+        oceanAPIConsumer.getAssetsAPI().consume(
                 orderResult.getServiceAgreementId(),
                 did,
                 Service.DEFAULT_ACCESS_SERVICE_ID, basePath);
