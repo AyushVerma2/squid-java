@@ -5,10 +5,7 @@
 
 package com.oceanprotocol.squid.api;
 
-import com.oceanprotocol.squid.exceptions.ConsumeServiceException;
-import com.oceanprotocol.squid.exceptions.DDOException;
-import com.oceanprotocol.squid.exceptions.EthereumException;
-import com.oceanprotocol.squid.exceptions.OrderException;
+import com.oceanprotocol.squid.exceptions.*;
 import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.aquarius.SearchResult;
@@ -17,6 +14,7 @@ import com.oceanprotocol.squid.models.asset.OrderResult;
 import com.oceanprotocol.squid.models.service.ProviderConfig;
 import io.reactivex.Flowable;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -121,6 +119,44 @@ public interface AssetsAPI {
      */
     Flowable<OrderResult> order(DID did, String serviceDefinitionId) throws OrderException;
 
+    /**
+     * Return the owner of the asset.
+     * @param did the did
+     * @return the ethereum address of the owner/publisher of given asset did
+     * @throws Exception Exception
+     */
+    public String owner(DID did) throws Exception;
 
+    /**
+     * List of Asset objects published by ownerAddress
+     * @param ownerAddress ethereum address of owner/publisher
+     * @return list of dids
+     * @throws ServiceException ServiceException
+     */
+    public List<DID> ownerAssets(String ownerAddress) throws ServiceException;
+
+    /**
+     * List of Asset objects purchased by consumerAddress
+     * @param consumerAddress ethereum address of consumer
+     * @return list of dids
+     * @throws ServiceException ServiceException
+     */
+    public List<DID> consumerAssets(String consumerAddress) throws ServiceException;
+
+    /**
+     * Retire this did of Aquarius
+     * @param did the did
+     * @return a flag that indicates if the action was executed correctly
+     * @throws Exception Exception
+     */
+    public Boolean retire(DID did) throws DDOException;
+
+    /**
+     * Validate the asset metadata.
+     * @param metadata the metadata of the DDO
+     * @return a flag that indicates if the metadata is valid
+     * @throws Exception Exception
+     */
+    public Boolean validate(AssetMetadata metadata) throws DDOException;
 
 }

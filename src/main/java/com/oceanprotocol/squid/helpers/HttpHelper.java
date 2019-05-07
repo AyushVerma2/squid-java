@@ -344,6 +344,13 @@ public abstract class HttpHelper {
 
     }
 
-
-
+    /**
+     * Send a HTTP DELETE request and return the HttpResponse object
+     * @param url url to call
+     * @return HttpResponse returned
+     * @throws HttpException Http error
+     */
+    public static final HttpResponse httpClientDelete(String url) throws HttpException {
+        return httpClientRead(new HttpClient(), new DeleteMethod(url));
+    }
 }

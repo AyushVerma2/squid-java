@@ -14,6 +14,7 @@ import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.Metadata;
 import org.web3j.crypto.Hash;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -94,10 +95,10 @@ public class AssetMetadata extends Metadata {
         public String inLanguage;
 
         @JsonProperty
-        public String tags;
+        public ArrayList<String> tags;
 
         @JsonProperty
-        public String price;
+        public BigInteger price;
 
         @JsonProperty
         public String checksum;
@@ -163,7 +164,7 @@ public class AssetMetadata extends Metadata {
         public String checksum;
 
         @JsonProperty
-        public String contentLength;
+        public Integer contentLength;
 
         @JsonProperty//(access = JsonProperty.Access.READ_ONLY)
         public String url;

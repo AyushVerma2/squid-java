@@ -15,7 +15,10 @@ cache:
 before_install:
 - git clone https://github.com/oceanprotocol/barge
 - cd barge
-- KEEPER_VERSION=v0.9.1 BRIZO_VERSION=v0.3.3 AQUARIUS_VERSION=v0.2.2  travis_wait 30 bash start_ocean.sh --latest --no-pleuston --local-spree-node & # 2>&1 > start_ocean.log &
+- export KEEPER_VERSION=v0.9.2
+- export BRIZO_VERSION=v0.3.3
+- export AQUARIUS_VERSION=v0.2.2
+- bash -x start_ocean.sh --latest --no-pleuston --local-spree-node 2>&1 > start_ocean.log &
 - cd ..
 - sleep 60
 - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import

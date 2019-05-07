@@ -6,10 +6,7 @@
 package com.oceanprotocol.squid.api.impl;
 
 import com.oceanprotocol.squid.api.AssetsAPI;
-import com.oceanprotocol.squid.exceptions.ConsumeServiceException;
-import com.oceanprotocol.squid.exceptions.DDOException;
-import com.oceanprotocol.squid.exceptions.EthereumException;
-import com.oceanprotocol.squid.exceptions.OrderException;
+import com.oceanprotocol.squid.exceptions.*;
 import com.oceanprotocol.squid.manager.AssetsManager;
 import com.oceanprotocol.squid.manager.OceanManager;
 import com.oceanprotocol.squid.models.DDO;
@@ -20,6 +17,7 @@ import com.oceanprotocol.squid.models.asset.OrderResult;
 import com.oceanprotocol.squid.models.service.ProviderConfig;
 import io.reactivex.Flowable;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -93,5 +91,30 @@ public class AssetsImpl implements AssetsAPI {
     @Override
     public Flowable<OrderResult> order(DID did, String serviceDefinitionId) throws OrderException{
         return oceanManager.purchaseAsset(did, serviceDefinitionId);
+    }
+
+    @Override
+    public Boolean retire(DID did) throws DDOException{
+        return assetsManager.deleteAsset(did);
+    }
+
+    @Override
+    public List<DID> ownerAssets(String ownerAddress) throws ServiceException {
+        return oceanManager.getOwnerAssets(ownerAddress);
+    }
+
+    @Override
+    public List<DID> consumerAssets(String consumerAddress) throws ServiceException {
+        return oceanManager.getConsumerAssets(consumerAddress);
+    }
+
+    @Override
+    public String owner(DID did) throws Exception{
+        return oceanManager.getDIDOwner(did);
+    }
+
+    @Override
+    public Boolean validate(AssetMetadata metadata) throws DDOException{
+        return assetsManager.validateMetadata(metadata);
     }
 }
