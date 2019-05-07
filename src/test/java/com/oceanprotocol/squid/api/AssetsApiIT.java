@@ -242,7 +242,7 @@ public class AssetsApiIT {
         DID did = new DID(ddo.id);
 
         log.debug("DDO registered!");
-
+        oceanAPIConsumer.getAccountsAPI().requestTokens(BigInteger.valueOf(9000000));
         Flowable<OrderResult> response = oceanAPIConsumer.getAssetsAPI().order(did, Service.DEFAULT_ACCESS_SERVICE_ID);
 
         OrderResult orderResult = response.blockingFirst();
@@ -250,11 +250,11 @@ public class AssetsApiIT {
         assertEquals(true, orderResult.isAccessGranted());
         log.debug("Granted Access Received for the service Agreement " + orderResult.getServiceAgreementId());
 
-        Boolean result = oceanAPIConsumer.getAssetsAPI().consume(
+        boolean result = oceanAPIConsumer.getAssetsAPI().consume(
                 orderResult.getServiceAgreementId(),
                 did,
                 Service.DEFAULT_ACCESS_SERVICE_ID, basePath);
-        assertEquals(true, result);
+        assertTrue(result);
 
 
         int consumedAssetsAfter = oceanAPI.getAssetsAPI().consumerAssets(oceanAPIConsumer.getMainAccount().address).size();
