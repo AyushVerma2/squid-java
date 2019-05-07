@@ -6,10 +6,7 @@
 package com.oceanprotocol.squid.api.impl;
 
 import com.oceanprotocol.squid.api.AssetsAPI;
-import com.oceanprotocol.squid.exceptions.ConsumeServiceException;
-import com.oceanprotocol.squid.exceptions.DDOException;
-import com.oceanprotocol.squid.exceptions.EthereumException;
-import com.oceanprotocol.squid.exceptions.OrderException;
+import com.oceanprotocol.squid.exceptions.*;
 import com.oceanprotocol.squid.manager.AssetsManager;
 import com.oceanprotocol.squid.manager.OceanManager;
 import com.oceanprotocol.squid.models.DDO;
@@ -97,17 +94,17 @@ public class AssetsImpl implements AssetsAPI {
     }
 
     @Override
-    public Boolean retire(DID did) throws Exception{
+    public Boolean retire(DID did) throws DDOException{
         return assetsManager.deleteAsset(did);
     }
 
     @Override
-    public List<DID> ownerAssets(String ownerAddress) throws Exception {
+    public List<DID> ownerAssets(String ownerAddress) throws ServiceException {
         return oceanManager.getOwnerAssets(ownerAddress);
     }
 
     @Override
-    public List<DID> consumerAssets(String consumerAddress) throws Exception{
+    public List<DID> consumerAssets(String consumerAddress) throws ServiceException {
         return oceanManager.getConsumerAssets(consumerAddress);
     }
 
@@ -117,7 +114,7 @@ public class AssetsImpl implements AssetsAPI {
     }
 
     @Override
-    public Boolean validate(AssetMetadata metadata) throws Exception{
+    public Boolean validate(AssetMetadata metadata) throws DDOException{
         return assetsManager.validateMetadata(metadata);
     }
 }

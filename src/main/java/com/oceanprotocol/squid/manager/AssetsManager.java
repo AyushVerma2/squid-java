@@ -109,12 +109,24 @@ public class AssetsManager extends BaseManager {
         return getAquariusService().searchDDO(searchQuery);
     }
 
-    public Boolean deleteAsset(DID did) throws Exception {
+    /**
+     * Retire the asset ddo from Aquarius.
+     * @param did the did
+     * @return a flag that indicates if the retire operation was executed correctly
+     * @throws DDOException DDOException
+     */
+    public Boolean deleteAsset(DID did) throws DDOException {
         return getAquariusService().retireAssetDDO(did.getDid());
 
     }
 
-    public Boolean validateMetadata(AssetMetadata metadata) throws Exception {
+    /**
+     * Check that the metadata has a valid format.
+     * @param metadata the metadata of the DDO
+     * @return a flag that indicates if the metadata is valid
+     * @throws DDOException DDOException
+     */
+    public Boolean validateMetadata(AssetMetadata metadata) throws DDOException {
         return getAquariusService().validateMetadata(metadata);
 
     }

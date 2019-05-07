@@ -608,7 +608,14 @@ public class OceanManager extends BaseManager {
         return this.didRegistry.getDIDOwner(EncodingHelper.hexStringToBytes(did.getHash())).send();
     }
 
-    public List<DID> getConsumerAssets(String consumerAddress) throws Exception {
+    /**
+     * List of Asset objects purchased by consumerAddress
+     *
+     * @param consumerAddress ethereum address of consumer
+     * @return list of dids
+     * @throws ServiceException ServiceException
+     */
+    public List<DID> getConsumerAssets(String consumerAddress) throws ServiceException {
         EthFilter didFilter = new EthFilter(
                 DefaultBlockParameterName.EARLIEST,
                 DefaultBlockParameterName.LATEST,
@@ -634,17 +641,24 @@ public class OceanManager extends BaseManager {
             List<EthLog.LogResult> logs = ethLog.getLogs();
             List<DID> DIDlist = new ArrayList<>();
             for (int i = 0; i <= logs.size() - 1; i++) {
-                DIDlist.add(DID.getFromHash(Numeric.cleanHexPrefix((((EthLog.LogObject)logs.get(i)).getTopics().get(2)))));
+                DIDlist.add(DID.getFromHash(Numeric.cleanHexPrefix((((EthLog.LogObject) logs.get(i)).getTopics().get(2)))));
             }
             return DIDlist;
 
         } catch (Exception ex) {
-            log.error("Unable to retrieve assets consumed by "+ consumerAddress + ex.getMessage());
-            throw new Exception("Unable to retrieve assets consumed by "+ consumerAddress + ex.getMessage());
+            log.error("Unable to retrieve assets consumed by " + consumerAddress + ex.getMessage());
+            throw new ServiceException("Unable to retrieve assets consumed by " + consumerAddress + ex.getMessage());
         }
     }
 
-    public List<DID> getOwnerAssets(String ownerAddress) throws Exception {
+    /**
+     * List of Asset objects published by ownerAddress
+     *
+     * @param ownerAddress ethereum address of owner/publisher
+     * @return list of dids
+     * @throws ServiceException ServiceException
+     */
+    public List<DID> getOwnerAssets(String ownerAddress) throws ServiceException {
         EthFilter didFilter = new EthFilter(
                 DefaultBlockParameterName.EARLIEST,
                 DefaultBlockParameterName.LATEST,
@@ -669,13 +683,13 @@ public class OceanManager extends BaseManager {
             List<EthLog.LogResult> logs = ethLog.getLogs();
             List<DID> DIDlist = new ArrayList<>();
             for (int i = 0; i < logs.size() - 1; i++) {
-                DIDlist.add(DID.getFromHash(Numeric.cleanHexPrefix((((EthLog.LogObject)logs.get(i)).getTopics().get(1)))));
+                DIDlist.add(DID.getFromHash(Numeric.cleanHexPrefix((((EthLog.LogObject) logs.get(i)).getTopics().get(1)))));
             }
             return DIDlist;
 
         } catch (Exception ex) {
-            log.error("Unable to retrieve assets owned by "+ ownerAddress + ex.getMessage());
-            throw new Exception("Unable to retrieve assets owned by "+ ownerAddress + ex.getMessage());
+            log.error("Unable to retrieve assets owned by " + ownerAddress + ex.getMessage());
+            throw new ServiceException("Unable to retrieve assets owned by " + ownerAddress + ex.getMessage());
         }
     }
 

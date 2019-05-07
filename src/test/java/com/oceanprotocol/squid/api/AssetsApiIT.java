@@ -145,37 +145,6 @@ public class AssetsApiIT {
     }
 
     @Test
-    public void consume() throws Exception {
-
-        providerConfig.setSecretStoreEndpoint(config.getString("secretstore.url"));
-        String basePath = config.getString("consume.basePath");
-
-        AssetMetadata metadata = DDO.fromJSON(new TypeReference<AssetMetadata>() {
-        }, METADATA_JSON_CONTENT);
-        //metadata.base.files.get(0).url= "https://speed.hetzner.de/100MB.bin";
-
-        DDO ddo = oceanAPI.getAssetsAPI().create(metadata, providerConfig);
-        DID did = new DID(ddo.id);
-
-        log.debug("DDO registered!");
-
-        Flowable<OrderResult> response = oceanAPIConsumer.getAssetsAPI().order(did, Service.DEFAULT_ACCESS_SERVICE_ID);
-
-        OrderResult orderResult = response.blockingFirst();
-        assertNotNull(orderResult.getServiceAgreementId());
-        assertEquals(true, orderResult.isAccessGranted());
-        log.debug("Granted Access Received for the service Agreement " + orderResult.getServiceAgreementId());
-
-        boolean result = oceanAPIConsumer.getAssetsAPI().consume(
-                orderResult.getServiceAgreementId(),
-                did,
-                Service.DEFAULT_ACCESS_SERVICE_ID, basePath);
-
-        assertEquals(true, result);
-
-    }
-
-    @Test
     public void search() throws Exception {
 
         oceanAPI.getAssetsAPI().create(metadataBase, providerConfig);
@@ -231,7 +200,7 @@ public class AssetsApiIT {
     }
 
     @Test
-    public void consumerAssets() throws Exception{
+    public void consumeAndConsumerAssets() throws Exception{
         int consumedAssetsBefore = oceanAPI.getAssetsAPI().consumerAssets(oceanAPIConsumer.getMainAccount().address).size();
 
         providerConfig.setSecretStoreEndpoint(config.getString("secretstore.url"));

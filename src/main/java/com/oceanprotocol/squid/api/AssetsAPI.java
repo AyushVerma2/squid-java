@@ -5,10 +5,7 @@
 
 package com.oceanprotocol.squid.api;
 
-import com.oceanprotocol.squid.exceptions.ConsumeServiceException;
-import com.oceanprotocol.squid.exceptions.DDOException;
-import com.oceanprotocol.squid.exceptions.EthereumException;
-import com.oceanprotocol.squid.exceptions.OrderException;
+import com.oceanprotocol.squid.exceptions.*;
 import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.aquarius.SearchResult;
@@ -134,17 +131,17 @@ public interface AssetsAPI {
      * List of Asset objects published by ownerAddress
      * @param ownerAddress ethereum address of owner/publisher
      * @return list of dids
-     * @throws Exception Exception
+     * @throws ServiceException ServiceException
      */
-    public List<DID> ownerAssets(String ownerAddress) throws Exception;
+    public List<DID> ownerAssets(String ownerAddress) throws ServiceException;
 
     /**
      * List of Asset objects purchased by consumerAddress
      * @param consumerAddress ethereum address of consumer
      * @return list of dids
-     * @throws Exception Exception
+     * @throws ServiceException ServiceException
      */
-    public List<DID> consumerAssets(String consumerAddress) throws Exception;
+    public List<DID> consumerAssets(String consumerAddress) throws ServiceException;
 
     /**
      * Retire this did of Aquarius
@@ -152,7 +149,7 @@ public interface AssetsAPI {
      * @return a flag that indicates if the action was executed correctly
      * @throws Exception Exception
      */
-    public Boolean retire(DID did) throws Exception;
+    public Boolean retire(DID did) throws DDOException;
 
     /**
      * Validate the asset metadata.
@@ -160,6 +157,6 @@ public interface AssetsAPI {
      * @return a flag that indicates if the metadata is valid
      * @throws Exception Exception
      */
-    public Boolean validate(AssetMetadata metadata) throws Exception;
+    public Boolean validate(AssetMetadata metadata) throws DDOException;
 
 }
