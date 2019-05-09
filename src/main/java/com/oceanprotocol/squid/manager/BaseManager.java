@@ -50,6 +50,8 @@ public abstract class BaseManager {
     protected EscrowReward escrowReward;
     protected AccessSecretStoreCondition accessSecretStoreCondition;
     protected TemplateStoreManager templateStoreManager;
+    protected AgreementStoreManager agreementStoreManager;
+    protected ConditionStoreManager conditionStoreManager;
     protected ContractAddresses contractAddresses  = new ContractAddresses();
     protected Config config= ConfigFactory.load();
 
@@ -282,6 +284,27 @@ public abstract class BaseManager {
      */
     public BaseManager setDidRegistryContract(DIDRegistry contract)    {
         this.didRegistry= contract;
+        return this;
+    }
+
+    /**
+     * It sets the AgreementStoreManager stub instance
+     * @param contract AgreementStoreManager instance
+     * @return BaseManager instance
+     */
+    public BaseManager setAgreementStoreManagerContract(AgreementStoreManager contract)    {
+        this.agreementStoreManager = contract;
+        return this;
+    }
+
+
+    /**
+     * It sets the AgreementStoreManager stub instance
+     * @param contract AgreementStoreManager instance
+     * @return BaseManager instance
+     */
+    public BaseManager setConditionStoreManagerContract(ConditionStoreManager contract)    {
+        this.conditionStoreManager = contract;
         return this;
     }
 

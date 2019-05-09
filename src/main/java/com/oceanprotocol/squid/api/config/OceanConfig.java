@@ -26,6 +26,7 @@ public class OceanConfig {
     public static final String MAIN_ACCOUNT_CREDENTIALS_FILE = "account.main.credentialsFile";
     public static final String DID_REGISTRY_ADDRESS = "contract.DIDRegistry.address";
     public static final String AGREEMENT_STORE_MANAGER_ADDRESS = "contract.AgreementStoreManager.address";
+    public static final String CONDITION_STORE_MANAGER_ADDRESS = "contract.ConditionStoreManager.address";
     public static final String LOCKREWARD_CONDITIONS_ADDRESS = "contract.LockRewardCondition.address";
     public static final String ESCROWREWARD_CONDITIONS_ADDRESS = "contract.EscrowReward.address";
     public static final String ESCROW_ACCESS_SS_CONDITIONS_ADDRESS = "contract.EscrowAccessSecretStoreTemplate.address";
@@ -47,6 +48,7 @@ public class OceanConfig {
     private String mainAccountCredentialsFile;
     private String didRegistryAddress;
     private String agreementStoreManagerAddress;
+    private String conditionStoreManagerAddress;
     private String escrowRewardAddress;
     private String escrowAccessSecretStoreTemplateAddress;
     private String lockRewardAddress;
@@ -108,7 +110,11 @@ public class OceanConfig {
             validation.addErrorMessage("The Address of agreementStoreManager Contract must be set with the property "
                     + OceanConfig.AGREEMENT_STORE_MANAGER_ADDRESS);
         }
-
+        if (oceanConfig.getConditionStoreManagerAddress() == null || oceanConfig.getConditionStoreManagerAddress().isEmpty()) {
+            validation.setValid(false);
+            validation.addErrorMessage("The Address of conditionStoreManager Contract must be set with the property "
+                    + OceanConfig.CONDITION_STORE_MANAGER_ADDRESS);
+        }
 
         if (oceanConfig.getEscrowRewardConditionsAddress() == null || oceanConfig.getEscrowRewardConditionsAddress().isEmpty()) {
             validation.setValid(false);
@@ -236,6 +242,15 @@ public class OceanConfig {
 
     public OceanConfig setAgreementStoreManagerAddress(String address) {
         this.agreementStoreManagerAddress= address;
+        return this;
+    }
+
+    public String getConditionStoreManagerAddress() {
+        return conditionStoreManagerAddress;
+    }
+
+    public OceanConfig setConditionStoreManagerAddress(String address) {
+        this.conditionStoreManagerAddress= address;
         return this;
     }
 

@@ -115,6 +115,18 @@ public class OceanInitializationHelper {
     }
 
     /**
+     * Initialize an instance of AgreementsManager
+     * @param keeperService the keeperService
+     * @param aquariusService the AquariusService
+     * @return an initialized AgreementsManager object
+     * @throws IOException IOException
+     * @throws CipherException CipherException
+     */
+    public AgreementsManager getAgreementSManager(KeeperService keeperService, AquariusService aquariusService) throws IOException, CipherException {
+        return AgreementsManager.getInstance(keeperService, aquariusService);
+    }
+
+    /**
      * Initialize an instance of TemplatesManager
      * @param keeperService the keeperService
      * @param aquariusService the AquariusService
@@ -268,6 +280,24 @@ public class OceanInitializationHelper {
     public AgreementStoreManager loadAgreementStoreManager(KeeperService keeper) throws  IOException, CipherException {
         return AgreementStoreManager.load(
                 oceanConfig.getAgreementStoreManagerAddress(),
+                keeper.getWeb3(),
+//                keeper.getCredentials(),
+                keeper.getTxManager(),
+                keeper.getContractGasProvider()
+        );
+    }
+
+
+    /**
+     * Loads the AgreementStoreManager contract from Keeper
+     * @param keeper the keeper Service
+     * @return an instance of AgreementStoreManager contract deployed in keeper
+     * @throws IOException IOException
+     * @throws CipherException CipherException
+     */
+    public ConditionStoreManager loadConditionStoreManager(KeeperService keeper) throws  IOException, CipherException {
+        return ConditionStoreManager.load(
+                oceanConfig.getConditionStoreManagerAddress(),
                 keeper.getWeb3(),
 //                keeper.getCredentials(),
                 keeper.getTxManager(),

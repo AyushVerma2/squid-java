@@ -165,6 +165,23 @@ public abstract class ManagerHelper {
         );
     }
 
+    public static AgreementStoreManager loadAgreementStoreManager(KeeperService keeper, String address) throws Exception, IOException, CipherException {
+        return AgreementStoreManager.load(address,
+                keeper.getWeb3(),
+                keeper.getCredentials(),
+                keeper.getContractGasProvider()
+        );
+    }
+
+    public static ConditionStoreManager loadConditionStoreManager(KeeperService keeper, String address) throws Exception, IOException, CipherException {
+        return ConditionStoreManager.load(address,
+                keeper.getWeb3(),
+                keeper.getCredentials(),
+                keeper.getContractGasProvider()
+        );
+    }
+
+
     public static TemplateStoreManager deployTemplateStoreManager(KeeperService keeper) throws Exception {
         log.debug("Deploying TemplateStoreManager with address: " + keeper.getCredentials().getAddress());
         return TemplateStoreManager.deploy(

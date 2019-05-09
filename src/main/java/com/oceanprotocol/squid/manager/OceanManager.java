@@ -682,7 +682,7 @@ public class OceanManager extends BaseManager {
 
             List<EthLog.LogResult> logs = ethLog.getLogs();
             List<DID> DIDlist = new ArrayList<>();
-            for (int i = 0; i < logs.size() - 1; i++) {
+            for (int i = 0; i <= logs.size() - 1; i++) {
                 DIDlist.add(DID.getFromHash(Numeric.cleanHexPrefix((((EthLog.LogObject) logs.get(i)).getTopics().get(1)))));
             }
             return DIDlist;
