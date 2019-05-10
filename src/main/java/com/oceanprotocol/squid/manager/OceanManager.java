@@ -544,11 +544,11 @@ public class OceanManager extends BaseManager {
 
 
     /**
-     * Gets the Access Conditions Params of a DDO
+     * Gets the Access ConditionStatusMap Params of a DDO
      *
      * @param did   the did
      * @param price the price
-     * @return a Map with the params of the Access Conditions
+     * @return a Map with the params of the Access ConditionStatusMap
      */
     private Map<String, Object> getAccessConditionParams(String did, BigInteger price) {
         Map<String, Object> params = new HashMap<>();

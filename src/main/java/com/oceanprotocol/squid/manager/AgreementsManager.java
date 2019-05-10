@@ -64,7 +64,7 @@ public class AgreementsManager extends BaseManager {
         List<byte[]> condition_ids = agreementStoreManager.getAgreement(EncodingHelper.hexStringToBytes(agreementId)).send().getValue4();
         AgreementStatus agreementStatus = new AgreementStatus();
         agreementStatus.agreementId = agreementId;
-        AgreementStatus.Conditions condition = new AgreementStatus.Conditions();
+        AgreementStatus.ConditionStatusMap condition = new AgreementStatus.ConditionStatusMap();
         for (int i = 0; i <= condition_ids.size() - 1; i++) {
             String address = conditionStoreManager.getCondition(condition_ids.get(i)).send().getValue1();
             String conditionName = getConditionNameByAddress(Keys.toChecksumAddress(address));

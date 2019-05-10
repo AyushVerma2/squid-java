@@ -5,7 +5,7 @@ import com.oceanprotocol.squid.models.DID;
 import java.math.BigInteger;
 
 /**
- * Exposes the Public API related with the management of Conditions
+ * Exposes the Public API related with the management of ConditionStatusMap
  */
 public interface ConditionsAPI {
 

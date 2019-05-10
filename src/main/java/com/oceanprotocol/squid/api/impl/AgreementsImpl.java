@@ -28,7 +28,6 @@ public class AgreementsImpl implements AgreementsAPI {
 
     @Override
     public Tuple2<String, String> prepare(DID did, String serviceDefinitionId, String consumerAddress) {
-        String agreementId = ServiceAgreementHandler.generateSlaId();
         return null;
     }
 
