@@ -6,10 +6,7 @@
 package com.oceanprotocol.squid.api.impl;
 
 import com.oceanprotocol.squid.api.AssetsAPI;
-import com.oceanprotocol.squid.exceptions.ConsumeServiceException;
-import com.oceanprotocol.squid.exceptions.DDOException;
-import com.oceanprotocol.squid.exceptions.EthereumException;
-import com.oceanprotocol.squid.exceptions.OrderException;
+import com.oceanprotocol.squid.exceptions.*;
 import com.oceanprotocol.squid.manager.AssetsManager;
 import com.oceanprotocol.squid.manager.OceanManager;
 import com.oceanprotocol.squid.models.DDO;
@@ -20,7 +17,9 @@ import com.oceanprotocol.squid.models.asset.OrderResult;
 import com.oceanprotocol.squid.models.service.ProviderConfig;
 import io.reactivex.Flowable;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -56,6 +55,20 @@ public class AssetsImpl implements AssetsAPI {
     @Override
     public DDO resolve(DID did) throws EthereumException, DDOException {
         return oceanManager.resolveDID(did);
+    }
+
+    @Override
+    public List<AssetMetadata.File> getMetadataFiles(DID did) throws DDOException {
+
+        try {
+
+            DDO ddo = this.resolve(did);
+            return oceanManager.getMetadataFiles(ddo);
+
+        }catch (Exception e){
+            throw new DDOException("Error trying to get the files of the DDO", e);
+        }
+
     }
 
     @Override
@@ -108,6 +121,16 @@ public class AssetsImpl implements AssetsAPI {
     @Override
     public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, int threshold) throws ConsumeServiceException{
         return oceanManager.consumeBinary(serviceAgreementId, did, serviceDefinitionId,  index, threshold);
+    }
+
+    @Override
+    public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, Integer rangeStart, Integer rangeEnd) throws ConsumeServiceException {
+        return this.consumeBinary(serviceAgreementId, did, serviceDefinitionId, index, rangeStart, rangeEnd, 0);
+    }
+
+    @Override
+    public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, Integer rangeStart, Integer rangeEnd, int threshold) throws ConsumeServiceException{
+        return oceanManager.consumeBinary(serviceAgreementId, did, serviceDefinitionId, index, rangeStart, rangeEnd, threshold);
     }
 
     @Override

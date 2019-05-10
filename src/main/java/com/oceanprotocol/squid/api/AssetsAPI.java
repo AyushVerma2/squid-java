@@ -5,10 +5,7 @@
 
 package com.oceanprotocol.squid.api;
 
-import com.oceanprotocol.squid.exceptions.ConsumeServiceException;
-import com.oceanprotocol.squid.exceptions.DDOException;
-import com.oceanprotocol.squid.exceptions.EthereumException;
-import com.oceanprotocol.squid.exceptions.OrderException;
+import com.oceanprotocol.squid.exceptions.*;
 import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.aquarius.SearchResult;
@@ -17,7 +14,9 @@ import com.oceanprotocol.squid.models.asset.OrderResult;
 import com.oceanprotocol.squid.models.service.ProviderConfig;
 import io.reactivex.Flowable;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -52,6 +51,14 @@ public interface AssetsAPI {
      * @throws DDOException DDOException
      */
     public DDO resolve(DID did) throws EthereumException, DDOException;
+
+    /**
+     * Gets the list of the files that belongs to a DDO
+     * @param did the DID to resolve
+     * @return a list of the Files
+     * @throws DDOException EncryptionException
+     */
+    public List<AssetMetadata.File> getMetadataFiles(DID did) throws DDOException;
 
     /**
      * Gets all the DDO that match the search criteria
@@ -142,6 +149,9 @@ public interface AssetsAPI {
     public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index) throws ConsumeServiceException;
     public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, int threshold) throws ConsumeServiceException;
 
+
+    public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, Integer rangeStart, Integer rangeEnd) throws ConsumeServiceException;
+    public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, Integer rangeStart, Integer rangeEnd, int threshold) throws ConsumeServiceException;
     /**
      * Purchases an Asset represented by a DID. It implies to initialize a Service Agreement between publisher and consumer
      * @param did the did of the DDO
