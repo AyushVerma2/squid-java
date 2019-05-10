@@ -61,6 +61,7 @@ public class OceanAPI {
     private ConditionStoreManager conditionStoreManager;
 
     private AccountsAPI accountsAPI;
+    private AgreementsAPI agreementsAPI;
     private TokensAPI tokensAPI;
     private AssetsAPI assetsAPI;
     private SecretStoreAPI secretStoreAPI;
@@ -192,6 +193,7 @@ public class OceanAPI {
 
             oceanAPI.agreementsManager = oceanInitializationHelper.getAgreementSManager(oceanAPI.keeperService, oceanAPI.aquariusService);
             oceanAPI.agreementsManager.setConditionStoreManagerContract(oceanAPI.conditionStoreManager);
+            oceanAPI.agreementsManager.setEscrowAccessSecretStoreTemplate(oceanAPI.escrowAccessSecretStoreTemplate);
             oceanAPI.agreementsManager.setAgreementStoreManagerContract(oceanAPI.agreementStoreManagerContract);
             oceanAPI.agreementsManager.setLockRewardCondition(oceanAPI.lockRewardCondition);
             oceanAPI.agreementsManager.setAccessSecretStoreCondition(oceanAPI.accessSecretStoreCondition);
@@ -205,6 +207,7 @@ public class OceanAPI {
             oceanAPI.templatesManager.setTemplateStoreManagerContract(oceanAPI.templateStoreManagerContract);
 
             oceanAPI.accountsAPI = new AccountsImpl(oceanAPI.accountsManager);
+            oceanAPI.agreementsAPI = new AgreementsImpl(oceanAPI.agreementsManager, oceanAPI.oceanManager);
             oceanAPI.tokensAPI = new TokensImpl(oceanAPI.accountsManager);
             oceanAPI.secretStoreAPI = new SecretStoreImpl(oceanAPI.secretStoreManager);
             oceanAPI.assetsAPI = new AssetsImpl(oceanAPI.oceanManager, oceanAPI.assetsManager);
@@ -243,6 +246,14 @@ public class OceanAPI {
      */
     public AccountsAPI getAccountsAPI() {
         return this.accountsAPI;
+    }
+
+    /**
+     * Gets the AccountsAPI
+     * @return an instance of an Implementation class of AccountsAPI
+     */
+    public AgreementsAPI getAgreementsAPI() {
+        return this.agreementsAPI;
     }
 
     /**

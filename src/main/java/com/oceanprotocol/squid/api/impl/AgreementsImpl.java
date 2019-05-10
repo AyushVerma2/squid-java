@@ -1,41 +1,52 @@
 package com.oceanprotocol.squid.api.impl;
 
-import com.oceanprotocol.keeper.contracts.AgreementStoreManager;
 import com.oceanprotocol.squid.api.AgreementsAPI;
+import com.oceanprotocol.squid.core.sla.ServiceAgreementHandler;
 import com.oceanprotocol.squid.manager.AgreementsManager;
-import com.oceanprotocol.squid.models.Account;
+import com.oceanprotocol.squid.manager.OceanManager;
+import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.DID;
+import com.oceanprotocol.squid.models.service.AccessService;
 import com.oceanprotocol.squid.models.service.AgreementStatus;
 import org.web3j.tuples.generated.Tuple2;
 
 public class AgreementsImpl implements AgreementsAPI {
 
     private AgreementsManager agreementsManager;
+    private OceanManager oceanManager;
 
 
     /**
      * Constructor
      *
-     * @param accountsManager the accountsManager
+     * @param agreementsManager the accountsManager
      */
-    public AgreementsImpl(AgreementsManager accountsManager) {
-
-        this.agreementsManager = accountsManager;
+    public AgreementsImpl(AgreementsManager agreementsManager, OceanManager oceanManager) {
+        this.oceanManager = oceanManager;
+        this.agreementsManager = agreementsManager;
     }
 
     @Override
-    public Tuple2<String, String> prepare(DID did, String serviceDefinitionId, String consumerAccount) {
+    public Tuple2<String, String> prepare(DID did, String serviceDefinitionId, String consumerAddress) {
+        String agreementId = ServiceAgreementHandler.generateSlaId();
         return null;
     }
 
     @Override
-    public void send(DID did, String agreementId, String serviceDefinitionId, String signature, String consumerAccount) {
+    public void send(DID did, String agreementId, String serviceDefinitionId, String signature, String consumerAddress) {
 
     }
 
     @Override
-    public boolean create(DID did, String agreementId, String serviceDefinitionId, String signature, String consumerAccount, Account account) {
-        return true;
+    public boolean create(DID did, String agreementId, String serviceDefinitionId, String signature, String consumerAddress) throws Exception {
+        DDO ddo = oceanManager.resolveDID(did);
+        AccessService accessService = ddo.getAccessService(serviceDefinitionId);
+        return agreementsManager.createAgreement(agreementId,
+                did,
+                accessService.generateConditionIds(agreementId, oceanManager, ddo, consumerAddress),
+                accessService.retrieveTimeOuts(),
+                accessService.retrieveTimeLocks()
+        );
     }
 
     @Override

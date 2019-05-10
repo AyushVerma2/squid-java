@@ -34,9 +34,13 @@ public class AgreementsManager extends BaseManager {
         return new AgreementsManager(keeperService, aquariusService);
     }
 
-    public Boolean createAgreement(String agreementId, DID did, List<String> conditionTypeLists, List<byte[]> conditionIds, List<BigInteger> timeLocks,
+    public Boolean createAgreement(String agreementId, DID did, List<byte[]> conditionIds, List<BigInteger> timeLocks,
                                    List<BigInteger> timeOuts) throws Exception {
-        TransactionReceipt txReceipt = agreementStoreManager.createAgreement(EncodingHelper.hexStringToBytes(agreementId), EncodingHelper.hexStringToBytes(did.getHash()), conditionTypeLists, conditionIds, timeLocks, timeOuts).send();
+        TransactionReceipt txReceipt = this.escrowAccessSecretStoreTemplate.createAgreement(EncodingHelper.hexStringToBytes(agreementId),
+                EncodingHelper.hexStringToBytes(did.getHash()),
+                conditionIds,
+                timeLocks,
+                timeOuts).send();
         return txReceipt.isStatusOK();
     }
 
