@@ -122,8 +122,20 @@ public class OceanInitializationHelper {
      * @throws IOException IOException
      * @throws CipherException CipherException
      */
-    public AgreementsManager getAgreementSManager(KeeperService keeperService, AquariusService aquariusService) throws IOException, CipherException {
+    public AgreementsManager getAgreementsManager(KeeperService keeperService, AquariusService aquariusService) throws IOException, CipherException {
         return AgreementsManager.getInstance(keeperService, aquariusService);
+    }
+
+    /**
+     * Initialize an instance of ConditionsManager
+     * @param keeperService the keeperService
+     * @param aquariusService the AquariusService
+     * @return an initialized ConditionsManager object
+     * @throws IOException IOException
+     * @throws CipherException CipherException
+     */
+    public ConditionsManager getConditionsManager(KeeperService keeperService, AquariusService aquariusService) throws IOException, CipherException {
+        return ConditionsManager.getInstance(keeperService, aquariusService);
     }
 
     /**

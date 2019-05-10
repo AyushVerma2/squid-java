@@ -33,7 +33,7 @@ import java.util.Properties;
  */
 public class OceanAPI {
 
-    private static final Logger log= LogManager.getLogger(OceanAPI.class);
+    private static final Logger log = LogManager.getLogger(OceanAPI.class);
 
     private OceanConfig oceanConfig;
 
@@ -47,6 +47,7 @@ public class OceanAPI {
     private AssetsManager assetsManager;
     private AccountsManager accountsManager;
     private AgreementsManager agreementsManager;
+    private ConditionsManager conditionsManager;
     private TemplatesManager templatesManager;
 
     private OceanToken tokenContract;
@@ -62,6 +63,7 @@ public class OceanAPI {
 
     private AccountsAPI accountsAPI;
     private AgreementsAPI agreementsAPI;
+    private ConditionsAPI conditionsAPI;
     private TokensAPI tokensAPI;
     private AssetsAPI assetsAPI;
     private SecretStoreAPI secretStoreAPI;
@@ -74,14 +76,16 @@ public class OceanAPI {
 
     /**
      * Private constructor
+     *
      * @param oceanConfig the object to configure the API
      */
-    private OceanAPI(OceanConfig oceanConfig){
+    private OceanAPI(OceanConfig oceanConfig) {
         this.oceanConfig = oceanConfig;
     }
 
     /**
      * Transform a TypeSafe Config object into a Java's Properties
+     *
      * @param config the config object
      * @return a Properties object with the configuration of the API
      */
@@ -91,7 +95,7 @@ public class OceanAPI {
         return properties;
     }
 
-    private static void setRxUndeliverableExceptionHandler(){
+    private static void setRxUndeliverableExceptionHandler() {
 
         RxJavaPlugins.setErrorHandler(e -> {
             if (e instanceof UndeliverableException) {
@@ -109,9 +113,9 @@ public class OceanAPI {
 
                 // that's likely a bug in the application
                 Thread.currentThread().getUncaughtExceptionHandler()
-                .uncaughtException(Thread.currentThread(), e);
+                        .uncaughtException(Thread.currentThread(), e);
 
-                       // .handleException(Thread.currentThread(), e);
+                // .handleException(Thread.currentThread(), e);
                 return;
             }
             if (e instanceof IllegalStateException) {
@@ -122,16 +126,17 @@ public class OceanAPI {
                 return;
             }
 
-            log.warn("Undeliverable exception received:  " +e.getMessage());
+            log.warn("Undeliverable exception received:  " + e.getMessage());
         });
     }
 
     /**
      * Build an Instance of Ocean API from a Properties object
+     *
      * @param properties values of the configuration
      * @return an Initialized OceanAPI object
      * @throws InitializationException InitializationException
-     * @throws InvalidConfiguration InvalidConfiguration
+     * @throws InvalidConfiguration    InvalidConfiguration
      */
     public static OceanAPI getInstance(Properties properties) throws InitializationException, InvalidConfiguration {
 
@@ -141,7 +146,7 @@ public class OceanAPI {
         OceanConfig.OceanConfigValidation validation = OceanConfig.validate(oceanConfig);
 
         if (!validation.isValid()) {
-            String msg= "Error Initializing Ocean API. Configuration not valid " + validation.errorsToString();
+            String msg = "Error Initializing Ocean API. Configuration not valid " + validation.errorsToString();
             log.error(msg);
             throw new InvalidConfiguration(msg);
         }
@@ -191,13 +196,21 @@ public class OceanAPI {
             oceanAPI.accountsManager.setDispenserContract(oceanAPI.dispenser);
             oceanAPI.accountsManager.setMainAccount(oceanAPI.mainAccount);
 
-            oceanAPI.agreementsManager = oceanInitializationHelper.getAgreementSManager(oceanAPI.keeperService, oceanAPI.aquariusService);
+            oceanAPI.agreementsManager = oceanInitializationHelper.getAgreementsManager(oceanAPI.keeperService, oceanAPI.aquariusService);
             oceanAPI.agreementsManager.setConditionStoreManagerContract(oceanAPI.conditionStoreManager);
             oceanAPI.agreementsManager.setEscrowAccessSecretStoreTemplate(oceanAPI.escrowAccessSecretStoreTemplate);
             oceanAPI.agreementsManager.setAgreementStoreManagerContract(oceanAPI.agreementStoreManagerContract);
             oceanAPI.agreementsManager.setLockRewardCondition(oceanAPI.lockRewardCondition);
             oceanAPI.agreementsManager.setAccessSecretStoreCondition(oceanAPI.accessSecretStoreCondition);
             oceanAPI.agreementsManager.setEscrowReward(oceanAPI.escrowReward);
+
+            oceanAPI.conditionsManager = oceanInitializationHelper.getConditionsManager(oceanAPI.keeperService, oceanAPI.aquariusService);
+            oceanAPI.conditionsManager.setConditionStoreManagerContract(oceanAPI.conditionStoreManager);
+            oceanAPI.conditionsManager.setEscrowAccessSecretStoreTemplate(oceanAPI.escrowAccessSecretStoreTemplate);
+            oceanAPI.conditionsManager.setAgreementStoreManagerContract(oceanAPI.agreementStoreManagerContract);
+            oceanAPI.conditionsManager.setLockRewardCondition(oceanAPI.lockRewardCondition);
+            oceanAPI.conditionsManager.setAccessSecretStoreCondition(oceanAPI.accessSecretStoreCondition);
+            oceanAPI.conditionsManager.setEscrowReward(oceanAPI.escrowReward);
 
             oceanAPI.assetsManager = oceanInitializationHelper.getAssetsManager(oceanAPI.keeperService, oceanAPI.aquariusService);
             oceanAPI.assetsManager.setMainAccount(oceanAPI.mainAccount);
@@ -208,14 +221,15 @@ public class OceanAPI {
 
             oceanAPI.accountsAPI = new AccountsImpl(oceanAPI.accountsManager);
             oceanAPI.agreementsAPI = new AgreementsImpl(oceanAPI.agreementsManager, oceanAPI.oceanManager);
+            oceanAPI.conditionsAPI = new ConditionsImpl(oceanAPI.conditionsManager);
             oceanAPI.tokensAPI = new TokensImpl(oceanAPI.accountsManager);
             oceanAPI.secretStoreAPI = new SecretStoreImpl(oceanAPI.secretStoreManager);
             oceanAPI.assetsAPI = new AssetsImpl(oceanAPI.oceanManager, oceanAPI.assetsManager);
             oceanAPI.templatesAPI = new TemplatesImpl(oceanAPI.templatesManager);
 
             return oceanAPI;
-        }catch (Exception e){
-            String msg= "Error Initializing Ocean API";
+        } catch (Exception e) {
+            String msg = "Error Initializing Ocean API";
             log.error(msg + ": " + e.getMessage());
             throw new InitializationException(msg, e);
         }
@@ -223,17 +237,19 @@ public class OceanAPI {
 
     /**
      * Build an Instance of Ocean API from a TypeSafe Config object
+     *
      * @param config the config object
      * @return an Initialized OceanAPI object
      * @throws InitializationException InitializationException
-     * @throws InvalidConfiguration  InvalidConfiguration
+     * @throws InvalidConfiguration    InvalidConfiguration
      */
-    public static OceanAPI getInstance(Config config) throws InitializationException, InvalidConfiguration{
-       return OceanAPI.getInstance(OceanAPI.toProperties(config));
+    public static OceanAPI getInstance(Config config) throws InitializationException, InvalidConfiguration {
+        return OceanAPI.getInstance(OceanAPI.toProperties(config));
     }
 
     /**
      * Gets the account used to initialized the API
+     *
      * @return the account used to initialized the API
      */
     public Account getMainAccount() {
@@ -242,6 +258,7 @@ public class OceanAPI {
 
     /**
      * Gets the AccountsAPI
+     *
      * @return an instance of an Implementation class of AccountsAPI
      */
     public AccountsAPI getAccountsAPI() {
@@ -249,15 +266,26 @@ public class OceanAPI {
     }
 
     /**
-     * Gets the AccountsAPI
-     * @return an instance of an Implementation class of AccountsAPI
+     * Gets the AgreementsAPI
+     *
+     * @return an instance of an Implementation class of AgreementsAPI
      */
     public AgreementsAPI getAgreementsAPI() {
         return this.agreementsAPI;
     }
 
     /**
+     * Gets the ConditionsAPI
+     *
+     * @return an instance of an Implementation class of ConditionsAPI
+     */
+    public ConditionsAPI getConditionsAPI() {
+        return this.conditionsAPI;
+    }
+
+    /**
      * Gets the TokensAPI
+     *
      * @return an instance of an Implementation class of TokensAPI
      */
     public TokensAPI getTokensAPI() {
@@ -267,6 +295,7 @@ public class OceanAPI {
 
     /**
      * Gets the AssetsAPI
+     *
      * @return an instance of an Implementation class of AssetsAPI
      */
     public AssetsAPI getAssetsAPI() {
@@ -275,6 +304,7 @@ public class OceanAPI {
 
     /**
      * Gets the SecretStoreAPI
+     *
      * @return an instance of an Implementation class of SecretStoreAPI
      */
     public SecretStoreAPI getSecretStoreAPI() {
@@ -283,6 +313,7 @@ public class OceanAPI {
 
     /**
      * Gets the TemplatesAPI
+     *
      * @return an instance of an Implementation class of TemplatesAPI
      */
     public TemplatesAPI getTemplatesAPI() {
@@ -290,11 +321,13 @@ public class OceanAPI {
     }
 
     // TODO: Review an alternative to introduce a cleaner dependency injection
+
     /**
      * Allows to overwrite the TemplateStoreManager contract instance
+     *
      * @param contract TemplateStoreManager
      */
-    public void setTemplateStoreManagerContract(TemplateStoreManager contract)  {
+    public void setTemplateStoreManagerContract(TemplateStoreManager contract) {
         oceanAPI.templatesManager.setTemplateStoreManagerContract(
                 contract);
 

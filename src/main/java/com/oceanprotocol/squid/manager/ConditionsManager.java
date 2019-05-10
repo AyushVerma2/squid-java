@@ -8,6 +8,7 @@ import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.service.Agreement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.web3j.crypto.Keys;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 
 import java.math.BigInteger;
@@ -33,8 +34,12 @@ public class ConditionsManager extends BaseManager {
     }
 
     public Boolean lockReward(String agreementId, BigInteger amount) throws Exception {
-        TransactionReceipt txReceipt = lockRewardCondition.fulfill(EncodingHelper.hexStringToBytes(agreementId),
-                escrowAccessSecretStoreTemplate.getAgreementData(EncodingHelper.hexStringToBytes(agreementId)).send().getValue2(),
+        byte[] serviceId;
+        serviceId = EncodingHelper.hexStringToBytes(agreementId);
+        String escrowRewardAddress = this.escrowReward.getContractAddress();
+        String rewardAddress = Keys.toChecksumAddress(escrowRewardAddress);
+        TransactionReceipt txReceipt = this.lockRewardCondition.fulfill(serviceId,
+                rewardAddress,
                 amount).send();
         return txReceipt.isStatusOK();
     }

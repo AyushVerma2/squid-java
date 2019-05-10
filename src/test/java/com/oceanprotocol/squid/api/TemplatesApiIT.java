@@ -46,7 +46,7 @@ public class TemplatesApiIT {
                 config.getString("keeper.url"),
                 oceanAPI.getMainAccount().getAddress(),
                 oceanAPI.getMainAccount().getPassword(),
-                config.getString("account.parity.file"),
+                config.getString("account.parity.file2"),
                 BigInteger.valueOf(config.getLong("keeper.gasLimit")),
                 BigInteger.valueOf(config.getLong("keeper.gasPrice"))
                 );
