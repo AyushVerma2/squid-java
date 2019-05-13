@@ -3,7 +3,6 @@ package com.oceanprotocol.squid.manager;
 import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.KeeperService;
 import com.oceanprotocol.squid.helpers.EncodingHelper;
-import com.oceanprotocol.squid.models.Account;
 import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.service.Agreement;
 import org.apache.logging.log4j.LogManager;
@@ -34,12 +33,9 @@ public class ConditionsManager extends BaseManager {
     }
 
     public Boolean lockReward(String agreementId, BigInteger amount) throws Exception {
-        byte[] serviceId;
-        serviceId = EncodingHelper.hexStringToBytes(agreementId);
-        String escrowRewardAddress = this.escrowReward.getContractAddress();
-        String rewardAddress = Keys.toChecksumAddress(escrowRewardAddress);
-        TransactionReceipt txReceipt = this.lockRewardCondition.fulfill(serviceId,
-                rewardAddress,
+        getKeeperService().tokenApprove(tokenContract, lockRewardCondition.getContractAddress(), amount);
+        TransactionReceipt txReceipt = lockRewardCondition.fulfill(EncodingHelper.hexStringToBytes(agreementId),
+                Keys.toChecksumAddress(escrowReward.getContractAddress()),
                 amount).send();
         return txReceipt.isStatusOK();
     }
@@ -57,8 +53,8 @@ public class ConditionsManager extends BaseManager {
                 amount,
                 escrowAccessSecretStoreTemplate.getAgreementData(EncodingHelper.hexStringToBytes(agreementId)).send().getValue2(),
                 escrowAccessSecretStoreTemplate.getAgreementData(EncodingHelper.hexStringToBytes(agreementId)).send().getValue1(),
-                agreement.conditions.get(0),
-                agreement.conditions.get(1)).send();
+                agreement.conditions.get(1),
+                agreement.conditions.get(0)).send();
         return txReceipt.isStatusOK();
     }
 

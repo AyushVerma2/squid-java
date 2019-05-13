@@ -1,13 +1,13 @@
 package com.oceanprotocol.squid.api.impl;
 
 import com.oceanprotocol.squid.api.AgreementsAPI;
-import com.oceanprotocol.squid.core.sla.ServiceAgreementHandler;
 import com.oceanprotocol.squid.manager.AgreementsManager;
 import com.oceanprotocol.squid.manager.OceanManager;
 import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.service.AccessService;
 import com.oceanprotocol.squid.models.service.AgreementStatus;
+import org.web3j.crypto.Keys;
 import org.web3j.tuples.generated.Tuple2;
 
 public class AgreementsImpl implements AgreementsAPI {
@@ -42,9 +42,10 @@ public class AgreementsImpl implements AgreementsAPI {
         AccessService accessService = ddo.getAccessService(serviceDefinitionId);
         return agreementsManager.createAgreement(agreementId,
                 did,
-                accessService.generateConditionIds(agreementId, oceanManager, ddo, consumerAddress),
+                accessService.generateConditionIds(agreementId, oceanManager, ddo, Keys.toChecksumAddress(consumerAddress)),
                 accessService.retrieveTimeOuts(),
-                accessService.retrieveTimeLocks()
+                accessService.retrieveTimeLocks(),
+                Keys.toChecksumAddress(consumerAddress)
         );
     }
 

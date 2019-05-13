@@ -205,6 +205,7 @@ public class OceanAPI {
             oceanAPI.agreementsManager.setEscrowReward(oceanAPI.escrowReward);
 
             oceanAPI.conditionsManager = oceanInitializationHelper.getConditionsManager(oceanAPI.keeperService, oceanAPI.aquariusService);
+            oceanAPI.conditionsManager.setTokenContract(oceanAPI.tokenContract);
             oceanAPI.conditionsManager.setConditionStoreManagerContract(oceanAPI.conditionStoreManager);
             oceanAPI.conditionsManager.setEscrowAccessSecretStoreTemplate(oceanAPI.escrowAccessSecretStoreTemplate);
             oceanAPI.conditionsManager.setAgreementStoreManagerContract(oceanAPI.agreementStoreManagerContract);

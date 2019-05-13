@@ -308,8 +308,8 @@ public class AccessService extends Service {
         String lockRewardId = generateLockRewardId(agreementId, oceanManager.getEscrowReward().getContractAddress(), oceanManager.getLockRewardCondition().getContractAddress());
         String accessSecretStoreId = generateAccessSecretStoreConditionId(agreementId, consumerAddress, oceanManager.getAccessSecretStoreCondition().getContractAddress());
         String escrowRewardId = generateEscrowRewardConditionId(agreementId, consumerAddress, ddo.proof.creator, oceanManager.getEscrowReward().getContractAddress(), lockRewardId, accessSecretStoreId);
-        conditionIds.add(EncodingHelper.hexStringToBytes(lockRewardId));
         conditionIds.add(EncodingHelper.hexStringToBytes(accessSecretStoreId));
+        conditionIds.add(EncodingHelper.hexStringToBytes(lockRewardId));
         conditionIds.add(EncodingHelper.hexStringToBytes(escrowRewardId));
         return conditionIds;
     }

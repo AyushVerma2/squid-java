@@ -35,17 +35,20 @@ public class AgreementsManager extends BaseManager {
     }
 
     public Boolean createAgreement(String agreementId, DID did, List<byte[]> conditionIds, List<BigInteger> timeLocks,
-                                   List<BigInteger> timeOuts) throws Exception {
-        TransactionReceipt txReceipt = this.escrowAccessSecretStoreTemplate.createAgreement(EncodingHelper.hexStringToBytes(agreementId),
-                EncodingHelper.hexStringToBytes(did.getHash()),
+                                   List<BigInteger> timeOuts, String accessConsumer) throws Exception {
+        TransactionReceipt txReceipt = escrowAccessSecretStoreTemplate.createAgreement(
+                EncodingHelper.hexStringToBytes("0x" + agreementId),
+                EncodingHelper.hexStringToBytes("0x" + did.getHash()),
                 conditionIds,
                 timeLocks,
-                timeOuts).send();
+                timeOuts,
+                accessConsumer).send();
         return txReceipt.isStatusOK();
     }
 
     /**
      * Retrieve the agreement for a agreement_id.
+     *
      * @param agreementId id of the agreement
      * @return Agreement
      * @throws Exception Exception
