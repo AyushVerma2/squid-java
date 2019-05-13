@@ -88,7 +88,7 @@ public class AgreementsManagerIT {
         properties.put(OceanConfig.DISPENSER_ADDRESS, config.getString("contract.Dispenser.address"));
         properties.put(OceanConfig.PROVIDER_ADDRESS, config.getString("provider.address"));
         oceanAPIConsumer = OceanAPI.getInstance(properties);
-
+        oceanAPIConsumer.getTokensAPI().request(BigInteger.TEN);
         agreementsManager = AgreementsManager.getInstance(keeper, aquarius);
         accessSecretStoreCondition = ManagerHelper.loadAccessSecretStoreConditionContract(keeper, config.getString("contract.AccessSecretStoreCondition.address"));
         escrowAccessSecretStoreTemplate = ManagerHelper.loadEscrowAccessSecretStoreTemplate(keeper, config.getString("contract.EscrowAccessSecretStoreTemplate.address"));
@@ -116,6 +116,7 @@ public class AgreementsManagerIT {
         AccessService accessService = ddo.getAccessService("1");
         log.debug("DDO registered!");
         oceanAPIConsumer.getAccountsAPI().requestTokens(BigInteger.valueOf(9000000));
+        log.info("Consumer balance: " + oceanAPIConsumer.getAccountsAPI().balance(oceanAPIConsumer.getMainAccount()));
         Flowable<OrderResult> response = oceanAPIConsumer.getAssetsAPI().order(did, Service.DEFAULT_ACCESS_SERVICE_ID);
 
         OrderResult orderResult = response.blockingFirst();
