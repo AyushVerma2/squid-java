@@ -1,6 +1,8 @@
 package com.oceanprotocol.squid.api.impl;
 
+import com.oceanprotocol.squid.api.AccountsAPI;
 import com.oceanprotocol.squid.api.AgreementsAPI;
+import com.oceanprotocol.squid.external.KeeperService;
 import com.oceanprotocol.squid.manager.AgreementsManager;
 import com.oceanprotocol.squid.manager.OceanManager;
 import com.oceanprotocol.squid.models.DDO;
@@ -41,11 +43,11 @@ public class AgreementsImpl implements AgreementsAPI {
         DDO ddo = oceanManager.resolveDID(did);
         AccessService accessService = ddo.getAccessService(serviceDefinitionId);
         return agreementsManager.createAgreement(agreementId,
-                did,
+                ddo,
                 accessService.generateConditionIds(agreementId, oceanManager, ddo, Keys.toChecksumAddress(consumerAddress)),
-                accessService.retrieveTimeOuts(),
-                accessService.retrieveTimeLocks(),
-                Keys.toChecksumAddress(consumerAddress)
+                Keys.toChecksumAddress(consumerAddress),
+                signature,
+                accessService
         );
     }
 

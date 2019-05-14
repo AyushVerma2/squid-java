@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.web3j.crypto.Keys;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.protocol.exceptions.TransactionException;
 
 import java.math.BigInteger;
 
@@ -32,32 +33,80 @@ public class ConditionsManager extends BaseManager {
         return new ConditionsManager(keeperService, aquariusService);
     }
 
+    /**
+     * Lock reward for a service agreement.
+     *
+     * @param agreementId the agreement id.
+     * @param amount      the amount to be locked.
+     * @return a flag true if was executed successfully.
+     * @throws Exception exception
+     */
     public Boolean lockReward(String agreementId, BigInteger amount) throws Exception {
-        getKeeperService().tokenApprove(tokenContract, lockRewardCondition.getContractAddress(), amount);
-        TransactionReceipt txReceipt = lockRewardCondition.fulfill(EncodingHelper.hexStringToBytes(agreementId),
-                Keys.toChecksumAddress(escrowReward.getContractAddress()),
-                amount).send();
-        return txReceipt.isStatusOK();
+        try {
+            getKeeperService().tokenApprove(tokenContract, lockRewardCondition.getContractAddress(), amount);
+            TransactionReceipt txReceipt = lockRewardCondition.fulfill(EncodingHelper.hexStringToBytes(agreementId),
+                    Keys.toChecksumAddress(escrowReward.getContractAddress()),
+                    amount).send();
+            return txReceipt.isStatusOK();
+        } catch (TransactionException e) {
+            log.error("Error looking reward for the agreement" + agreementId + e.getMessage());
+            return false;
+        }
     }
 
+    /**
+     * Grant access to an address to consume a did.
+     *
+     * @param agreementId    the agreement id.
+     * @param did            the did.
+     * @param granteeAddress an eth address.
+     * @return a flag true if was executed successfully.
+     * @throws Exception exception
+     */
     public Boolean grantAccess(String agreementId, DID did, String granteeAddress) throws Exception {
-        TransactionReceipt txReceipt = accessSecretStoreCondition.fulfill(EncodingHelper.hexStringToBytes(agreementId),
-                EncodingHelper.hexStringToBytes("0x" + did.getHash()),
-                granteeAddress).send();
-        return txReceipt.isStatusOK();
+        try {
+            TransactionReceipt txReceipt = accessSecretStoreCondition.fulfill(EncodingHelper.hexStringToBytes(agreementId),
+                    EncodingHelper.hexStringToBytes("0x" + did.getHash()),
+                    granteeAddress).send();
+            return txReceipt.isStatusOK();
+        } catch (TransactionException e) {
+            log.error("Error granting access to address" + granteeAddress + "to did" + did + e.getMessage());
+            return false;
+        }
     }
 
+    /**
+     * Release reward to the address after the access was granted.
+     *
+     * @param agreementId the agreement id.
+     * @param amount      the price.
+     * @return a flag true if was executed successfully.
+     * @throws Exception exception
+     */
     public Boolean releaseReward(String agreementId, BigInteger amount) throws Exception {
         Agreement agreement = new Agreement(agreementStoreManager.getAgreement(EncodingHelper.hexStringToBytes(agreementId)).send());
-        TransactionReceipt txReceipt = escrowReward.fulfill(EncodingHelper.hexStringToBytes(agreementId),
-                amount,
-                escrowAccessSecretStoreTemplate.getAgreementData(EncodingHelper.hexStringToBytes(agreementId)).send().getValue2(),
-                escrowAccessSecretStoreTemplate.getAgreementData(EncodingHelper.hexStringToBytes(agreementId)).send().getValue1(),
-                agreement.conditions.get(1),
-                agreement.conditions.get(0)).send();
-        return txReceipt.isStatusOK();
+        try {
+            TransactionReceipt txReceipt = escrowReward.fulfill(EncodingHelper.hexStringToBytes(agreementId),
+                    amount,
+                    escrowAccessSecretStoreTemplate.getAgreementData(EncodingHelper.hexStringToBytes(agreementId)).send().getValue2(),
+                    escrowAccessSecretStoreTemplate.getAgreementData(EncodingHelper.hexStringToBytes(agreementId)).send().getValue1(),
+                    agreement.conditions.get(1),
+                    agreement.conditions.get(0)).send();
+            return txReceipt.isStatusOK();
+        } catch (TransactionException e) {
+            log.error("Error releasing reward for the agreement" + agreementId + e.getMessage());
+            return false;
+        }
     }
 
+    /**
+     * Refund the price in case that some of the step was wrong.
+     *
+     * @param agreementId the agreement id.
+     * @param amount      the price.
+     * @return a flag true if was executed successfully.
+     * @throws Exception exception
+     */
     public Boolean refundReward(String agreementId, BigInteger amount) throws Exception {
         return releaseReward(agreementId, amount);
     }

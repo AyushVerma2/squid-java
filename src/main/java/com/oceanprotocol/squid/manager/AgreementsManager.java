@@ -3,7 +3,9 @@ package com.oceanprotocol.squid.manager;
 import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.KeeperService;
 import com.oceanprotocol.squid.helpers.EncodingHelper;
+import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.DID;
+import com.oceanprotocol.squid.models.service.AccessService;
 import com.oceanprotocol.squid.models.service.Agreement;
 import com.oceanprotocol.squid.models.service.AgreementStatus;
 import org.apache.logging.log4j.LogManager;
@@ -34,14 +36,26 @@ public class AgreementsManager extends BaseManager {
         return new AgreementsManager(keeperService, aquariusService);
     }
 
-    public Boolean createAgreement(String agreementId, DID did, List<byte[]> conditionIds, List<BigInteger> timeLocks,
-                                   List<BigInteger> timeOuts, String accessConsumer) throws Exception {
+    /**
+     * Create an agreement using the escrowAccessSecretStoreTemplate. This method should be more specific in the future when we have more than one template.
+     *
+     * @param agreementId    the agreement id
+     * @param conditionIds   list with the conditions ids
+     * @param accessConsumer eth address of the consumer of the agreement.
+     * @return a flag that is true if the agreement was successfully created.
+     * @throws Exception exception
+     */
+    public Boolean createAgreement(String agreementId, DDO ddo, List<byte[]> conditionIds,
+                                   String accessConsumer, String signature, AccessService accessService) throws Exception {
+//TODO Check that the signature is valid.
+//        String agreementHash = accessService.generateServiceAgreementHash(agreementId, accessConsumer, ddo.proof.creator, lockRewardCondition.getContractAddress(), accessSecretStoreCondition.getContractAddress(), escrowReward.getContractAddress());
+//        getKeeperService().getWeb3().ethGetTransactionByHash(agreementHash).send();
         TransactionReceipt txReceipt = escrowAccessSecretStoreTemplate.createAgreement(
                 EncodingHelper.hexStringToBytes("0x" + agreementId),
-                EncodingHelper.hexStringToBytes("0x" + did.getHash()),
+                EncodingHelper.hexStringToBytes("0x" + ddo.getDid().getHash()),
                 conditionIds,
-                timeLocks,
-                timeOuts,
+                accessService.retrieveTimeOuts(),
+                accessService.retrieveTimeLocks(),
                 accessConsumer).send();
         return txReceipt.isStatusOK();
     }
@@ -79,6 +93,13 @@ public class AgreementsManager extends BaseManager {
         return agreementStatus;
     }
 
+    /**
+     * Auxiliar method to get the name of the different conditions address.
+     *
+     * @param address contract address
+     * @return string
+     * @throws Exception exception
+     */
     private String getConditionNameByAddress(String address) throws Exception {
         if (this.lockRewardCondition.getContractAddress().equals(address)) return "lockReward";
         else if (this.accessSecretStoreCondition.getContractAddress().equals(address)) return "accessSecretStore";
