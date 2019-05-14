@@ -1,5 +1,6 @@
 package com.oceanprotocol.squid.api;
 
+import com.oceanprotocol.squid.models.Account;
 import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.service.AgreementStatus;
 import org.web3j.tuples.generated.Tuple2;
@@ -14,10 +15,11 @@ public interface AgreementsAPI {
      *
      * @param did                 the did
      * @param serviceDefinitionId the service definition id of the agreement
-     * @param consumerAddress     the address of the consumer
+     * @param consumerAccount     the address of the consumer
      * @return Tuple with agreement id and signature.
+     * @throws Exception Exception
      */
-    public Tuple2<String, String> prepare(DID did, String serviceDefinitionId, String consumerAddress);
+    public Tuple2<String, String> prepare(DID did, String serviceDefinitionId, Account consumerAccount) throws Exception;
 
     /**
      * Send a signed service agreement to the publisher Brizo instance to consume/access the service.
@@ -26,9 +28,10 @@ public interface AgreementsAPI {
      * @param agreementId         the agreement id
      * @param serviceDefinitionId the service definition id of the agreement
      * @param signature           the signature
-     * @param consumerAddress     the address of the consumer
+     * @param consumerAccount     the account of the consumer
+     * @throws Exception Exception
      */
-    public void send(DID did, String agreementId, String serviceDefinitionId, String signature, String consumerAddress);
+    public void send(DID did, String agreementId, String serviceDefinitionId, String signature, Account consumerAccount) throws Exception;
 
     /**
      * Create a service agreement.

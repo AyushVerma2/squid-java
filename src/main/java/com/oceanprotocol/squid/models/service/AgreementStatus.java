@@ -10,8 +10,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.oceanprotocol.squid.models.AbstractModel;
 import com.oceanprotocol.squid.models.FromJsonToModel;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -22,8 +20,6 @@ import java.util.Map;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder(alphabetic = true)
 public class AgreementStatus extends AbstractModel implements FromJsonToModel {
-
-    private static final Logger log = LogManager.getLogger(AgreementStatus.class);
 
     @JsonProperty
     public String agreementId;
