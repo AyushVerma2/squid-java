@@ -9,8 +9,25 @@ import org.web3j.tuples.generated.Tuple2;
  */
 public interface AgreementsAPI {
 
+    /**
+     * Prepare the service agreement.
+     *
+     * @param did                 the did
+     * @param serviceDefinitionId the service definition id of the agreement
+     * @param consumerAddress     the address of the consumer
+     * @return Tuple with agreement id and signature.
+     */
     public Tuple2<String, String> prepare(DID did, String serviceDefinitionId, String consumerAddress);
 
+    /**
+     * Send a signed service agreement to the publisher Brizo instance to consume/access the service.
+     *
+     * @param did                 the did
+     * @param agreementId         the agreement id
+     * @param serviceDefinitionId the service definition id of the agreement
+     * @param signature           the signature
+     * @param consumerAddress     the address of the consumer
+     */
     public void send(DID did, String agreementId, String serviceDefinitionId, String signature, String consumerAddress);
 
     /**

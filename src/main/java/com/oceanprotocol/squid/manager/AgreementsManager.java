@@ -1,5 +1,6 @@
 package com.oceanprotocol.squid.manager;
 
+import com.oceanprotocol.squid.exceptions.ConditionNotFoundException;
 import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.KeeperService;
 import com.oceanprotocol.squid.helpers.EncodingHelper;
@@ -49,6 +50,7 @@ public class AgreementsManager extends BaseManager {
 //TODO Check that the signature is valid.
 //        String agreementHash = accessService.generateServiceAgreementHash(agreementId, accessConsumer, ddo.proof.creator, lockRewardCondition.getContractAddress(), accessSecretStoreCondition.getContractAddress(), escrowReward.getContractAddress());
 //        getKeeperService().getWeb3().ethGetTransactionByHash(agreementHash).send();
+        log.debug("Creating agreement with id: " + agreementId);
         TransactionReceipt txReceipt = escrowAccessSecretStoreTemplate.createAgreement(
                 EncodingHelper.hexStringToBytes("0x" + agreementId),
                 EncodingHelper.hexStringToBytes("0x" + ddo.getDid().getHash()),
@@ -104,7 +106,7 @@ public class AgreementsManager extends BaseManager {
         else if (this.accessSecretStoreCondition.getContractAddress().equals(address)) return "accessSecretStore";
         else if (this.escrowReward.getContractAddress().equals(address)) return "escrowReward";
         else log.error("The current address" + address + "is not a condition address.");
-        throw new Exception("The current address" + address + "is not a condition address.");
+        throw new ConditionNotFoundException("The current address" + address + "is not a condition address.");
     }
 
 }

@@ -14,9 +14,7 @@
       {
         "name": "_amount",
         "type": "uint256",
-        "value": {
-          parameter.price
-        }
+        "value": {parameter.price}
       }
     ],
     "events": [
@@ -80,9 +78,7 @@
       {
         "name": "_amount",
         "type": "uint256",
-        "value": {
-          parameter.price
-        }
+        "value": {parameter.price}
       },
       {
         "name": "_receiver",

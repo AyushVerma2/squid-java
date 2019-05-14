@@ -10,7 +10,6 @@ import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.asset.AssetMetadata;
 import com.oceanprotocol.squid.models.asset.OrderResult;
-import com.oceanprotocol.squid.models.service.AccessService;
 import com.oceanprotocol.squid.models.service.AgreementStatus;
 import com.oceanprotocol.squid.models.service.ProviderConfig;
 import com.oceanprotocol.squid.models.service.Service;
@@ -43,7 +42,6 @@ public class AgreementsManagerIT {
     private static ConditionStoreManager conditionStoreManager;
     private static String METADATA_JSON_SAMPLE = "src/test/resources/examples/metadata.json";
     private static String METADATA_JSON_CONTENT;
-    private static AssetMetadata metadataBase;
     private static OceanAPI oceanAPI;
     private static OceanAPI oceanAPIConsumer;
     private static ProviderConfig providerConfig;
@@ -54,8 +52,6 @@ public class AgreementsManagerIT {
         log.debug("Setting Up DTO's");
 
         METADATA_JSON_CONTENT = new String(Files.readAllBytes(Paths.get(METADATA_JSON_SAMPLE)));
-        metadataBase = DDO.fromJSON(new TypeReference<AssetMetadata>() {
-        }, METADATA_JSON_CONTENT);
 
         keeper = ManagerHelper.getKeeper(config, ManagerHelper.VmClient.parity);
         aquarius = ManagerHelper.getAquarius(config);
@@ -99,6 +95,7 @@ public class AgreementsManagerIT {
         agreementsManager.setAgreementStoreManagerContract(agreementsStoreManager);
         agreementsManager.setLockRewardCondition(lockRewardCondition);
         agreementsManager.setAccessSecretStoreCondition(accessSecretStoreCondition);
+        agreementsManager.setEscrowAccessSecretStoreTemplate(escrowAccessSecretStoreTemplate);
         agreementsManager.setEscrowReward(escrowReward);
         agreementsManager.setConditionStoreManagerContract(conditionStoreManager);
 
@@ -113,7 +110,6 @@ public class AgreementsManagerIT {
         DID did = new DID(ddo.id);
 
 
-        AccessService accessService = ddo.getAccessService("1");
         log.debug("DDO registered!");
         oceanAPIConsumer.getAccountsAPI().requestTokens(BigInteger.valueOf(9000000));
         log.info("Consumer balance: " + oceanAPIConsumer.getAccountsAPI().balance(oceanAPIConsumer.getMainAccount()));
