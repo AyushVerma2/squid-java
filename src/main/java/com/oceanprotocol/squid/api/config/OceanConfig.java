@@ -82,7 +82,7 @@ public class OceanConfig {
             errors.add(error);
         }
 
-        public String errorsToString(){
+        public String errorsToString() {
             return String.join("; ", this.errors);
         }
 
@@ -91,6 +91,7 @@ public class OceanConfig {
 
     /**
      * Validates that all the needed properties are set in the configuration
+     *
      * @param oceanConfig the configuration
      * @return an OceanConfigValidation object that indicates if the configuration is valid
      */
@@ -232,7 +233,7 @@ public class OceanConfig {
     }
 
     public OceanConfig setEscrowRewardConditionsAddress(String address) {
-        this.escrowRewardAddress= address;
+        this.escrowRewardAddress = address;
         return this;
     }
 
@@ -241,7 +242,7 @@ public class OceanConfig {
     }
 
     public OceanConfig setAgreementStoreManagerAddress(String address) {
-        this.agreementStoreManagerAddress= address;
+        this.agreementStoreManagerAddress = address;
         return this;
     }
 
@@ -250,7 +251,7 @@ public class OceanConfig {
     }
 
     public OceanConfig setConditionStoreManagerAddress(String address) {
-        this.conditionStoreManagerAddress= address;
+        this.conditionStoreManagerAddress = address;
         return this;
     }
 
@@ -259,7 +260,7 @@ public class OceanConfig {
     }
 
     public OceanConfig setLockrewardConditionsAddress(String address) {
-        this.lockRewardAddress= address;
+        this.lockRewardAddress = address;
         return this;
     }
 
@@ -268,7 +269,7 @@ public class OceanConfig {
     }
 
     public OceanConfig setAccessSsConditionsAddress(String address) {
-        this.accessSsConditionsAddress= address;
+        this.accessSsConditionsAddress = address;
         return this;
     }
 

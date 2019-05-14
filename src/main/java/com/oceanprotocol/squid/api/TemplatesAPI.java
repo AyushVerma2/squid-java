@@ -19,6 +19,7 @@ public interface TemplatesAPI {
 
     /**
      * Suggest an agreement template smart contract to include in the white listed agreement templates
+     *
      * @param templateAddress Hex str the ethereum address of the deployed template (smart contract address)
      * @return TransactionReceipt tx receipt
      * @throws EthereumException
@@ -28,6 +29,7 @@ public interface TemplatesAPI {
     /**
      * Approve (whitelist) an already proposed template. Once a template is approved
      * it can be used for creating agreements in Ocean Protocol keeper network
+     *
      * @param templateAddress Hex str the ethereum address of the deployed template (smart contract address)
      * @return TransactionReceipt tx receipt
      * @throws EthereumException
@@ -37,6 +39,7 @@ public interface TemplatesAPI {
     /**
      * Cancel the propsed/approved template or essentially de-whitelist the template.
      * This prevents the creation of any further agreements that are based on this template.
+     *
      * @param templateAddress Hex str the ethereum address of the deployed template (smart contract address)
      * @return TransactionReceipt tx receipt
      * @throws EthereumException
@@ -45,6 +48,7 @@ public interface TemplatesAPI {
 
     /**
      * Checks if an agreement template is approved
+     *
      * @param templateAddress Hex str the ethereum address of the deployed template (smart contract address)
      * @return boolean is the template approved?
      * @throws EthereumException
@@ -53,6 +57,7 @@ public interface TemplatesAPI {
 
     /**
      * Get the number of agreement templates registered
+     *
      * @return BigInteger number of templates
      * @throws EthereumException
      */
@@ -60,6 +65,7 @@ public interface TemplatesAPI {
 
     /**
      * Return the attributes associated to a registered Template in the Smart Contracts
+     *
      * @param templateAddress Hex str the ethereum address of the deployed template (smart contract address)
      * @return TemplateSEA
      * @throws EthereumException

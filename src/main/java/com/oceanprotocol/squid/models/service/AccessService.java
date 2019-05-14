@@ -43,7 +43,6 @@ public class AccessService extends Service {
     public String creator;
 
 
-
     @JsonProperty
     public ServiceAgreementTemplate serviceAgreementTemplate;
 
@@ -69,7 +68,8 @@ public class AccessService extends Service {
         @JsonProperty
         public List<Condition> conditions = new ArrayList<>();
 
-        public ServiceAgreementTemplate() {}
+        public ServiceAgreementTemplate() {
+        }
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -85,9 +85,9 @@ public class AccessService extends Service {
         @JsonProperty
         public List<String> releaseReward = Arrays.asList("lockReward", "accessSecretStore");
 
-        public ConditionDependency() {}
+        public ConditionDependency() {
+        }
     }
-
 
 
     public AccessService() {

@@ -52,8 +52,8 @@ public abstract class BaseManager {
     protected TemplateStoreManager templateStoreManager;
     protected AgreementStoreManager agreementStoreManager;
     protected ConditionStoreManager conditionStoreManager;
-    protected ContractAddresses contractAddresses  = new ContractAddresses();
-    protected Config config= ConfigFactory.load();
+    protected ContractAddresses contractAddresses = new ContractAddresses();
+    protected Config config = ConfigFactory.load();
 
     protected Account mainAccount;
     protected String providerAddress;
@@ -63,7 +63,8 @@ public abstract class BaseManager {
         private String lockRewardConditionAddress;
         private String accessSecretStoreConditionAddress;
 
-        public ContractAddresses(){}
+        public ContractAddresses() {
+        }
 
         public String getLockRewardConditionAddress() {
             return lockRewardConditionAddress;
@@ -85,7 +86,8 @@ public abstract class BaseManager {
 
     /**
      * Constructor
-     * @param keeperService KeeperService
+     *
+     * @param keeperService   KeeperService
      * @param aquariusService AquariusService
      */
     public BaseManager(KeeperService keeperService, AquariusService aquariusService) {
@@ -95,13 +97,13 @@ public abstract class BaseManager {
 
     private SecretStoreManager getSecretStoreInstance(AuthorizationService authorizationService) {
 
-        if (authorizationService==null)
+        if (authorizationService == null)
             return getSecretStoreManager();
 
-        return SecretStoreManager.getInstance( SecretStoreDto.builder(authorizationService.serviceEndpoint), evmDto);
+        return SecretStoreManager.getInstance(SecretStoreDto.builder(authorizationService.serviceEndpoint), evmDto);
     }
 
-    protected DDO buildDDO(MetadataService metadataService,  AuthorizationService authorizationService, String address, int threshold) throws DDOException {
+    protected DDO buildDDO(MetadataService metadataService, AuthorizationService authorizationService, String address, int threshold) throws DDOException {
 
         try {
 
@@ -119,8 +121,7 @@ public abstract class BaseManager {
             String signature = EncodingHelper.signatureToString(signatureSource);
 
             return new DDO(did, metadataService, address, signature);
-        }
-        catch (DIDFormatException|EncryptionException|CipherException|IOException e) {
+        } catch (DIDFormatException | EncryptionException | CipherException | IOException e) {
             throw new DDOException("Error building DDO", e);
         }
 
@@ -136,9 +137,9 @@ public abstract class BaseManager {
         SecretStoreManager secretStoreManager = getSecretStoreInstance(authorizationService);
 
         String jsonFiles = secretStoreManager.decryptDocument(ddo.getDid().getHash(), ddo.metadata.base.encryptedFiles);
-        return  DDO.fromJSON(new TypeReference<ArrayList<AssetMetadata.File>>(){}, jsonFiles);
+        return DDO.fromJSON(new TypeReference<ArrayList<AssetMetadata.File>>() {
+        }, jsonFiles);
     }
-
 
 
     public ContractAddresses getContractAddresses() {
@@ -147,6 +148,7 @@ public abstract class BaseManager {
 
     /**
      * Get the KeeperService
+     *
      * @return KeeperService
      */
     public KeeperService getKeeperService() {
@@ -155,6 +157,7 @@ public abstract class BaseManager {
 
     /**
      * Set the KeeperService
+     *
      * @param keeperService KeeperService
      * @return this
      */
@@ -165,6 +168,7 @@ public abstract class BaseManager {
 
     /**
      * Get the AquariusService
+     *
      * @return AquariusService
      */
     public AquariusService getAquariusService() {
@@ -173,6 +177,7 @@ public abstract class BaseManager {
 
     /**
      * Set the AquariusService
+     *
      * @param aquariusService AquariusService
      * @return this
      */
@@ -183,6 +188,7 @@ public abstract class BaseManager {
 
     /**
      * Get the SecretStoreDto
+     *
      * @return SecretStoreDto
      */
     public SecretStoreDto getSecretStoreDto() {
@@ -191,6 +197,7 @@ public abstract class BaseManager {
 
     /**
      * Set the SecretStoreDto
+     *
      * @param secretStoreDto SecretStoreDto
      * @return this
      */
@@ -201,6 +208,7 @@ public abstract class BaseManager {
 
     /**
      * Get the SecretStoreManager
+     *
      * @return SecretStoreDto
      */
     public SecretStoreManager getSecretStoreManager() {
@@ -209,6 +217,7 @@ public abstract class BaseManager {
 
     /**
      * Set the SecretStoreManager
+     *
      * @param secretStoreManager SecretStoreDto
      * @return this
      */
@@ -219,6 +228,7 @@ public abstract class BaseManager {
 
     /**
      * Get the EvmDto
+     *
      * @return EvmDto
      */
     public EvmDto getEvmDto() {
@@ -227,6 +237,7 @@ public abstract class BaseManager {
 
     /**
      * Set the EvmDto necessary to stablish the encryption/decryption flow necessary by Secret Store
+     *
      * @param evmDto EvmDto
      * @return this
      */
@@ -237,62 +248,68 @@ public abstract class BaseManager {
 
     /**
      * It sets the OceanToken stub instance
+     *
      * @param contract OceanToken instance
      * @return BaseManager instance
      */
-    public BaseManager setTokenContract(OceanToken contract)   {
-        this.tokenContract= contract;
+    public BaseManager setTokenContract(OceanToken contract) {
+        this.tokenContract = contract;
         return this;
     }
 
     /**
      * It sets the OceanToken stub instance
+     *
      * @param contract OceanToken instance
      * @return BaseManager instance
      */
-    public BaseManager setTemplateStoreManagerContract(TemplateStoreManager contract)   {
-        this.templateStoreManager= contract;
+    public BaseManager setTemplateStoreManagerContract(TemplateStoreManager contract) {
+        this.templateStoreManager = contract;
         return this;
     }
 
     /**
      * It sets the Dispenser stub instance
+     *
      * @param contract Dispenser instance
      * @return BaseManager instance
      */
-    public BaseManager setDispenserContract(Dispenser contract)    {
-        this.dispenser= contract;
+    public BaseManager setDispenserContract(Dispenser contract) {
+        this.dispenser = contract;
         return this;
     }
 
 
     /**
      * It sets the EscrowAccessSecretStoreTemplate stub instance
+     *
      * @param contract EscrowAccessSecretStoreTemplate instance
      * @return BaseManager instance
      */
-    public BaseManager setEscrowAccessSecretStoreTemplate(EscrowAccessSecretStoreTemplate contract)    {
-        this.escrowAccessSecretStoreTemplate= contract;
+    public BaseManager setEscrowAccessSecretStoreTemplate(EscrowAccessSecretStoreTemplate contract) {
+        this.escrowAccessSecretStoreTemplate = contract;
         return this;
     }
 
 
     /**
      * It sets the DIDRegistry stub instance
+     *
      * @param contract DIDRegistry instance
      * @return BaseManager instance
      */
-    public BaseManager setDidRegistryContract(DIDRegistry contract)    {
-        this.didRegistry= contract;
+    public BaseManager setDidRegistryContract(DIDRegistry contract) {
+        this.didRegistry = contract;
         return this;
     }
 
     /**
      * It sets the AgreementStoreManager stub instance
+     *
      * @param contract AgreementStoreManager instance
      * @return BaseManager instance
      */
-    public BaseManager setAgreementStoreManagerContract(AgreementStoreManager contract)    {
+    public BaseManager setAgreementStoreManagerContract(AgreementStoreManager contract) {
         this.agreementStoreManager = contract;
         return this;
     }
@@ -300,16 +317,18 @@ public abstract class BaseManager {
 
     /**
      * It sets the AgreementStoreManager stub instance
+     *
      * @param contract AgreementStoreManager instance
      * @return BaseManager instance
      */
-    public BaseManager setConditionStoreManagerContract(ConditionStoreManager contract)    {
+    public BaseManager setConditionStoreManagerContract(ConditionStoreManager contract) {
         this.conditionStoreManager = contract;
         return this;
     }
 
     /**
      * It gets the lockRewardCondition stub instance
+     *
      * @return LockRewardCondition instance
      */
     public LockRewardCondition getLockRewardCondition() {
@@ -318,6 +337,7 @@ public abstract class BaseManager {
 
     /**
      * It sets the LockRewardCondition instance
+     *
      * @param lockRewardCondition instance
      * @return BaseManager instance
      */
@@ -328,6 +348,7 @@ public abstract class BaseManager {
 
     /**
      * It gets the EscrowReward stub instance
+     *
      * @return EscrowReward instance
      */
     public EscrowReward getEscrowReward() {
@@ -336,6 +357,7 @@ public abstract class BaseManager {
 
     /**
      * It sets the EscrowReward instance
+     *
      * @param escrowReward EscrowReward instance
      * @return BaseManager instance
      */
@@ -346,6 +368,7 @@ public abstract class BaseManager {
 
     /**
      * It gets the AccessSecretStoreCondition stub instance
+     *
      * @return AccessSecretStoreCondition instance
      */
     public AccessSecretStoreCondition getAccessSecretStoreCondition() {
@@ -354,6 +377,7 @@ public abstract class BaseManager {
 
     /**
      * It sets the EscrowReward instance
+     *
      * @param accessSecretStoreCondition AccessSecretStoreCondition instance
      * @return BaseManager instance
      */

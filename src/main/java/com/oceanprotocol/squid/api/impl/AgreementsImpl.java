@@ -1,8 +1,6 @@
 package com.oceanprotocol.squid.api.impl;
 
-import com.oceanprotocol.squid.api.AccountsAPI;
 import com.oceanprotocol.squid.api.AgreementsAPI;
-import com.oceanprotocol.squid.external.KeeperService;
 import com.oceanprotocol.squid.manager.AgreementsManager;
 import com.oceanprotocol.squid.manager.OceanManager;
 import com.oceanprotocol.squid.models.DDO;

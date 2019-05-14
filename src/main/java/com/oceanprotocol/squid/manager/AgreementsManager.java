@@ -4,7 +4,6 @@ import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.KeeperService;
 import com.oceanprotocol.squid.helpers.EncodingHelper;
 import com.oceanprotocol.squid.models.DDO;
-import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.service.AccessService;
 import com.oceanprotocol.squid.models.service.Agreement;
 import com.oceanprotocol.squid.models.service.AgreementStatus;

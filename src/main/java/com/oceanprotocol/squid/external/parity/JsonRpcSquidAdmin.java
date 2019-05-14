@@ -15,7 +15,8 @@ public class JsonRpcSquidAdmin extends JsonRpc2_0Admin {
 
     /**
      * Invoke the personal sign method
-     * @param data data to sign
+     *
+     * @param data     data to sign
      * @param address  ethereum address
      * @param password password
      * @return signed hash

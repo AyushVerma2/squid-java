@@ -22,6 +22,7 @@ public abstract class EncodingHelper {
 
     /**
      * Given a String return a Bytes32
+     *
      * @param input input string
      * @return Bytes32 output
      */
@@ -34,6 +35,7 @@ public abstract class EncodingHelper {
 
     /**
      * Given a byte array returns the first 32 bytes in a new byte array
+     *
      * @param byteValue byte[]
      * @return byte[]
      */
@@ -45,6 +47,7 @@ public abstract class EncodingHelper {
 
     /**
      * Encodes a String in Hex
+     *
      * @param input string to encode
      * @return Hex string
      * @throws UnsupportedEncodingException Error encoding to Hex
@@ -55,6 +58,7 @@ public abstract class EncodingHelper {
 
     /**
      * Encodes a Hex String in a byte array
+     *
      * @param input hex string to encode
      * @return byte[]
      * @throws UnsupportedEncodingException Error encoding to byte array
@@ -65,6 +69,7 @@ public abstract class EncodingHelper {
 
     /**
      * Convert a string to hex and after to a byte array
+     *
      * @param input string to encode
      * @return byte[]
      * @throws UnsupportedEncodingException Error encoding to byte array
@@ -75,8 +80,9 @@ public abstract class EncodingHelper {
 
     /**
      * Pad a string with zero given a specific length
+     *
      * @param input string
-     * @param len length of the output string
+     * @param len   length of the output string
      * @return string
      */
     public static String padRightWithZero(String input, int len) {
@@ -90,15 +96,17 @@ public abstract class EncodingHelper {
 
     /**
      * Convert a byte[] to a hex string with 0x appended
+     *
      * @param input byte[]
      * @return hex string
      */
-    public static String toHexString(byte[] input)  {
+    public static String toHexString(byte[] input) {
         return Numeric.toHexString(input);
     }
 
     /**
      * Return true or false if a input string is in hex format
+     *
      * @param input the input string
      * @return bool
      */
@@ -108,7 +116,8 @@ public abstract class EncodingHelper {
 
     /**
      * Given a type and an object, convert to the proper web3j abi type
-     * @param type thw type
+     *
+     * @param type  thw type
      * @param value the object
      * @return String in hex format
      * @throws UnsupportedEncodingException UnsupportedEncodingException
@@ -116,11 +125,11 @@ public abstract class EncodingHelper {
     public static String hexEncodeAbiType(String type, Object value) throws UnsupportedEncodingException {
 
         if (type.contains("[")) {
-            String subType= type.replaceAll("\\[\\]", "");
-            Object[] items= (String[]) value;
-            String result= "";
-            for (Object item: items)    {
-                result= result + hexEncodeAbiType(subType, item);
+            String subType = type.replaceAll("\\[\\]", "");
+            Object[] items = (String[]) value;
+            String result = "";
+            for (Object item : items) {
+                result = result + hexEncodeAbiType(subType, item);
             }
             return result;
         } else if (type.contains("bool"))
@@ -138,11 +147,11 @@ public abstract class EncodingHelper {
 
     }
 
-    public static String signatureToString(Sign.SignatureData signatureData)    {
+    public static String signatureToString(Sign.SignatureData signatureData) {
         return EthereumHelper.remove0x(
                 Integer.toHexString(signatureData.getV())
-                + Numeric.toHexString(signatureData.getR())
-                + Numeric.toHexString(signatureData.getS())
+                        + Numeric.toHexString(signatureData.getR())
+                        + Numeric.toHexString(signatureData.getS())
         );
     }
 
@@ -151,9 +160,9 @@ public abstract class EncodingHelper {
             throw new EncodingException(
                     "Error deserializing string to SignatureData, invalid length:" + signatureString.length());
 
-        byte[] v= Numeric.hexStringToByteArray(signatureString.substring(0, 2));
-        byte[] r= Numeric.hexStringToByteArray(signatureString.substring(2, 66));
-        byte[] s= Numeric.hexStringToByteArray(signatureString.substring(66, 130));
+        byte[] v = Numeric.hexStringToByteArray(signatureString.substring(0, 2));
+        byte[] r = Numeric.hexStringToByteArray(signatureString.substring(2, 66));
+        byte[] s = Numeric.hexStringToByteArray(signatureString.substring(66, 130));
 
         return new Sign.SignatureData(v[0], r, s);
     }

@@ -185,7 +185,8 @@ public class ServiceAgreementHandler {
                     this.getClass().getClassLoader().getResourceAsStream("sla/sla-access-conditions-template.json"),
                     StandardCharsets.UTF_8);
 
-        } catch (IOException ex) {}
+        } catch (IOException ex) {
+        }
 
         try {
 

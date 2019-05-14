@@ -12,11 +12,15 @@ import com.oceanprotocol.squid.models.AbstractModel;
 import com.oceanprotocol.squid.models.FromJsonToModel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder(alphabetic=true)
+@JsonPropertyOrder(alphabetic = true)
 public class AgreementStatus extends AbstractModel implements FromJsonToModel {
 
     private static final Logger log = LogManager.getLogger(AgreementStatus.class);
@@ -25,19 +29,17 @@ public class AgreementStatus extends AbstractModel implements FromJsonToModel {
     public String agreementId;
 
     @JsonProperty
-    public List<ConditionStatusMap> conditions= new ArrayList<>();
+    public List<ConditionStatusMap> conditions = new ArrayList<>();
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @JsonPropertyOrder(alphabetic=true)
+    @JsonPropertyOrder(alphabetic = true)
     public static class ConditionStatusMap {
 
         @JsonProperty
-        public Map<String, BigInteger> conditions= new HashMap<>();
+        public Map<String, BigInteger> conditions = new HashMap<>();
 
 
     }
-
-
 
 
 }

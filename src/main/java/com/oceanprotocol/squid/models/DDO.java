@@ -25,16 +25,16 @@ import java.util.List;
 
 import static com.oceanprotocol.squid.models.DDO.PublicKey.ETHEREUM_KEY_TYPE;
 
-@JsonPropertyOrder(alphabetic=true)
+@JsonPropertyOrder(alphabetic = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DDO extends AbstractModel implements FromJsonToModel {
 
-    private static final Logger log= LogManager.getLogger(DDO.class);
+    private static final Logger log = LogManager.getLogger(DDO.class);
 
-    private static final String UUID_PROOF_TYPE= "DDOIntegritySignature";
+    private static final String UUID_PROOF_TYPE = "DDOIntegritySignature";
 
     @JsonProperty("@context")
-    public String context= "https://w3id.org/future-method/v1";
+    public String context = "https://w3id.org/future-method/v1";
 
     @JsonProperty
     public String id;
@@ -43,13 +43,13 @@ public class DDO extends AbstractModel implements FromJsonToModel {
     private DID did;
 
     @JsonProperty("publicKey")
-    public List<PublicKey> publicKeys= new ArrayList<>();
+    public List<PublicKey> publicKeys = new ArrayList<>();
 
     @JsonProperty
-    public List<Authentication> authentication= new ArrayList<>();
+    public List<Authentication> authentication = new ArrayList<>();
 
     @JsonIgnore
-    public List<Service> services= new ArrayList<>();
+    public List<Service> services = new ArrayList<>();
 
     @JsonProperty
     public Proof proof;
@@ -60,7 +60,7 @@ public class DDO extends AbstractModel implements FromJsonToModel {
     public Date created;
 
     @JsonIgnore
-    public AssetMetadata metadata= null;
+    public AssetMetadata metadata = null;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN)
     @JsonProperty
@@ -68,10 +68,10 @@ public class DDO extends AbstractModel implements FromJsonToModel {
 
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @JsonPropertyOrder(alphabetic=true)
+    @JsonPropertyOrder(alphabetic = true)
     static class PublicKey {
 
-        public static final String ETHEREUM_KEY_TYPE= "EthereumECDSAKey";
+        public static final String ETHEREUM_KEY_TYPE = "EthereumECDSAKey";
 
         @JsonProperty
         public String id;
@@ -88,17 +88,18 @@ public class DDO extends AbstractModel implements FromJsonToModel {
         @JsonProperty
         public String publicKeyBase58;
 
-        public PublicKey() {}
+        public PublicKey() {
+        }
 
-        public PublicKey(String id, String type, String owner)  {
-            this.id= id;
-            this.type= type;
-            this.owner= owner;
+        public PublicKey(String id, String type, String owner) {
+            this.id = id;
+            this.type = type;
+            this.owner = owner;
         }
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @JsonPropertyOrder(alphabetic=true)
+    @JsonPropertyOrder(alphabetic = true)
     static class Authentication {
 
         @JsonProperty
@@ -107,12 +108,13 @@ public class DDO extends AbstractModel implements FromJsonToModel {
         @JsonProperty
         public String publicKey;
 
-        public Authentication() {}
+        public Authentication() {
+        }
     }
 
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @JsonPropertyOrder(alphabetic=true)
+    @JsonPropertyOrder(alphabetic = true)
     static public class Proof {
 
         @JsonProperty
@@ -128,13 +130,14 @@ public class DDO extends AbstractModel implements FromJsonToModel {
         @JsonProperty
         public String signatureValue;
 
-        public Proof() {}
+        public Proof() {
+        }
 
         public Proof(String type, String creator, String signature) {
-            this.type= type;
-            this.creator= creator;
-            this.signatureValue= signature;
-            this.created= getDateNowFormatted();
+            this.type = type;
+            this.creator = creator;
+            this.signatureValue = signature;
+            this.created = getDateNowFormatted();
         }
 
         public Proof(String type, String creator, byte[] signature) {
@@ -143,47 +146,46 @@ public class DDO extends AbstractModel implements FromJsonToModel {
     }
 
     public DDO() throws DIDFormatException {
-        this.did= generateDID();
+        this.did = generateDID();
         if (null == this.created)
-            this.created= getDateNowFormatted();
+            this.created = getDateNowFormatted();
 
-        this.id= this.did.toString();
+        this.id = this.did.toString();
     }
 
 
     public DDO(DID did, MetadataService metadataService, String publicKey, String signature) throws DIDFormatException {
 
-        this.did= did;
-        this.id= did.toString();
+        this.did = did;
+        this.id = did.toString();
 
         if (null == this.created)
-              this.created= getDateNowFormatted();
-        this.metadata= metadataService.metadata;
+            this.created = getDateNowFormatted();
+        this.metadata = metadataService.metadata;
         this.services.add(metadataService);
 
-        this.proof= new Proof(UUID_PROOF_TYPE, publicKey, signature);
-        this.publicKeys.add( new DDO.PublicKey(this.id, ETHEREUM_KEY_TYPE, publicKey));
+        this.proof = new Proof(UUID_PROOF_TYPE, publicKey, signature);
+        this.publicKeys.add(new DDO.PublicKey(this.id, ETHEREUM_KEY_TYPE, publicKey));
     }
 
     @JsonSetter("id")
-    public void didSetter(String id) throws DIDFormatException{
+    public void didSetter(String id) throws DIDFormatException {
         this.id = id;
         this.did = new DID(id);
     }
 
-    public DDO addService(Service service)  {
-        service.serviceDefinitionId= String.valueOf(services.size());
+    public DDO addService(Service service) {
+        service.serviceDefinitionId = String.valueOf(services.size());
         services.add(service);
         return this;
     }
-
 
 
     @JsonSetter("service")
     public void servicesSetter(ArrayList<LinkedHashMap> services) {
 
         try {
-            for (LinkedHashMap service: services)   {
+            for (LinkedHashMap service : services) {
                 if (service.containsKey("type")) {
                     if (service.get("type").equals(Service.serviceTypes.Metadata.toString()) && service.containsKey("metadata")) {
                         this.metadata = getMapperInstance().convertValue(service.get("metadata"), AssetMetadata.class);
@@ -200,21 +202,21 @@ public class DDO extends AbstractModel implements FromJsonToModel {
 
             }
 
-        } catch (Exception ex)    {
+        } catch (Exception ex) {
             log.error("Unable to parse the DDO(services): " + services + ", Exception: " + ex.getMessage());
         }
     }
 
 
     @JsonGetter("service")
-    public List<Service> servicesGetter()    {
+    public List<Service> servicesGetter() {
 
-        int counter= 0;
-        for (Service service: services) {
-            if (service.type != null)   {
-                if (service.type.equals(Service.serviceTypes.Metadata.toString()) && this.metadata != null)  {
+        int counter = 0;
+        for (Service service : services) {
+            if (service.type != null) {
+                if (service.type.equals(Service.serviceTypes.Metadata.toString()) && this.metadata != null) {
                     try {
-                        ((MetadataService) service).metadata= this.metadata;
+                        ((MetadataService) service).metadata = this.metadata;
                         services.set(counter, service);
                     } catch (Exception e) {
                         log.error("Error getting metadata object");
@@ -230,7 +232,7 @@ public class DDO extends AbstractModel implements FromJsonToModel {
     }
 
     public static DID generateDID() throws DIDFormatException {
-        DID did= DID.builder();
+        DID did = DID.builder();
         log.debug("Id generated: " + did.toString());
         return did;
     }
@@ -241,9 +243,8 @@ public class DDO extends AbstractModel implements FromJsonToModel {
     }
 
 
-
     public AccessService getAccessService(String serviceDefinitionId) throws ServiceException {
-        for (Service service: services) {
+        for (Service service : services) {
             if (service.serviceDefinitionId.equals(serviceDefinitionId) && service.type.equals(Service.serviceTypes.Access.toString())) {
                 return (AccessService) service;
             }
@@ -253,7 +254,7 @@ public class DDO extends AbstractModel implements FromJsonToModel {
 
     @JsonIgnore
     public AuthorizationService getAuthorizationService(String serviceDefinitionId) {
-        for (Service service: services) {
+        for (Service service : services) {
             if (service.serviceDefinitionId.equals(serviceDefinitionId) && service.type.equals(Service.serviceTypes.Authorization.toString())) {
                 return (AuthorizationService) service;
             }
@@ -263,18 +264,18 @@ public class DDO extends AbstractModel implements FromJsonToModel {
 
     @JsonIgnore
     public AuthorizationService getAuthorizationService() {
-        for (Service service: services) {
+        for (Service service : services) {
             if (service.type.equals(Service.serviceTypes.Authorization.toString())) {
                 return (AuthorizationService) service;
             }
         }
 
-       return null;
+        return null;
     }
 
     @JsonIgnore
     public MetadataService getMetadataService() {
-        for (Service service: services) {
+        for (Service service : services) {
             if (service.type.equals(Service.serviceTypes.Metadata.toString())) {
                 return (MetadataService) service;
             }
@@ -285,13 +286,13 @@ public class DDO extends AbstractModel implements FromJsonToModel {
 
     @JsonIgnore
     public static DDO cleanFileUrls(DDO ddo) {
-        ddo.metadata.base.files.forEach( f -> {
-            f.url= null;
+        ddo.metadata.base.files.forEach(f -> {
+            f.url = null;
         });
-        ddo.services.forEach( service -> {
+        ddo.services.forEach(service -> {
             if (service.type.equals(Service.serviceTypes.Metadata.toString())) {
-                ((MetadataService) service).metadata.base.files.forEach( f -> {
-                    f.url= null;
+                ((MetadataService) service).metadata.base.files.forEach(f -> {
+                    f.url = null;
                 });
             }
         });

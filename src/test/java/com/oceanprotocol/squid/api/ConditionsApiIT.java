@@ -1,16 +1,8 @@
 package com.oceanprotocol.squid.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.oceanprotocol.keeper.contracts.LockRewardCondition;
-import com.oceanprotocol.keeper.contracts.OceanToken;
-import com.oceanprotocol.secretstore.core.EvmDto;
 import com.oceanprotocol.squid.api.config.OceanConfig;
 import com.oceanprotocol.squid.core.sla.ServiceAgreementHandler;
-import com.oceanprotocol.squid.external.KeeperService;
-import com.oceanprotocol.squid.manager.ManagerHelper;
-import com.oceanprotocol.squid.manager.OceanManager;
-import com.oceanprotocol.squid.models.Account;
-import com.oceanprotocol.squid.models.Balance;
 import com.oceanprotocol.squid.models.DDO;
 import com.oceanprotocol.squid.models.asset.AssetMetadata;
 import com.oceanprotocol.squid.models.service.AgreementStatus;
