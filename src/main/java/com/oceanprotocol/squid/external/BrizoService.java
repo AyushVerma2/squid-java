@@ -52,11 +52,12 @@ public class BrizoService {
 
     /**
      * Calls a Brizo's endpoint to request the initialization of a new Service Agreement
-     * @param url the url
+     *
+     * @param url     the url
      * @param payload the payload
      * @return an object that indicates if Brizo initialized the Service Agreement correctly
      */
-    public static ServiceAgreementResult initializeAccessServiceAgreement(String url, InitializeAccessSLA payload)  {
+    public static ServiceAgreementResult initializeAccessServiceAgreement(String url, InitializeAccessSLA payload) {
 
         log.debug("Initializing SLA[" + payload.serviceAgreementId + "]: " + url);
 
@@ -64,7 +65,7 @@ public class BrizoService {
 
 
         try {
-            String payloadJson= payload.toJson();
+            String payloadJson = payload.toJson();
             log.debug(payloadJson);
 
             HttpResponse response = HttpHelper.httpClientPost(
@@ -77,7 +78,7 @@ public class BrizoService {
                 result.setOk(false);
                 return result;
             }
-        } catch (Exception e)   {
+        } catch (Exception e) {
             log.error("Exception Initializing SLA: " + e.getMessage());
             result.setOk(false);
             return result;
@@ -90,13 +91,14 @@ public class BrizoService {
 
     /**
      * Calls a Brizo´s endpoint to download an asset
-     * @param serviceEndpoint the service endpoint
-     * @param consumerAddress the address of the consumer
+     *
+     * @param serviceEndpoint    the service endpoint
+     * @param consumerAddress    the address of the consumer
      * @param serviceAgreementId the serviceAgreement Id
-     * @param url the url
-     * @param destinationPath the path to download the resource
+     * @param url                the url
+     * @param destinationPath    the path to download the resource
      * @return DownloadResult Instance of DownloadResult that indicates if the download was correct
-     * @throws IOException IOException
+     * @throws IOException        IOException
      * @throws URISyntaxException URISyntaxException
      */
     public static DownloadResult consumeUrl(String serviceEndpoint, String consumerAddress, String serviceAgreementId, String url, String destinationPath) throws IOException, URISyntaxException {
@@ -116,11 +118,12 @@ public class BrizoService {
 
     /**
      * Calls a Brizo´s endpoint to download an asset
-     * @param serviceEndpoint the service endpoint
-     * @param consumerAddress the address of the consumer
+     *
+     * @param serviceEndpoint    the service endpoint
+     * @param consumerAddress    the address of the consumer
      * @param serviceAgreementId the serviceAgreement Id
-     * @param url the url
-     * @param destinationPath the path to download the resource
+     * @param url                the url
+     * @param destinationPath    the path to download the resource
      * @throws IOException Exception during the download process
      */
     public static void downloadUrl(String serviceEndpoint, String consumerAddress, String serviceAgreementId, String url, String destinationPath) throws IOException {

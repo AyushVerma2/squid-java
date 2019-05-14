@@ -225,12 +225,11 @@ public class AquariusService {
         try {
             response = HttpHelper.httpClientDelete(this.ddoEndpoint + "/" + id);
         } catch (Exception e) {
-            throw new DDOException("Unable to retire DDO with DID: " + id);
+            throw new DDOException("Unable to retire DDO with DID: " + id, e);
         }
         if (response.getStatusCode() == 200 || response.getStatusCode() == 201) {
             return true;
-        }
-        else {
+        } else {
             throw new DDOException("Unable to retire DDO with DID: " + id);
         }
     }
@@ -247,8 +246,8 @@ public class AquariusService {
         try {
             response = HttpHelper.httpClientPost(
                     this.ddoEndpoint + "/validate", new ArrayList<>(), metadata.toJson());
-        }catch (Exception e) {
-            throw new DDOException("Unable to call the validate endpoint");
+        } catch (Exception e) {
+            throw new DDOException("Unable to call the validate endpoint", e);
         }
         return response.getBody().contains("true");
     }

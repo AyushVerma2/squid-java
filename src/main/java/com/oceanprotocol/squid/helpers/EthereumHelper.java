@@ -22,6 +22,7 @@ public abstract class EthereumHelper {
 
     /**
      * Given a String message, return the prefixed message hashed
+     *
      * @param messageString message to hash
      * @return byte[]
      */
@@ -32,33 +33,36 @@ public abstract class EthereumHelper {
 
     /**
      * Given a string and a ECKeyPair sign the ethereum prefixed message
+     *
      * @param message message to sign
      * @param keyPair keypair
      * @return signature data
      */
-    public static Sign.SignatureData signMessage(String message, ECKeyPair keyPair)   {
+    public static Sign.SignatureData signMessage(String message, ECKeyPair keyPair) {
         return Sign.signPrefixedMessage(message.getBytes(), keyPair);
     }
 
     /**
      * Given a string and a ECKeyPair sign the ethereum prefixed message
-     * @param message message to sign
+     *
+     * @param message     message to sign
      * @param credentials user credentials
      * @return signature data
      */
-    public static Sign.SignatureData signMessage(String message, Credentials credentials)   {
+    public static Sign.SignatureData signMessage(String message, Credentials credentials) {
         return Sign.signPrefixedMessage(message.getBytes(), credentials.getEcKeyPair());
     }
 
     /**
      * Given a signature data and the hashed message, recover and return the public
      * key that generated the signature
+     *
      * @param signatureData signature data
-     * @param hashMessage hashed message
+     * @param hashMessage   hashed message
      * @return address
      */
     public static List<String> recoverAddressFromSignature(Sign.SignatureData signatureData, byte[] hashMessage) {
-        List<String> address= new ArrayList<>();
+        List<String> address = new ArrayList<>();
         ECDSASignature ecdsaSignature = new ECDSASignature(
                 new BigInteger(1, signatureData.getR()),
                 new BigInteger(1, signatureData.getS()));
@@ -77,48 +81,52 @@ public abstract class EthereumHelper {
     /**
      * Given an address, signature data and the hashed message return true or false if the address
      * is the one used to sign the message
-     * @param address address
+     *
+     * @param address       address
      * @param signatureData the signature
-     * @param hashMessage the hashed message
+     * @param hashMessage   the hashed message
      * @return boolean
      */
-    public static boolean wasSignedByAddress(String address, Sign.SignatureData signatureData, byte[] hashMessage)  {
-        List<String> addresses= recoverAddressFromSignature(signatureData, hashMessage);
+    public static boolean wasSignedByAddress(String address, Sign.SignatureData signatureData, byte[] hashMessage) {
+        List<String> addresses = recoverAddressFromSignature(signatureData, hashMessage);
         return addresses.contains(address);
     }
 
     /**
      * Execute a web3 eth-sign message in the keeper
-     * @param web3  web3j
-     * @param message message to sign
-     * @param address address to use for signing
+     *
+     * @param web3     web3j
+     * @param message  message to sign
+     * @param address  address to use for signing
      * @param password password to use for signing
      * @return signed message
      * @throws IOException IOException
      */
     public static String ethSignMessage(Web3j web3, String message, String address, String password) throws IOException {
 
-        JsonRpcSquidAdmin squidAdmin = (JsonRpcSquidAdmin)web3;
+        JsonRpcSquidAdmin squidAdmin = (JsonRpcSquidAdmin) web3;
         ParitySquidPersonalSign response = squidAdmin.parityPersonalSign(message, address, password).send();
         return response.getSign();
     }
 
     /**
      * Hashing a message and signing using web3 eth-sign
-     * @param web3 web3j
-     * @param message message to hash and sign
-     * @param address address to use for signing
+     *
+     * @param web3     web3j
+     * @param message  message to hash and sign
+     * @param address  address to use for signing
      * @param password password to use for signing
      * @return signed message
      * @throws IOException IOException
      */
     public static String ethEncodeAndSignMessage(Web3j web3, String message, String address, String password) throws IOException {
-        String hash= Hash.sha3(EncodingHelper.encodeToHex(message));
+        String hash = Hash.sha3(EncodingHelper.encodeToHex(message));
         return ethSignMessage(web3, hash, address, password);
     }
 
     /**
      * Removes all the "0x"
+     *
      * @param input string
      * @return string
      */
@@ -128,6 +136,7 @@ public abstract class EthereumHelper {
 
     /**
      * If a string doesn't start by 0x, prepend 0x to it
+     *
      * @param input string
      * @return string
      */
@@ -139,21 +148,23 @@ public abstract class EthereumHelper {
 
     /**
      * Given an input string validates if it's a valid ethereum address
+     *
      * @param input the input string
      * @return boolean
      */
     public static boolean isValidAddress(String input) {
-        String hash= remove0x(input).toLowerCase();
+        String hash = remove0x(input).toLowerCase();
         return (hash.length() == 40 && EncodingHelper.isHexString(hash));
     }
 
 
     /**
      * Given a function defition return the ethereum function selector
+     *
      * @param functionDefinition the definition of a function
      * @return a String with the ethereum function selector
      */
-    public static String getFunctionSelector(String functionDefinition)    {
+    public static String getFunctionSelector(String functionDefinition) {
         return Hash.sha3String(functionDefinition)
                 .substring(0, 10);
     }
@@ -161,16 +172,16 @@ public abstract class EthereumHelper {
     public static String encodeParameterValue(String type, Object value) throws UnsupportedEncodingException {
 
         if ("string".equals(type))
-           return EthereumHelper.remove0x((String) value);
+            return EthereumHelper.remove0x((String) value);
         else if (type.contains("bytes32"))
             return EthereumHelper.remove0x((String) value);
         else if (type.contains("int"))
-           if (value instanceof String)
-              return EthereumHelper.remove0x(EncodingHelper.hexEncodeAbiType("uint", Integer.parseInt((String) value)));
+            if (value instanceof String)
+                return EthereumHelper.remove0x(EncodingHelper.hexEncodeAbiType("uint", Integer.parseInt((String) value)));
             else
                 return EthereumHelper.remove0x(EncodingHelper.hexEncodeAbiType("uint", value));
         else if ("address".equals(type))
-            return EthereumHelper.remove0x((String)value);
+            return EthereumHelper.remove0x((String) value);
 
         return "";
 

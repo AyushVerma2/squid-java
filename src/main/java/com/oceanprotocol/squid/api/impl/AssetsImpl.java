@@ -28,12 +28,13 @@ public class AssetsImpl implements AssetsAPI {
     private OceanManager oceanManager;
     private AssetsManager assetsManager;
 
-    private static final int DEFAULT_OFFSET= 20;
-    private static final int DEFAULT_PAGE= 1;
+    private static final int DEFAULT_OFFSET = 20;
+    private static final int DEFAULT_PAGE = 1;
 
     /**
      * Constructor
-     * @param oceanManager the oceanManager
+     *
+     * @param oceanManager  the oceanManager
      * @param assetsManager the assetsManager
      */
     public AssetsImpl(OceanManager oceanManager, AssetsManager assetsManager) {
@@ -44,12 +45,12 @@ public class AssetsImpl implements AssetsAPI {
 
 
     @Override
-    public DDO create(AssetMetadata metadata, ProviderConfig providerConfig, int threshold) throws DDOException{
+    public DDO create(AssetMetadata metadata, ProviderConfig providerConfig, int threshold) throws DDOException {
         return oceanManager.registerAsset(metadata, providerConfig, threshold);
     }
 
     @Override
-    public DDO create(AssetMetadata metadata, ProviderConfig providerConfig) throws DDOException{
+    public DDO create(AssetMetadata metadata, ProviderConfig providerConfig) throws DDOException {
         return this.create(metadata, providerConfig, 0);
     }
 
@@ -59,7 +60,7 @@ public class AssetsImpl implements AssetsAPI {
     }
 
     @Override
-    public SearchResult search(String text) throws DDOException{
+    public SearchResult search(String text) throws DDOException {
         return this.search(text, DEFAULT_OFFSET, DEFAULT_PAGE);
     }
 
@@ -69,32 +70,32 @@ public class AssetsImpl implements AssetsAPI {
     }
 
     @Override
-    public SearchResult query(Map<String, Object> params, int offset, int page, int sort)  throws DDOException {
+    public SearchResult query(Map<String, Object> params, int offset, int page, int sort) throws DDOException {
         return assetsManager.searchAssets(params, offset, page, sort);
     }
 
     @Override
-    public SearchResult query(Map<String, Object> params)  throws DDOException {
+    public SearchResult query(Map<String, Object> params) throws DDOException {
         return this.query(params, DEFAULT_OFFSET, DEFAULT_PAGE, 1);
     }
 
     @Override
     public Boolean consume(String serviceAgreementId, DID did, String serviceDefinitionId, String basePath, int threshold) throws ConsumeServiceException {
-        return oceanManager.consume(serviceAgreementId, did, serviceDefinitionId,  basePath, threshold);
+        return oceanManager.consume(serviceAgreementId, did, serviceDefinitionId, basePath, threshold);
     }
 
     @Override
-    public Boolean consume(String serviceAgreementId, DID did, String serviceDefinitionId,  String basePath) throws ConsumeServiceException {
-        return this.consume(serviceAgreementId, did, serviceDefinitionId,  basePath, 0);
+    public Boolean consume(String serviceAgreementId, DID did, String serviceDefinitionId, String basePath) throws ConsumeServiceException {
+        return this.consume(serviceAgreementId, did, serviceDefinitionId, basePath, 0);
     }
 
     @Override
-    public Flowable<OrderResult> order(DID did, String serviceDefinitionId) throws OrderException{
+    public Flowable<OrderResult> order(DID did, String serviceDefinitionId) throws OrderException {
         return oceanManager.purchaseAsset(did, serviceDefinitionId);
     }
 
     @Override
-    public Boolean retire(DID did) throws DDOException{
+    public Boolean retire(DID did) throws DDOException {
         return assetsManager.deleteAsset(did);
     }
 
@@ -109,12 +110,12 @@ public class AssetsImpl implements AssetsAPI {
     }
 
     @Override
-    public String owner(DID did) throws Exception{
+    public String owner(DID did) throws Exception {
         return oceanManager.getDIDOwner(did);
     }
 
     @Override
-    public Boolean validate(AssetMetadata metadata) throws DDOException{
+    public Boolean validate(AssetMetadata metadata) throws DDOException {
         return assetsManager.validateMetadata(metadata);
     }
 }

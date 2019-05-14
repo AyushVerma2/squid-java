@@ -544,11 +544,11 @@ public class OceanManager extends BaseManager {
 
 
     /**
-     * Gets the Access Conditions Params of a DDO
+     * Gets the Access ConditionStatusMap Params of a DDO
      *
      * @param did   the did
      * @param price the price
-     * @return a Map with the params of the Access Conditions
+     * @return a Map with the params of the Access ConditionStatusMap
      */
     private Map<String, Object> getAccessConditionParams(String did, BigInteger price) {
         Map<String, Object> params = new HashMap<>();
@@ -682,7 +682,7 @@ public class OceanManager extends BaseManager {
 
             List<EthLog.LogResult> logs = ethLog.getLogs();
             List<DID> DIDlist = new ArrayList<>();
-            for (int i = 0; i < logs.size() - 1; i++) {
+            for (int i = 0; i <= logs.size() - 1; i++) {
                 DIDlist.add(DID.getFromHash(Numeric.cleanHexPrefix((((EthLog.LogObject) logs.get(i)).getTopics().get(1)))));
             }
             return DIDlist;

@@ -27,13 +27,12 @@ public class PersonalTransactionManager extends TransactionManager {
     private final Credentials credentials;
     private final String password;
 
-    public PersonalTransactionManager(Admin web3j, Credentials credentials, String password)    {
+    public PersonalTransactionManager(Admin web3j, Credentials credentials, String password) {
         super(web3j, credentials.getAddress());
-        this.web3j= web3j;
-        this.credentials= credentials;
-        this.password= password;
+        this.web3j = web3j;
+        this.credentials = credentials;
+        this.password = password;
     }
-
 
 
     protected BigInteger getNonce() throws IOException {
@@ -48,7 +47,7 @@ public class PersonalTransactionManager extends TransactionManager {
         // EthEstimateGas estimateGas= web3j.ethEstimateGas(tx).send();
         //return estimateGas.getAmountUsed();
 
-        BigInteger gas =  web3j.ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send().getBlock().getGasLimit();
+        BigInteger gas = web3j.ethGetBlockByNumber(DefaultBlockParameterName.LATEST, false).send().getBlock().getGasLimit();
         return gas;
     }
 

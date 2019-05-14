@@ -35,7 +35,7 @@ public class KeeperService {
     private Admin web3 = null;
     private String address;
     private String password;
-    private Credentials credentials= null;
+    private Credentials credentials = null;
     private String credentialsFile;
 
     private TransactionManager txManager;
@@ -44,18 +44,19 @@ public class KeeperService {
     private BigInteger gasPrice;
     private BigInteger gasLimit;
 
-    private final BigInteger DEFAULT_GAS_PRICE= BigInteger.valueOf(1500l);
-    private final BigInteger DEFAULT_GAS_LIMIT= BigInteger.valueOf(250000l);
+    private final BigInteger DEFAULT_GAS_PRICE = BigInteger.valueOf(1500l);
+    private final BigInteger DEFAULT_GAS_LIMIT = BigInteger.valueOf(250000l);
 
 
     /**
      * Initializes the KeeperService object given a Keeper url, user and password
-     * @param url Parity Keeper url (ie. http://localhost:8545)
-     * @param address User ethereum address
-     * @param password User password
+     *
+     * @param url             Parity Keeper url (ie. http://localhost:8545)
+     * @param address         User ethereum address
+     * @param password        User password
      * @param credentialsFile Path to the file with the local credentials
      * @return KeeperService
-     * @throws IOException IOException
+     * @throws IOException     IOException
      * @throws CipherException CipherException
      */
     public static KeeperService getInstance(String url, String address, String password, String credentialsFile)
@@ -68,18 +69,18 @@ public class KeeperService {
         return new KeeperService(web3jService);
     }
 
-    private KeeperService(Web3jService web3jService)  {
-        this.web3= Admin.build(web3jService);
+    private KeeperService(Web3jService web3jService) {
+        this.web3 = Admin.build(web3jService);
     }
 
     private KeeperService(String url, String address, String password, String credentialsFile) throws IOException, CipherException {
 
         log.debug("Initializing KeeperService: " + url);
-        this.address= address;
-        this.password= password;
-        this.credentialsFile= credentialsFile;
-        this.gasPrice= DEFAULT_GAS_PRICE;
-        this.gasLimit= DEFAULT_GAS_LIMIT;
+        this.address = address;
+        this.password = password;
+        this.credentialsFile = credentialsFile;
+        this.gasPrice = DEFAULT_GAS_PRICE;
+        this.gasLimit = DEFAULT_GAS_LIMIT;
         String keeperUrl = url;
 
         this.web3 = new JsonRpcSquidAdmin(new HttpService(keeperUrl));
@@ -92,16 +93,17 @@ public class KeeperService {
 
 
         //this.txManager= new RawTransactionManager(this.web3, getCredentials());
-        this.txManager= new PersonalTransactionManager(this.web3, getCredentials(), password);
-        this.gasProvider= new StaticGasProvider(this.gasPrice, this.gasLimit);
+        this.txManager = new PersonalTransactionManager(this.web3, getCredentials(), password);
+        this.gasProvider = new StaticGasProvider(this.gasPrice, this.gasLimit);
 
     }
 
     /**
      * Get the Web3j instance
+     *
      * @return web3j
      */
-    public Admin getWeb3()  {
+    public Admin getWeb3() {
         return web3;
     }
 
@@ -112,11 +114,11 @@ public class KeeperService {
 
     public Credentials getCredentials() throws IOException, CipherException {
         if (null == credentials)
-            credentials= WalletUtils.loadCredentials(password, credentialsFile);
+            credentials = WalletUtils.loadCredentials(password, credentialsFile);
         return credentials;
     }
 
-    public static ContractGasProvider getContractGasProviderInstance(BigInteger gasPrice, BigInteger gasLimit)  {
+    public static ContractGasProvider getContractGasProviderInstance(BigInteger gasPrice, BigInteger gasLimit) {
         return new StaticGasProvider(gasPrice, gasLimit);
     }
 
@@ -138,13 +140,13 @@ public class KeeperService {
 
     public KeeperService setGasPrice(BigInteger gasPrice) {
         this.gasPrice = gasPrice;
-        this.gasProvider= getContractGasProviderInstance(gasPrice, gasLimit);
+        this.gasProvider = getContractGasProviderInstance(gasPrice, gasLimit);
         return this;
     }
 
     public KeeperService setGasLimit(BigInteger gasLimit) {
         this.gasLimit = gasLimit;
-        this.gasProvider= getContractGasProviderInstance(gasPrice, gasLimit);
+        this.gasProvider = getContractGasProviderInstance(gasPrice, gasLimit);
         return this;
     }
 
@@ -182,17 +184,17 @@ public class KeeperService {
                          */
                         .personalUnlockAccount(account.getAddress(), account.getPassword(), null)
                         .sendAsync().get();
-                        //this.getWeb3().personalSendTransaction().send()
+        //this.getWeb3().personalSendTransaction().send()
         return personalUnlockAccount.accountUnlocked();
     }
 
     public boolean tokenApprove(OceanToken tokenContract, String spenderAddress, BigInteger price) throws TokenApproveException {
 
-        String checksumAddress =  Keys.toChecksumAddress(spenderAddress);
+        String checksumAddress = Keys.toChecksumAddress(spenderAddress);
 
         try {
 
-            TransactionReceipt receipt=  tokenContract.approve(
+            TransactionReceipt receipt = tokenContract.approve(
                     checksumAddress,
                     price
             ).send();
@@ -209,7 +211,7 @@ public class KeeperService {
         } catch (Exception e) {
 
             String msg = "Error executing Token Approve ";
-            log.error(msg+ ": " + e.getMessage());
+            log.error(msg + ": " + e.getMessage());
             throw new TokenApproveException(msg, e);
         }
 

@@ -22,10 +22,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder(alphabetic=true)
+@JsonPropertyOrder(alphabetic = true)
 public class AssetMetadata extends Metadata {
 
-    public enum assetTypes {dataset, algorithm, container, workflow, other};
+    public enum assetTypes {dataset, algorithm, container, workflow, other}
+
+    ;
 
     @JsonProperty
     public DID did;
@@ -37,24 +39,24 @@ public class AssetMetadata extends Metadata {
     public Curation curation;
 
     @JsonProperty
-    public Map<String, Object> additionalInformation= new HashMap<>();
+    public Map<String, Object> additionalInformation = new HashMap<>();
 
     public AssetMetadata() {
     }
 
-    public AssetMetadata(DID did)   {
-        this.did= did;
+    public AssetMetadata(DID did) {
+        this.did = did;
     }
 
-    public static AssetMetadata builder()   {
-        AssetMetadata assetMetadata= new AssetMetadata();
-        assetMetadata.base= new Base();
-        assetMetadata.curation= new Curation();
+    public static AssetMetadata builder() {
+        AssetMetadata assetMetadata = new AssetMetadata();
+        assetMetadata.base = new Base();
+        assetMetadata.curation = new Curation();
         return assetMetadata;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @JsonPropertyOrder(alphabetic=true)
+    @JsonPropertyOrder(alphabetic = true)
     public static class Base {
 
         @JsonProperty
@@ -83,13 +85,13 @@ public class AssetMetadata extends Metadata {
         public String workExample;
 
         @JsonProperty
-        public ArrayList<File> files= new ArrayList<>();
+        public ArrayList<File> files = new ArrayList<>();
 
         @JsonProperty
-        public String encryptedFiles=null;
+        public String encryptedFiles = null;
 
         @JsonProperty
-        public ArrayList<Link> links= new ArrayList<>();
+        public ArrayList<Link> links = new ArrayList<>();
 
         @JsonProperty
         public String inLanguage;
@@ -109,7 +111,7 @@ public class AssetMetadata extends Metadata {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @JsonPropertyOrder(alphabetic=true)
+    @JsonPropertyOrder(alphabetic = true)
     public static class Link {
 
         @JsonProperty
@@ -121,11 +123,12 @@ public class AssetMetadata extends Metadata {
         @JsonProperty
         public String url;
 
-        public Link() {}
+        public Link() {
+        }
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @JsonPropertyOrder(alphabetic=true)
+    @JsonPropertyOrder(alphabetic = true)
     public static class Curation {
 
         @JsonProperty
@@ -140,12 +143,13 @@ public class AssetMetadata extends Metadata {
         @JsonProperty
         public boolean isListed;
 
-        public Curation() {}
+        public Curation() {
+        }
     }
 
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    @JsonPropertyOrder(alphabetic=true)
+    @JsonPropertyOrder(alphabetic = true)
     public static class File {
 
         @JsonProperty
@@ -169,13 +173,14 @@ public class AssetMetadata extends Metadata {
         @JsonProperty//(access = JsonProperty.Access.READ_ONLY)
         public String url;
 
-        public File() {}
+        public File() {
+        }
     }
 
     public String generateMetadataChecksum(String did) {
 
         String concatFields = this.base.files.stream()
-                .map( file -> file.checksum!=null?file.checksum:"")
+                .map(file -> file.checksum != null ? file.checksum : "")
                 .collect(Collectors.joining(""))
                 .concat(this.base.name)
                 .concat(this.base.author)
@@ -187,8 +192,8 @@ public class AssetMetadata extends Metadata {
     }
 
     public AssetMetadata eraseFileUrls() {
-        this.base.files.forEach( f -> {
-            f.url= null;
+        this.base.files.forEach(f -> {
+            f.url = null;
         });
 
         return this;

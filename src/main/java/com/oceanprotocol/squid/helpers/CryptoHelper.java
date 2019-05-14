@@ -36,6 +36,7 @@ public abstract class CryptoHelper {
 
     /**
      * Given an input string return the result of sha3
+     *
      * @param input string
      * @return hashed message
      */
@@ -45,6 +46,7 @@ public abstract class CryptoHelper {
 
     /**
      * Given N objects, return the SHA3 of those objects
+     *
      * @param data objects
      * @return sha3
      */
@@ -82,6 +84,7 @@ public abstract class CryptoHelper {
 
     /**
      * Given an object (byte[], BigInteger, Address, Uint or Number) gets the byte[] with the proper length
+     *
      * @param obj the object
      * @return byte[]
      */

@@ -17,9 +17,10 @@ public class HttpResponse {
 
     /**
      * Constructor
-     * @param statusCode status code
-     * @param body body string
-     * @param charset charset
+     *
+     * @param statusCode    status code
+     * @param body          body string
+     * @param charset       charset
      * @param contentLength content length
      */
     public HttpResponse(int statusCode, String body, String charset, long contentLength) {
@@ -31,6 +32,7 @@ public class HttpResponse {
 
     /**
      * Ge the http status code
+     *
      * @return status code
      */
     public int getStatusCode() {
@@ -39,6 +41,7 @@ public class HttpResponse {
 
     /**
      * Set the http status code
+     *
      * @param statusCode status code
      */
     public void setStatusCode(int statusCode) {
@@ -47,6 +50,7 @@ public class HttpResponse {
 
     /**
      * Get the body
+     *
      * @return string body
      */
     public String getBody() {
@@ -55,6 +59,7 @@ public class HttpResponse {
 
     /**
      * Set the body
+     *
      * @param body string
      */
     public void setBody(String body) {
@@ -63,6 +68,7 @@ public class HttpResponse {
 
     /**
      * Get the charset
+     *
      * @return charset
      */
     public String getCharset() {
@@ -71,6 +77,7 @@ public class HttpResponse {
 
     /**
      * Set the charset
+     *
      * @param charset charset
      */
     public void setCharset(String charset) {
@@ -79,6 +86,7 @@ public class HttpResponse {
 
     /**
      * Get content length
+     *
      * @return content length
      */
     public long getContentLength() {
@@ -87,6 +95,7 @@ public class HttpResponse {
 
     /**
      * Set content length
+     *
      * @param contentLength content length
      */
     public void setContentLength(long contentLength) {
@@ -95,6 +104,7 @@ public class HttpResponse {
 
     /**
      * Get HTTP response headers
+     *
      * @return headers
      */
     public Header[] getHeaders() {
@@ -103,10 +113,11 @@ public class HttpResponse {
 
     /**
      * Get HTTP response header giving a header name
+     *
      * @return header
      */
     public Header getHeader(String name) {
-        for (Header header: headers)    {
+        for (Header header : headers) {
             if (header.getName().equalsIgnoreCase(name))
                 return header;
         }
@@ -116,6 +127,7 @@ public class HttpResponse {
 
     /**
      * Set HTTP response headers
+     *
      * @param headers headers
      */
     public void setHeaders(Header[] headers) {
@@ -124,6 +136,7 @@ public class HttpResponse {
 
     /**
      * Get the string representation of the object
+     *
      * @return string
      */
     @Override
