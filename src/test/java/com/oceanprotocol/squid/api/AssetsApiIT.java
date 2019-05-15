@@ -27,7 +27,11 @@ import org.apache.logging.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.math.BigInteger;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -171,6 +175,44 @@ public class AssetsApiIT {
         assertNotNull(results);
 
     }
+
+
+    @Test
+    public void consumeBinary() throws Exception {
+
+        providerConfig.setSecretStoreEndpoint(config.getString("secretstore.url"));
+
+        AssetMetadata metadata = DDO.fromJSON(new TypeReference<AssetMetadata>() {}, METADATA_JSON_CONTENT);
+        //metadata.base.files.get(0).url= "https://speed.hetzner.de/100MB.bin";
+
+        DDO ddo= oceanAPI.getAssetsAPI().create(metadata, providerConfig);
+        DID did= new DID(ddo.id);
+
+        log.debug("DDO registered!");
+
+        Flowable<OrderResult> response = oceanAPIConsumer.getAssetsAPI().order(did,  Service.DEFAULT_ACCESS_SERVICE_ID);
+
+        OrderResult orderResult = response.blockingFirst();
+        assertNotNull(orderResult.getServiceAgreementId());
+        assertEquals(true, orderResult.isAccessGranted());
+        log.debug("Granted Access Received for the service Agreement " + orderResult.getServiceAgreementId());
+
+        InputStream result = oceanAPIConsumer.getAssetsAPI().consumeBinary(
+                orderResult.getServiceAgreementId(),
+                did,
+                Service.DEFAULT_ACCESS_SERVICE_ID,
+                0);
+
+        assertNotNull(result);
+
+
+        ReadableByteChannel readableByteChannel = Channels.newChannel(result);
+        FileOutputStream fileOutputStream = new FileOutputStream("/tmp/fichero.txt");
+        fileOutputStream.getChannel()
+                .transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
+
+    }
+
 
     @Test
     public void owner() throws Exception {

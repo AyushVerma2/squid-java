@@ -24,10 +24,8 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.channels.Channels;
@@ -367,4 +365,48 @@ public abstract class HttpHelper {
     public static final HttpResponse httpClientDelete(String url) throws HttpException {
         return httpClientRead(new HttpClient(), new DeleteMethod(url));
     }
+
+     /** Download the content of a resource
+     * @param url the url of the resource
+     * @return an InputStream that represents the binary content
+     * @throws IOException Exception during the download
+     */
+    public static InputStream download(final String url) throws IOException {
+
+        log.debug("Downloading url:" + url);
+
+        try {
+            URL contentUrl= new URL(url);
+            return contentUrl.openStream();
+        } catch (IOException e) {
+            throw e;
+        }
+
+    }
+
+    /**
+     * Download the content of a resource
+     * @param url the url of the resource
+     * @return an InputStream that represents the binary content
+     * @throws IOException Exception during the download
+     */
+    public static InputStream downloadRange(final String url, Integer startRange, Integer endRange) throws IOException {
+
+        log.debug("Downloading url:" + url);
+
+        try {
+            URL contentUrl= new URL(url);
+            HttpURLConnection con = (HttpURLConnection)contentUrl.openConnection();
+            con.setRequestMethod("GET");
+            con.addRequestProperty("Range", "bytes="+startRange+"-"+endRange);
+
+            return con.getInputStream();
+
+          //  return contentUrl.openStream();
+        } catch (IOException e) {
+            throw e;
+        }
+
+    }
+
 }

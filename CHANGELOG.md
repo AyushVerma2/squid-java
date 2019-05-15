@@ -1,11 +1,20 @@
 History
 =======
 
-0.4.5 (April xx, 2019)
+
+0.4.6 (May 16th, 2019)
 -------------------------
 
-* Migration to Java 11
+* Implemented squid spec 0.3
+* Convenience methods to facilitate spark integration
 
+
+0.4.5 (April 29th, 2019)
+-------------------------
+
+* Added new API method to allow to set an index parameter to consume a single file of the Asset
+* Added consume methods to get an InputStream of a file of the Asset
+* Migration to Java 11
 
 0.4.4 (April 10th, 2019)
 -------------------------

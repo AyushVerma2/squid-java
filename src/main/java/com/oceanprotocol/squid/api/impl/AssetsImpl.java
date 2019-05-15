@@ -17,6 +17,8 @@ import com.oceanprotocol.squid.models.asset.OrderResult;
 import com.oceanprotocol.squid.models.service.ProviderConfig;
 import io.reactivex.Flowable;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -60,6 +62,20 @@ public class AssetsImpl implements AssetsAPI {
     }
 
     @Override
+    public List<AssetMetadata.File> getMetadataFiles(DID did) throws DDOException {
+
+        try {
+
+            DDO ddo = this.resolve(did);
+            return oceanManager.getMetadataFiles(ddo);
+
+        }catch (Exception e){
+            throw new DDOException("Error trying to get the files of the DDO", e);
+        }
+
+    }
+
+    @Override
     public SearchResult search(String text) throws DDOException {
         return this.search(text, DEFAULT_OFFSET, DEFAULT_PAGE);
     }
@@ -79,6 +95,7 @@ public class AssetsImpl implements AssetsAPI {
         return this.query(params, DEFAULT_OFFSET, DEFAULT_PAGE, 1);
     }
 
+
     @Override
     public Boolean consume(String serviceAgreementId, DID did, String serviceDefinitionId, String basePath, int threshold) throws ConsumeServiceException {
         return oceanManager.consume(serviceAgreementId, did, serviceDefinitionId, basePath, threshold);
@@ -90,7 +107,38 @@ public class AssetsImpl implements AssetsAPI {
     }
 
     @Override
-    public Flowable<OrderResult> order(DID did, String serviceDefinitionId) throws OrderException {
+    public Boolean consume(String serviceAgreementId, DID did, String serviceDefinitionId,  Integer index, String basePath) throws ConsumeServiceException {
+        return this.consume(serviceAgreementId, did, serviceDefinitionId, index, basePath, 0);
+    }
+
+    @Override
+    public Boolean consume(String serviceAgreementId, DID did, String serviceDefinitionId,  Integer index, String basePath, int threshold) throws ConsumeServiceException {
+        return oceanManager.consume(serviceAgreementId, did, serviceDefinitionId, index, basePath, threshold);
+    }
+
+
+    @Override
+    public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index) throws ConsumeServiceException{
+        return this.consumeBinary(serviceAgreementId, did, serviceDefinitionId, index, 0);
+    }
+
+    @Override
+    public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, int threshold) throws ConsumeServiceException{
+        return oceanManager.consumeBinary(serviceAgreementId, did, serviceDefinitionId,  index, threshold);
+    }
+
+    @Override
+    public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, Integer rangeStart, Integer rangeEnd) throws ConsumeServiceException {
+        return this.consumeBinary(serviceAgreementId, did, serviceDefinitionId, index, rangeStart, rangeEnd, 0);
+    }
+
+    @Override
+    public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, Integer rangeStart, Integer rangeEnd, int threshold) throws ConsumeServiceException{
+        return oceanManager.consumeBinary(serviceAgreementId, did, serviceDefinitionId, index, rangeStart, rangeEnd, threshold);
+    }
+
+    @Override
+    public Flowable<OrderResult> order(DID did, String serviceDefinitionId) throws OrderException{
         return oceanManager.purchaseAsset(did, serviceDefinitionId);
     }
 
