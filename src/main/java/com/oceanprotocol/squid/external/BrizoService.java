@@ -167,11 +167,13 @@ public class BrizoService {
     }
 
     /**
-     * Calls a Brizo´s endpoint to download an asset
+     * Calls a Brizo´s endpoint to download a range of bytes an asset
      * @param serviceEndpoint the service endpoint
      * @param consumerAddress the address of the consumer
      * @param serviceAgreementId the serviceAgreement Id
      * @param url the url
+     * @param startRange  the start of the bytes range
+     * @param endRange  the end of the bytes range
      * @return an InputStream that represents the binary content
      * @throws IOException Exception during the download process
      */

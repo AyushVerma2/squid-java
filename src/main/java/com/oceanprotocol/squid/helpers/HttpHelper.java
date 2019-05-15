@@ -402,7 +402,6 @@ public abstract class HttpHelper {
 
             return con.getInputStream();
 
-          //  return contentUrl.openStream();
         } catch (IOException e) {
             throw e;
         }

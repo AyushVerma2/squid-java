@@ -134,7 +134,7 @@ public class AssetsImpl implements AssetsAPI {
 
     @Override
     public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, Integer rangeStart, Integer rangeEnd, int threshold) throws ConsumeServiceException{
-        return oceanManager.consumeBinary(serviceAgreementId, did, serviceDefinitionId, index, rangeStart, rangeEnd, threshold);
+        return oceanManager.consumeBinary(serviceAgreementId, did, serviceDefinitionId, index, true, rangeStart, rangeEnd, threshold);
     }
 
     @Override

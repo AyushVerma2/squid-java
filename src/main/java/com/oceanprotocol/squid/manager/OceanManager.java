@@ -607,63 +607,23 @@ public class OceanManager extends BaseManager {
      * @throws ConsumeServiceException ConsumeServiceException
      */
     public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, int threshold) throws ConsumeServiceException{
-
-        DDO ddo;
-        String checkConsumerAddress = Keys.toChecksumAddress(getMainAccount().address);
-        String serviceEndpoint;
-        List<AssetMetadata.File> files;
-
-        String agreementId = EthereumHelper.add0x(serviceAgreementId);
-
-        try {
-
-            ddo = resolveDID(did);
-            serviceEndpoint = ddo.getAccessService(serviceDefinitionId).serviceEndpoint;
-
-            files = this.getMetadataFiles(ddo);
-
-        }catch (EthereumException|DDOException|ServiceException|EncryptionException|IOException e) {
-            String msg = "Error consuming asset with DID " + did.getDid() +" and Service Agreement " + agreementId;
-            log.error(msg+ ": " + e.getMessage());
-            throw new ConsumeServiceException(msg, e);
-        }
-
-        AssetMetadata.File file = files.stream().filter(f -> f.index == index).findFirst().orElse(null);
-        if (file == null)
-            throw new ConsumeServiceException("File with index " + index + "not found in Asset with did " + did.getDid());
-
-        try {
-
-            if (null == file.url)    {
-                String msg = "Error Decrypting URL for Asset: " + did.getDid() +" and Service Agreement " + agreementId
-                            + " URL received: " + file.url;
-                log.error(msg);
-                throw new ConsumeServiceException(msg);
-            }
-
-            return BrizoService.downloadUrl(serviceEndpoint, checkConsumerAddress, serviceAgreementId, file.url);
-
-        } catch (IOException e) {
-            String msg = "Error consuming asset with DID " + did.getDid() +" and Service Agreement " + serviceAgreementId;
-
-            log.error(msg+ ": " + e.getMessage());
-            throw new ConsumeServiceException(msg, e);
-        }
-
+        return consumeBinary(serviceAgreementId, did, serviceDefinitionId, index, false, 0, 0, threshold);
     }
 
     /**
-     * Downloads a single file of an Asset previously ordered through a Service Agreement
+     * Downloads a single file of an Asset previously ordered through a Service Agreement. It could be a request by range of bytes
      * @param serviceAgreementId the service agreement id
      * @param did the did
      * @param serviceDefinitionId the service definition id
      * @param index of the file inside the files definition in metadata
+     * @param isRangeRequest indicates if is a request by range of bytes
+     * @param rangeStart  the start of the bytes range
+     * @param rangeEnd  the end of the bytes range
      * @param threshold secret store threshold
      * @return  an InputStream that represents the binary content
      * @throws ConsumeServiceException ConsumeServiceException
      */
-    // TODO REFACTOR ALL consume METHODS
-    public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, Integer rangeStart, Integer rangeEnd, int threshold) throws ConsumeServiceException{
+    public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, Boolean isRangeRequest, Integer rangeStart, Integer rangeEnd, int threshold) throws ConsumeServiceException{
 
         DDO ddo;
         String checkConsumerAddress = Keys.toChecksumAddress(getMainAccount().address);
@@ -698,7 +658,10 @@ public class OceanManager extends BaseManager {
                 throw new ConsumeServiceException(msg);
             }
 
-            return BrizoService.downloadRangeUrl(serviceEndpoint, checkConsumerAddress, serviceAgreementId, file.url, rangeStart, rangeEnd);
+            if (isRangeRequest)
+                return BrizoService.downloadRangeUrl(serviceEndpoint, checkConsumerAddress, serviceAgreementId, file.url, rangeStart, rangeEnd);
+
+            return BrizoService.downloadUrl(serviceEndpoint, checkConsumerAddress, serviceAgreementId, file.url);
 
         } catch (IOException e) {
             String msg = "Error consuming asset with DID " + did.getDid() +" and Service Agreement " + serviceAgreementId;
