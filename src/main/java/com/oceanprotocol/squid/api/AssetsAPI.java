@@ -154,12 +154,58 @@ public interface AssetsAPI {
     public Boolean consume(String serviceAgreementId, DID did, String serviceDefinitionId, String basePath) throws ConsumeServiceException;
 
 
+    /**
+     * Gets the input stream of one file of the asset
+     * @param serviceAgreementId  the service agreement id of the asset
+     * @param did                 the did
+     * @param serviceDefinitionId the service definition id
+     * @param index               the index of the file
+     * @return the input stream wit the binary content of the file
+     * @throws ConsumeServiceException ConsumeServiceException
+     */
     public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index) throws ConsumeServiceException;
+
+    /**
+     * Gets the input stream of one file of the asset
+     * @param serviceAgreementId  the service agreement id of the asset
+     * @param did                 the did
+     * @param serviceDefinitionId the service definition id
+     * @param index               the index of the file
+     * @param threshold           secret store threshold to decrypt the urls of the asset
+     * @return the input stream wit the binary content of the file
+     * @throws ConsumeServiceException ConsumeServiceException
+     */
     public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, int threshold) throws ConsumeServiceException;
 
 
+    /**
+     * Gets a range of bytes of the input stream of one file of the asset
+     * @param serviceAgreementId  the service agreement id of the asset
+     * @param did                 the did
+     * @param serviceDefinitionId the service definition id
+     * @param index               the index of the file
+     * @param rangeStart          the start of the bytes range
+     * @param rangeEnd            the end of the bytes range
+     * @return                    the input stream wit the binary content of the specified range
+     * @throws ConsumeServiceException ConsumeServiceException
+     */
     public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, Integer rangeStart, Integer rangeEnd) throws ConsumeServiceException;
+
+
+    /**
+     * Gets a range of bytes of the input stream of one file of the asset
+     * @param serviceAgreementId  the service agreement id of the asset
+     * @param did                 the did
+     * @param serviceDefinitionId the service definition id
+     * @param index               the index of the file
+     * @param rangeStart          the start of the bytes range
+     * @param rangeEnd            the end of the bytes range
+     * @param threshold           secret store threshold to decrypt the urls of the asset
+     * @return                    the input stream wit the binary content of the specified range
+     * @throws ConsumeServiceException ConsumeServiceException
+     */
     public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, Integer rangeStart, Integer rangeEnd, int threshold) throws ConsumeServiceException;
+
 
     /**
      * Purchases an Asset represented by a DID. It implies to initialize a Service Agreement between publisher and consumer

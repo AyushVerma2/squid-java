@@ -136,7 +136,7 @@ public class OceanManager extends BaseManager {
     }
 
 
-    /**£
+    /**
      * Given a DID and a Metadata API url, register on-chain the DID.
      * It allows to resolve DDO's using DID's as input
      *
