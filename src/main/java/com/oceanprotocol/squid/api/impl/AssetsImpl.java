@@ -98,7 +98,7 @@ public class AssetsImpl implements AssetsAPI {
 
     @Override
     public Boolean consume(String serviceAgreementId, DID did, String serviceDefinitionId, String basePath, int threshold) throws ConsumeServiceException {
-        return oceanManager.consume(serviceAgreementId, did, serviceDefinitionId, basePath, threshold);
+        return oceanManager.consume(serviceAgreementId, did, serviceDefinitionId, false, -1, basePath, threshold);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class AssetsImpl implements AssetsAPI {
 
     @Override
     public Boolean consume(String serviceAgreementId, DID did, String serviceDefinitionId,  Integer index, String basePath, int threshold) throws ConsumeServiceException {
-        return oceanManager.consume(serviceAgreementId, did, serviceDefinitionId, index, basePath, threshold);
+        return oceanManager.consume(serviceAgreementId, did, serviceDefinitionId, true, index, basePath, threshold);
     }
 
 

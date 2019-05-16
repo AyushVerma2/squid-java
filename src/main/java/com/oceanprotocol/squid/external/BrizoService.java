@@ -148,36 +148,13 @@ public class BrizoService {
      * @param consumerAddress the address of the consumer
      * @param serviceAgreementId the serviceAgreement Id
      * @param url the url
-     * @return an InputStream that represents the binary content
-     * @throws IOException Exception during the download process
-     */
-    public static InputStream downloadUrl(String serviceEndpoint, String consumerAddress, String serviceAgreementId, String url) throws IOException {
-
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put(Service.CONSUMER_ADDRESS_PARAM, consumerAddress);
-        parameters.put(Service.SERVICE_AGREEMENT_PARAM, serviceAgreementId);
-        parameters.put(Service.URL_PARAM, url);
-
-        String endpoint = StringsHelper.format(serviceEndpoint, parameters);
-
-        log.debug("Consuming URL[" + url + "]: for service Agreement " + serviceAgreementId);
-
-        return HttpHelper.download(endpoint);
-
-    }
-
-    /**
-     * Calls a Brizo´s endpoint to download a range of bytes an asset
-     * @param serviceEndpoint the service endpoint
-     * @param consumerAddress the address of the consumer
-     * @param serviceAgreementId the serviceAgreement Id
-     * @param url the url
      * @param startRange  the start of the bytes range
      * @param endRange  the end of the bytes range
+     * @param isRangeRequest indicates if is a range request
      * @return an InputStream that represents the binary content
      * @throws IOException Exception during the download process
      */
-    public static InputStream downloadRangeUrl(String serviceEndpoint, String consumerAddress, String serviceAgreementId, String url,  Integer startRange, Integer endRange) throws IOException {
+    public static InputStream downloadUrl(String serviceEndpoint, String consumerAddress, String serviceAgreementId, String url, Boolean isRangeRequest, Integer startRange, Integer endRange ) throws IOException {
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put(Service.CONSUMER_ADDRESS_PARAM, consumerAddress);
@@ -188,7 +165,7 @@ public class BrizoService {
 
         log.debug("Consuming URL[" + url + "]: for service Agreement " + serviceAgreementId);
 
-        return HttpHelper.downloadRange(endpoint, startRange, endRange);
+        return HttpHelper.download(endpoint, isRangeRequest, startRange, endRange);
 
     }
 

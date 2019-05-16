@@ -356,6 +356,39 @@ public abstract class HttpHelper {
     }
 
     /**
+     * Download the content of a resource
+     * @param url the url
+     * @param isRangeRequest indicates if is a range request
+     * @param startRange  the start of the bytes range
+     * @param endRange  the end of the bytes range
+     * @return an InputStream that represents the binary content
+     * @throws IOException Exception during the download
+     */
+    public static InputStream download(final String url,  Boolean isRangeRequest, Integer startRange, Integer endRange) throws IOException {
+
+        log.debug("Downloading url:" + url);
+
+        try {
+
+            URL contentUrl= new URL(url);
+
+            if (isRangeRequest){
+
+                HttpURLConnection con = (HttpURLConnection)contentUrl.openConnection();
+                con.setRequestMethod("GET");
+                con.addRequestProperty("Range", "bytes="+startRange+"-"+endRange);
+                return con.getInputStream();
+            }
+
+            return contentUrl.openStream();
+
+        } catch (IOException e) {
+            throw e;
+        }
+
+    }
+
+    /**
      * Send a HTTP DELETE request and return the HttpResponse object
      *
      * @param url url to call
@@ -366,46 +399,5 @@ public abstract class HttpHelper {
         return httpClientRead(new HttpClient(), new DeleteMethod(url));
     }
 
-     /** Download the content of a resource
-     * @param url the url of the resource
-     * @return an InputStream that represents the binary content
-     * @throws IOException Exception during the download
-     */
-    public static InputStream download(final String url) throws IOException {
-
-        log.debug("Downloading url:" + url);
-
-        try {
-            URL contentUrl= new URL(url);
-            return contentUrl.openStream();
-        } catch (IOException e) {
-            throw e;
-        }
-
-    }
-
-    /**
-     * Download the content of a resource
-     * @param url the url of the resource
-     * @return an InputStream that represents the binary content
-     * @throws IOException Exception during the download
-     */
-    public static InputStream downloadRange(final String url, Integer startRange, Integer endRange) throws IOException {
-
-        log.debug("Downloading url:" + url);
-
-        try {
-            URL contentUrl= new URL(url);
-            HttpURLConnection con = (HttpURLConnection)contentUrl.openConnection();
-            con.setRequestMethod("GET");
-            con.addRequestProperty("Range", "bytes="+startRange+"-"+endRange);
-
-            return con.getInputStream();
-
-        } catch (IOException e) {
-            throw e;
-        }
-
-    }
 
 }
