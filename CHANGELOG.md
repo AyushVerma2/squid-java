@@ -2,7 +2,7 @@ History
 =======
 
 
-0.4.6 (May 16th, 2019)
+0.5.0 (May 17th, 2019)
 -------------------------
 
 * Implemented squid spec 0.3
