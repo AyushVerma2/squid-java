@@ -27,11 +27,8 @@ import org.apache.logging.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;

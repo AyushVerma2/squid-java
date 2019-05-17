@@ -17,7 +17,6 @@ import com.oceanprotocol.squid.models.asset.OrderResult;
 import com.oceanprotocol.squid.models.service.ProviderConfig;
 import io.reactivex.Flowable;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
