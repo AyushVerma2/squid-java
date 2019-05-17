@@ -205,12 +205,6 @@ public class AssetsApiIT {
 
         assertNotNull(result);
 
-
-        ReadableByteChannel readableByteChannel = Channels.newChannel(result);
-        FileOutputStream fileOutputStream = new FileOutputStream("/tmp/fichero.txt");
-        fileOutputStream.getChannel()
-                .transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
-
     }
 
 
