@@ -22,7 +22,7 @@ public interface TemplatesAPI {
      *
      * @param templateAddress Hex str the ethereum address of the deployed template (smart contract address)
      * @return TransactionReceipt tx receipt
-     * @throws EthereumException
+     * @throws EthereumException EthereumException
      */
     TransactionReceipt propose(String templateAddress) throws EthereumException;
 
@@ -32,7 +32,7 @@ public interface TemplatesAPI {
      *
      * @param templateAddress Hex str the ethereum address of the deployed template (smart contract address)
      * @return TransactionReceipt tx receipt
-     * @throws EthereumException
+     * @throws  EthereumException EthereumException
      */
     TransactionReceipt approve(String templateAddress) throws EthereumException;
 
@@ -42,7 +42,7 @@ public interface TemplatesAPI {
      *
      * @param templateAddress Hex str the ethereum address of the deployed template (smart contract address)
      * @return TransactionReceipt tx receipt
-     * @throws EthereumException
+     * @throws EthereumException EthereumException
      */
     TransactionReceipt revoke(String templateAddress) throws EthereumException;
 
@@ -51,7 +51,7 @@ public interface TemplatesAPI {
      *
      * @param templateAddress Hex str the ethereum address of the deployed template (smart contract address)
      * @return boolean is the template approved?
-     * @throws EthereumException
+     * @throws EthereumException EthereumException
      */
     boolean isApproved(String templateAddress) throws EthereumException;
 
@@ -59,7 +59,7 @@ public interface TemplatesAPI {
      * Get the number of agreement templates registered
      *
      * @return BigInteger number of templates
-     * @throws EthereumException
+     * @throws EthereumException EthereumException
      */
     BigInteger getListSize() throws EthereumException;
 
@@ -68,7 +68,7 @@ public interface TemplatesAPI {
      *
      * @param templateAddress Hex str the ethereum address of the deployed template (smart contract address)
      * @return TemplateSEA
-     * @throws EthereumException
+     * @throws EthereumException EthereumException
      */
     TemplateSEA getTemplate(String templateAddress) throws EthereumException;
 }

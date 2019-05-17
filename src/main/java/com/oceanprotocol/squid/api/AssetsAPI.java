@@ -249,7 +249,7 @@ public interface AssetsAPI {
      *
      * @param did the did
      * @return a flag that indicates if the action was executed correctly
-     * @throws Exception Exception
+     * @throws DDOException DDOException
      */
     public Boolean retire(DID did) throws DDOException;
 
@@ -258,7 +258,7 @@ public interface AssetsAPI {
      *
      * @param metadata the metadata of the DDO
      * @return a flag that indicates if the metadata is valid
-     * @throws Exception Exception
+     * @throws DDOException DDOException
      */
     public Boolean validate(AssetMetadata metadata) throws DDOException;
 

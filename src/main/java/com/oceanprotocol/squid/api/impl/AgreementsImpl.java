@@ -25,6 +25,7 @@ public class AgreementsImpl implements AgreementsAPI {
      * Constructor
      *
      * @param agreementsManager the accountsManager
+     * @param oceanManager an instance of oceanManager
      */
     public AgreementsImpl(AgreementsManager agreementsManager, OceanManager oceanManager) {
         this.oceanManager = oceanManager;
