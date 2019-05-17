@@ -14,6 +14,7 @@ import com.oceanprotocol.squid.models.asset.OrderResult;
 import com.oceanprotocol.squid.models.service.ProviderConfig;
 import io.reactivex.Flowable;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -52,6 +53,14 @@ public interface AssetsAPI {
      * @throws DDOException      DDOException
      */
     public DDO resolve(DID did) throws EthereumException, DDOException;
+
+    /**
+     * Gets the list of the files that belongs to a DDO
+     * @param did the DID to resolve
+     * @return a list of the Files
+     * @throws DDOException EncryptionException
+     */
+    public List<AssetMetadata.File> getMetadataFiles(DID did) throws DDOException;
 
     /**
      * Gets all the DDO that match the search criteria
@@ -95,6 +104,31 @@ public interface AssetsAPI {
     public SearchResult query(Map<String, Object> params) throws DDOException;
 
     /**
+     *  Downloads a single file of an Asset previously ordered through a Service Agreement
+     * @param serviceAgreementId the service agreement id of the asset
+     * @param did the did
+     * @param serviceDefinitionId the service definition id
+     * @param index of the file inside the files definition in metadata
+     * @param basePath  the path where the asset will be downloaded
+     * @param threshold secret store threshold to decrypt the urls of the asset
+     * @return a flag that indicates if the consume flow was executed correctly
+     * @throws ConsumeServiceException ConsumeServiceException
+     */
+    public Boolean consume(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, String basePath, int threshold) throws ConsumeServiceException;
+
+    /**
+     *  Downloads a single file of an Asset previously ordered through a Service Agreement
+     * @param serviceAgreementId the service agreement id of the asset
+     * @param did the did
+     * @param serviceDefinitionId the service definition id
+     * @param index of the file inside the files definition in metadata
+     * @param basePath the path where the asset will be downloaded
+     * @return a flag that indicates if the consume flow was executed correctly
+     * @throws ConsumeServiceException ConsumeServiceException
+     */
+    public Boolean consume(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, String basePath) throws ConsumeServiceException;
+
+    /**
      * Downloads an Asset previously ordered through a Service Agreement
      *
      * @param serviceAgreementId  the service agreement id of the asset
@@ -118,6 +152,60 @@ public interface AssetsAPI {
      * @throws ConsumeServiceException ConsumeServiceException
      */
     public Boolean consume(String serviceAgreementId, DID did, String serviceDefinitionId, String basePath) throws ConsumeServiceException;
+
+
+    /**
+     * Gets the input stream of one file of the asset
+     * @param serviceAgreementId  the service agreement id of the asset
+     * @param did                 the did
+     * @param serviceDefinitionId the service definition id
+     * @param index               the index of the file
+     * @return the input stream wit the binary content of the file
+     * @throws ConsumeServiceException ConsumeServiceException
+     */
+    public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index) throws ConsumeServiceException;
+
+    /**
+     * Gets the input stream of one file of the asset
+     * @param serviceAgreementId  the service agreement id of the asset
+     * @param did                 the did
+     * @param serviceDefinitionId the service definition id
+     * @param index               the index of the file
+     * @param threshold           secret store threshold to decrypt the urls of the asset
+     * @return the input stream wit the binary content of the file
+     * @throws ConsumeServiceException ConsumeServiceException
+     */
+    public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, int threshold) throws ConsumeServiceException;
+
+
+    /**
+     * Gets a range of bytes of the input stream of one file of the asset
+     * @param serviceAgreementId  the service agreement id of the asset
+     * @param did                 the did
+     * @param serviceDefinitionId the service definition id
+     * @param index               the index of the file
+     * @param rangeStart          the start of the bytes range
+     * @param rangeEnd            the end of the bytes range
+     * @return                    the input stream wit the binary content of the specified range
+     * @throws ConsumeServiceException ConsumeServiceException
+     */
+    public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, Integer rangeStart, Integer rangeEnd) throws ConsumeServiceException;
+
+
+    /**
+     * Gets a range of bytes of the input stream of one file of the asset
+     * @param serviceAgreementId  the service agreement id of the asset
+     * @param did                 the did
+     * @param serviceDefinitionId the service definition id
+     * @param index               the index of the file
+     * @param rangeStart          the start of the bytes range
+     * @param rangeEnd            the end of the bytes range
+     * @param threshold           secret store threshold to decrypt the urls of the asset
+     * @return                    the input stream wit the binary content of the specified range
+     * @throws ConsumeServiceException ConsumeServiceException
+     */
+    public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, Integer rangeStart, Integer rangeEnd, int threshold) throws ConsumeServiceException;
+
 
     /**
      * Purchases an Asset represented by a DID. It implies to initialize a Service Agreement between publisher and consumer

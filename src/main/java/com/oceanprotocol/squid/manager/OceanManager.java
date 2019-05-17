@@ -40,6 +40,7 @@ import org.web3j.utils.Numeric;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.util.*;
@@ -456,6 +457,54 @@ public class OceanManager extends BaseManager {
 
 
     /**
+     * Gets the data needed to download an asset
+     *
+     * @param did   the did
+     * @param serviceDefinitionId the id of the service
+     * @param isIndexDownload indicates if we want to download an especific file of the asset
+     * @param index the index of the file we want to consume
+     * @return a Map with the data needed to consume the asset
+     */
+    private Map<String, Object> getConsumeData(DID did, String serviceDefinitionId, Boolean isIndexDownload, Integer index) throws ConsumeServiceException {
+
+        DDO ddo;
+        String serviceEndpoint;
+        List<AssetMetadata.File> files;
+        Map<String, Object> data = new HashMap<>();
+
+        try {
+
+            ddo = resolveDID(did);
+            serviceEndpoint = ddo.getAccessService(serviceDefinitionId).serviceEndpoint;
+
+            files = this.getMetadataFiles(ddo);
+
+            if (isIndexDownload) {
+                Optional<AssetMetadata.File> optional = files.stream().filter( f -> f.index == index).findFirst();//.orElse(null);
+                if (optional.isEmpty()){
+                    String msg = "Error getting the data from file with index " + index + " from the  asset with DID " + did.toString();
+                    log.error(msg );
+                    throw new ConsumeServiceException(msg);
+                }
+
+                files = List.of(optional.get());
+            }
+
+            data.put("serviceEndpoint", serviceEndpoint);
+            data.put("files", files);
+
+        } catch (EthereumException | DDOException | ServiceException | EncryptionException | IOException e) {
+            String msg = "Error getting the data form the  asset with DID " + did.toString();
+            log.error(msg + ": " + e.getMessage());
+            throw new ConsumeServiceException(msg, e);
+        }
+
+        return data;
+    }
+
+
+
+    /**
      * Downloads an Asset previously ordered through a Service Agreement
      *
      * @param serviceAgreementId  the service agreement id
@@ -467,7 +516,7 @@ public class OceanManager extends BaseManager {
      */
     public boolean consume(String serviceAgreementId, DID did, String serviceDefinitionId, String basePath) throws ConsumeServiceException {
 
-        return consume(serviceAgreementId, did, serviceDefinitionId, basePath, 0);
+        return consume(serviceAgreementId, did, serviceDefinitionId, false, -1, basePath, 0);
     }
 
 
@@ -477,32 +526,22 @@ public class OceanManager extends BaseManager {
      * @param serviceAgreementId  the service agreement id
      * @param did                 the did
      * @param serviceDefinitionId the service definition id
+     * @param isIndexDownload indicates if we want to download an especific file of the asset
+     * @param index of the file inside the files definition in metadata
      * @param basePath            the path where the asset will be downloaded
      * @param threshold           secret store threshold
      * @return a flag that indicates if the consume operation was executed correctly
      * @throws ConsumeServiceException ConsumeServiceException
      */
-    public boolean consume(String serviceAgreementId, DID did, String serviceDefinitionId, String basePath, int threshold) throws ConsumeServiceException {
+    public boolean consume(String serviceAgreementId, DID did, String serviceDefinitionId, Boolean isIndexDownload, Integer index, String basePath, int threshold) throws ConsumeServiceException {
 
-        DDO ddo;
+
+        Map<String, Object> consumeData = getConsumeData(did, serviceDefinitionId, isIndexDownload, index);
+        String serviceEndpoint = (String)consumeData.get("serviceEndpoint");
+        List<AssetMetadata.File> files = (List<AssetMetadata.File>)consumeData.get("files");
+
         String checkConsumerAddress = Keys.toChecksumAddress(getMainAccount().address);
-        String serviceEndpoint;
-        List<AssetMetadata.File> files;
-
         String agreementId = EthereumHelper.add0x(serviceAgreementId);
-
-        try {
-
-            ddo = resolveDID(did);
-            serviceEndpoint = ddo.getAccessService(serviceDefinitionId).serviceEndpoint;
-
-            files = this.getMetadataFiles(ddo);
-
-        } catch (EthereumException | DDOException | ServiceException | EncryptionException | IOException e) {
-            String msg = "Error consuming asset with DID " + did.getDid() + " and Service Agreement " + agreementId;
-            log.error(msg + ": " + e.getMessage());
-            throw new ConsumeServiceException(msg, e);
-        }
 
         for (AssetMetadata.File file : files) {
 
@@ -531,6 +570,68 @@ public class OceanManager extends BaseManager {
 
         return true;
     }
+
+
+    /**
+     * Downloads a single file of an Asset previously ordered through a Service Agreement
+     * @param serviceAgreementId the service agreement id
+     * @param did the did
+     * @param serviceDefinitionId the service definition id
+     * @param index of the file inside the files definition in metadata
+     * @param threshold secret store threshold
+     * @return  an InputStream that represents the binary content
+     * @throws ConsumeServiceException ConsumeServiceException
+     */
+    public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, int threshold) throws ConsumeServiceException{
+        return consumeBinary(serviceAgreementId, did, serviceDefinitionId, index, false, 0, 0, threshold);
+    }
+
+    /**
+     * Downloads a single file of an Asset previously ordered through a Service Agreement. It could be a request by range of bytes
+     * @param serviceAgreementId the service agreement id
+     * @param did the did
+     * @param serviceDefinitionId the service definition id
+     * @param index of the file inside the files definition in metadata
+     * @param isRangeRequest indicates if is a request by range of bytes
+     * @param rangeStart  the start of the bytes range
+     * @param rangeEnd  the end of the bytes range
+     * @param threshold secret store threshold
+     * @return  an InputStream that represents the binary content
+     * @throws ConsumeServiceException ConsumeServiceException
+     */
+    public InputStream consumeBinary(String serviceAgreementId, DID did, String serviceDefinitionId, Integer index, Boolean isRangeRequest, Integer rangeStart, Integer rangeEnd, int threshold) throws ConsumeServiceException{
+
+
+        Map<String, Object> consumeData = getConsumeData(did, serviceDefinitionId, true, index);
+        String serviceEndpoint = (String)consumeData.get("serviceEndpoint");
+        List<AssetMetadata.File> files = (List<AssetMetadata.File>)consumeData.get("files");
+
+        String checkConsumerAddress = Keys.toChecksumAddress(getMainAccount().address);
+        String agreementId = EthereumHelper.add0x(serviceAgreementId);
+
+        //  getConsumeData returns a list with only one file in case of consuming by index
+        AssetMetadata.File file = files.get(0);
+
+        try {
+
+            if (null == file.url)    {
+                String msg = "Error Decrypting URL for Asset: " + did.getDid() +" and Service Agreement " + agreementId
+                        + " URL received: " + file.url;
+                log.error(msg);
+                throw new ConsumeServiceException(msg);
+            }
+
+            return BrizoService.downloadUrl(serviceEndpoint, checkConsumerAddress, serviceAgreementId, file.url, isRangeRequest,  rangeStart, rangeEnd);
+
+        } catch (IOException e) {
+            String msg = "Error consuming asset with DID " + did.getDid() +" and Service Agreement " + serviceAgreementId;
+
+            log.error(msg+ ": " + e.getMessage());
+            throw new ConsumeServiceException(msg, e);
+        }
+
+    }
+
 
     // TODO: to be implemented
     public Order getOrder(String orderId) {

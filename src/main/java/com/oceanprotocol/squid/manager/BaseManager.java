@@ -131,7 +131,7 @@ public abstract class BaseManager {
         return this.buildDDO(metadataService, authorizationService, address, 0);
     }
 
-    protected List<AssetMetadata.File> getMetadataFiles(DDO ddo) throws IOException, EncryptionException {
+    public List<AssetMetadata.File> getMetadataFiles(DDO ddo) throws IOException, EncryptionException {
 
         AuthorizationService authorizationService = ddo.getAuthorizationService();
         SecretStoreManager secretStoreManager = getSecretStoreInstance(authorizationService);

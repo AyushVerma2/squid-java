@@ -27,6 +27,7 @@ import org.apache.logging.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -171,6 +172,38 @@ public class AssetsApiIT {
         assertNotNull(results);
 
     }
+
+
+    @Test
+    public void consumeBinary() throws Exception {
+
+        providerConfig.setSecretStoreEndpoint(config.getString("secretstore.url"));
+
+        AssetMetadata metadata = DDO.fromJSON(new TypeReference<AssetMetadata>() {}, METADATA_JSON_CONTENT);
+        //metadata.base.files.get(0).url= "https://speed.hetzner.de/100MB.bin";
+
+        DDO ddo= oceanAPI.getAssetsAPI().create(metadata, providerConfig);
+        DID did= new DID(ddo.id);
+
+        log.debug("DDO registered!");
+
+        Flowable<OrderResult> response = oceanAPIConsumer.getAssetsAPI().order(did,  Service.DEFAULT_ACCESS_SERVICE_ID);
+
+        OrderResult orderResult = response.blockingFirst();
+        assertNotNull(orderResult.getServiceAgreementId());
+        assertEquals(true, orderResult.isAccessGranted());
+        log.debug("Granted Access Received for the service Agreement " + orderResult.getServiceAgreementId());
+
+        InputStream result = oceanAPIConsumer.getAssetsAPI().consumeBinary(
+                orderResult.getServiceAgreementId(),
+                did,
+                Service.DEFAULT_ACCESS_SERVICE_ID,
+                0);
+
+        assertNotNull(result);
+
+    }
+
 
     @Test
     public void owner() throws Exception {
