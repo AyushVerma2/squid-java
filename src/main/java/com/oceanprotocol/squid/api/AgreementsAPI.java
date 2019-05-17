@@ -51,6 +51,7 @@ public interface AgreementsAPI {
      *
      * @param agreementId id of the agreement
      * @return AgreementStatus with condition status of each of the agreement's conditions.
+     * @throws Exception Exception
      */
     public AgreementStatus status(String agreementId) throws Exception;
 }

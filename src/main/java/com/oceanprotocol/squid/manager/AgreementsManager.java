@@ -40,8 +40,11 @@ public class AgreementsManager extends BaseManager {
      * Create an agreement using the escrowAccessSecretStoreTemplate. This method should be more specific in the future when we have more than one template.
      *
      * @param agreementId    the agreement id
+     * @param ddo the ddo
      * @param conditionIds   list with the conditions ids
      * @param accessConsumer eth address of the consumer of the agreement.
+     * @param signature  the signature
+     * @param accessService an instance of accessService
      * @return a flag that is true if the agreement was successfully created.
      * @throws Exception exception
      */
@@ -77,6 +80,7 @@ public class AgreementsManager extends BaseManager {
      *
      * @param agreementId id of the agreement
      * @return AgreementStatus with condition status of each of the agreement's conditions.
+     * @throws Exception Exception
      */
     public AgreementStatus getStatus(String agreementId) throws Exception {
         List<byte[]> condition_ids = agreementStoreManager.getAgreement(EncodingHelper.hexStringToBytes(agreementId)).send().getValue4();

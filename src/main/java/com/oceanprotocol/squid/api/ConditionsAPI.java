@@ -15,7 +15,7 @@ public interface ConditionsAPI {
      * @param agreementId the agreement id
      * @param amount      the amount to be locked
      * @return a flag if the execution was good
-     * @throws Exception
+     * @throws Exception Exception
      */
     public boolean lockReward(String agreementId, BigInteger amount) throws Exception;
 
@@ -26,7 +26,7 @@ public interface ConditionsAPI {
      * @param did         the did
      * @param grantee     the address that is going to be granted to access the data.
      * @return a flag if the execution was good
-     * @throws Exception
+     * @throws Exception Exception
      */
     public boolean grantAccess(String agreementId, DID did, String grantee) throws Exception;
 
@@ -36,7 +36,7 @@ public interface ConditionsAPI {
      * @param agreementId the agreement id.
      * @param amount      the amount to be released.
      * @return a flag if the execution was good
-     * @throws Exception
+     * @throws Exception Exception
      */
     public boolean releaseReward(String agreementId, BigInteger amount) throws Exception;
 
@@ -46,7 +46,7 @@ public interface ConditionsAPI {
      * @param agreementId the agreement id.
      * @param amount      the amount to be refund.
      * @return a flag if the execution was good
-     * @throws Exception
+     * @throws Exception Exception
      */
     public boolean refundReward(String agreementId, BigInteger amount) throws Exception;
 

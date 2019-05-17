@@ -464,6 +464,7 @@ public class OceanManager extends BaseManager {
      * @param isIndexDownload indicates if we want to download an especific file of the asset
      * @param index the index of the file we want to consume
      * @return a Map with the data needed to consume the asset
+     * @throws  ConsumeServiceException ConsumeServiceException
      */
     private Map<String, Object> getConsumeData(DID did, String serviceDefinitionId, Boolean isIndexDownload, Integer index) throws ConsumeServiceException {
 
@@ -703,7 +704,7 @@ public class OceanManager extends BaseManager {
      *
      * @param did the did
      * @return owner address
-     * @throws Exception
+     * @throws Exception Exception
      */
     public String getDIDOwner(DID did) throws Exception {
         return this.didRegistry.getDIDOwner(EncodingHelper.hexStringToBytes(did.getHash())).send();

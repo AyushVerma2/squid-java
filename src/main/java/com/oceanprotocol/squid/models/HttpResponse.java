@@ -113,7 +113,7 @@ public class HttpResponse {
 
     /**
      * Get HTTP response header giving a header name
-     *
+     * @param name name of the header
      * @return header
      */
     public Header getHeader(String name) {
