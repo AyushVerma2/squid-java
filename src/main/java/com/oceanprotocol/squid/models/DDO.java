@@ -33,8 +33,10 @@ public class DDO extends AbstractModel implements FromJsonToModel {
 
     private static final String UUID_PROOF_TYPE = "DDOIntegritySignature";
 
+    private static final String AUTHENTICATION_TYPE = "RsaSignatureAuthentication2018";
+
     @JsonProperty("@context")
-    public String context = "https://w3id.org/future-method/v1";
+    public String context = "https://w3id.org/did/v1";
 
     @JsonProperty
     public String id;
@@ -110,6 +112,12 @@ public class DDO extends AbstractModel implements FromJsonToModel {
 
         public Authentication() {
         }
+
+        public Authentication(String id) {
+            this.publicKey = id;
+            this.type = AUTHENTICATION_TYPE;
+        }
+
     }
 
 
@@ -177,6 +185,11 @@ public class DDO extends AbstractModel implements FromJsonToModel {
     public DDO addService(Service service) {
         service.serviceDefinitionId = String.valueOf(services.size());
         services.add(service);
+        return this;
+    }
+
+    public DDO addAuthentication(String id) {
+        this.authentication.add(new Authentication(id));
         return this;
     }
 
@@ -278,6 +291,17 @@ public class DDO extends AbstractModel implements FromJsonToModel {
         for (Service service : services) {
             if (service.type.equals(Service.serviceTypes.Metadata.toString())) {
                 return (MetadataService) service;
+            }
+        }
+
+        return null;
+    }
+
+    @JsonIgnore
+    public AccessService getAccessService() {
+        for (Service service : services) {
+            if (service.type.equals(Service.serviceTypes.Access.toString())) {
+                return (AccessService) service;
             }
         }
 

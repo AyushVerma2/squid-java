@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.Metadata;
-import org.web3j.crypto.Hash;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -21,13 +21,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA3_256;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder(alphabetic = true)
 public class AssetMetadata extends Metadata {
 
-    public enum assetTypes {dataset, algorithm, container, workflow, other}
-
-    ;
+    public enum assetTypes {dataset, algorithm, container, workflow, other};
 
     @JsonProperty
     public DID did;
@@ -186,8 +186,7 @@ public class AssetMetadata extends Metadata {
                 .concat(this.base.author)
                 .concat(this.base.license)
                 .concat(did);
-
-        return Hash.sha3(concatFields);
+        return new DigestUtils(SHA3_256).digestAsHex(concatFields);
 
     }
 

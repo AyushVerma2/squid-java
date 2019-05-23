@@ -238,6 +238,8 @@ public class OceanManager extends BaseManager {
             if (authorizationService != null)
                 ddo.addService(authorizationService);
 
+            // Add authentication
+            ddo.addAuthentication(ddo.id);
             // Storing DDO
             DDO createdDDO = getAquariusService().createDDO(ddo);
 
@@ -302,7 +304,7 @@ public class OceanManager extends BaseManager {
                     })
                     .map(event -> new OrderResult(serviceAgreementId, true, false))
                     // TODO timout of the condition
-                    .timeout(60, TimeUnit.SECONDS)
+                    .timeout(120, TimeUnit.SECONDS)
                     .onErrorReturn(throwable -> {
 
                         if (throwable instanceof TimeoutException) {
