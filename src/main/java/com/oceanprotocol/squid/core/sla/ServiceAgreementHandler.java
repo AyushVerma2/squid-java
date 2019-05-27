@@ -144,33 +144,6 @@ public class ServiceAgreementHandler {
     }
 
 
-    /*
-     * Define and execute a Filter over the Payment Condition Contract to listen for an PaymentRefund event
-     * @param paymentConditions the address of the PaymentConditions
-     * @param serviceAgreementId the service Agreement Id
-     * @return a Flowable over the Event to handle it in an asynchronous fashion
-     */
-    /*
-    public static Flowable<PaymentConditions.PaymentRefundEventResponse> listenForPaymentRefund(PaymentConditions paymentConditions,
-                                                                                                           String serviceAgreementId)   {
-        EthFilter refundFilter = new EthFilter(
-                DefaultBlockParameterName.EARLIEST,
-                DefaultBlockParameterName.LATEST,
-                paymentConditions.getContractAddress()
-        );
-
-        final Event event= PaymentConditions.PAYMENTREFUND_EVENT;
-        final String eventSignature= EventEncoder.encode(event);
-        String slaTopic= "0x" + serviceAgreementId;
-
-        refundFilter.addSingleTopic(eventSignature);
-        refundFilter.addOptionalTopics(slaTopic);
-
-        return paymentConditions.paymentRefundEventFlowable(refundFilter);
-
-    }
-    */
-
     /**
      * Gets and Initializes all the conditions associated with a template
      *
@@ -240,51 +213,6 @@ public class ServiceAgreementHandler {
         return fingerprints;
     }
 
-    /**
-     * Calculates the conditionKey
-     * @param templateId the id of the template
-     * @param address Checksum address
-     * @param fingerprint the fingerprint of the condition
-     * @return a String with the condition key
-
-    public static String fetchConditionKey(String templateId, String address, String fingerprint)   {
-
-    templateId = templateId.replaceAll("0x", "");
-    address = address.replaceAll("0x", "");
-    fingerprint = fingerprint.replaceAll("0x", "");
-
-    String params= templateId
-    + address
-    + fingerprint;
-
-    return Hash.sha3(params);
-    }
-     */
-
-/*    public static List<BigInteger> getFullfillmentIndices(List<Condition> conditions)   {
-        List<BigInteger> dependenciesBits= new ArrayList<>();
-        BigInteger counter= BigInteger.ZERO;
-
-        for (Condition condition: conditions)    {
-            //if (condition.isTerminalCondition == 1)
-            //    dependenciesBits.add(counter);
-            counter= counter.add(BigInteger.ONE);
-        }
-        return dependenciesBits;
-    }*/
-
-/*
-
-    public static List<BigInteger> getDependenciesBits()   {
-        List<BigInteger> compressedDeps= new ArrayList<>();
-        compressedDeps.add(BigInteger.valueOf(0));
-        compressedDeps.add(BigInteger.valueOf(1));
-        compressedDeps.add(BigInteger.valueOf(4));
-        compressedDeps.add(BigInteger.valueOf(13));
-        return compressedDeps;
-    }
-
-*/
 
 
 }

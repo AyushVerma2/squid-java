@@ -58,7 +58,7 @@ public class FulfillEscrowReward {
 
             TransactionReceipt receipt = escrowReward.fulfill(
                     serviceId,
-                    BigInteger.valueOf(assetInfo.getPrice()),
+                    new BigInteger(assetInfo.getPrice()),
                     lockRewardAddressChecksum,
                     consumerAddress,
                     lockConditionIdBytes,
