@@ -238,11 +238,11 @@ public class OceanManager extends BaseManager {
             if (authorizationService != null)
                 ddo.addService(authorizationService);
 
-            // Storing DDO
-            DDO createdDDO = getAquariusService().createDDO(ddo);
-
             // Registering DID
             registerDID(ddo.getDid(), metadataEndpoint, metadata.base.checksum, providerConfig.getProviderAddresses());
+
+            // Storing DDO
+            DDO createdDDO = getAquariusService().createDDO(ddo);
 
             return createdDDO;
         } catch (DDOException e) {
