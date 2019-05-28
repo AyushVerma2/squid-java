@@ -44,8 +44,9 @@ public class KeeperService {
     private BigInteger gasPrice;
     private BigInteger gasLimit;
 
-    private final BigInteger DEFAULT_GAS_PRICE = BigInteger.valueOf(1500l);
-    private final BigInteger DEFAULT_GAS_LIMIT = BigInteger.valueOf(250000l);
+    private static final BigInteger DEFAULT_GAS_PRICE = BigInteger.valueOf(1500l);
+    private static final BigInteger DEFAULT_GAS_LIMIT = BigInteger.valueOf(250000l);
+
 
 
     /**
@@ -59,10 +60,10 @@ public class KeeperService {
      * @throws IOException     IOException
      * @throws CipherException CipherException
      */
-    public static KeeperService getInstance(String url, String address, String password, String credentialsFile)
+    public static KeeperService getInstance(String url, String address, String password, String credentialsFile, int txAttempts, long txSleepDuration)
             throws IOException, CipherException {
 
-        return new KeeperService(url, address, password, credentialsFile);
+        return new KeeperService(url, address, password, credentialsFile, txAttempts, txSleepDuration);
     }
 
     public static KeeperService getInstance(Web3jService web3jService) {
@@ -73,7 +74,7 @@ public class KeeperService {
         this.web3 = Admin.build(web3jService);
     }
 
-    private KeeperService(String url, String address, String password, String credentialsFile) throws IOException, CipherException {
+    private KeeperService(String url, String address, String password, String credentialsFile, int txAttempts, long txSleepDuration) throws IOException, CipherException {
 
         log.debug("Initializing KeeperService: " + url);
         this.address = address;
@@ -87,13 +88,13 @@ public class KeeperService {
 
         // TODO: Web3j only supports a ChainId in byte format, so any ChainId of a
         // private network is not supported. By the time being we can't specify that
-        // parameter in the TranssactionManager
+        // parameter in the TransactionManager
         // https://github.com/web3j/web3j/issues/234
         //this.chainId= this.web3.netVersion().send().getNetVersion();
 
 
         //this.txManager= new RawTransactionManager(this.web3, getCredentials());
-        this.txManager = new PersonalTransactionManager(this.web3, getCredentials(), password);
+        this.txManager = new PersonalTransactionManager(this.web3, getCredentials(), password, txAttempts, txSleepDuration);
         this.gasProvider = new StaticGasProvider(this.gasPrice, this.gasLimit);
 
     }

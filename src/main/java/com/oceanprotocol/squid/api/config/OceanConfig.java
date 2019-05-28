@@ -18,6 +18,8 @@ public class OceanConfig {
     public static final String KEEPER_URL = "keeper.url";
     public static final String KEEPER_GAS_LIMIT = "keeper.gasLimit";
     public static final String KEEPER_GAS_PRICE = "keeper.gasPrice";
+    public static final String KEEPER_TX_ATTEMPTS = "keeper.tx.attempts";
+    public static final String KEEPER_TX_SLEEPDURATION = "keeper.tx.sleepDuration";
     public static final String AQUARIUS_URL = "aquarius.url";
     public static final String SECRETSTORE_URL = "secretstore.url";
     public static final String PROVIDER_ADDRESS = "provider.address";
@@ -40,6 +42,8 @@ public class OceanConfig {
     private String keeperUrl;
     private BigInteger keeperGasLimit;
     private BigInteger keeperGasPrice;
+    private int keeperTxAttempts;
+    private long keeperTxSleepDuration;
     private String aquariusUrl;
     private String secretStoreUrl;
     private String providerAddress;
@@ -198,6 +202,24 @@ public class OceanConfig {
 
     public OceanConfig setKeeperGasPrice(BigInteger keeperGasPrice) {
         this.keeperGasPrice = keeperGasPrice;
+        return this;
+    }
+
+    public int getKeeperTxAttempts() {
+        return keeperTxAttempts;
+    }
+
+    public OceanConfig setKeeperTxAttempts(int keeperTxAttempts) {
+        this.keeperTxAttempts = keeperTxAttempts;
+        return this;
+    }
+
+    public long getKeeperTxSleepDuration() {
+        return keeperTxSleepDuration;
+    }
+
+    public OceanConfig setKeeperTxSleepDuration(long keeperTxSleepDuration) {
+        this.keeperTxSleepDuration = keeperTxSleepDuration;
         return this;
     }
 

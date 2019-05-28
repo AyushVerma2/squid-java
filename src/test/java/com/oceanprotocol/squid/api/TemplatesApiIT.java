@@ -48,7 +48,9 @@ public class TemplatesApiIT {
                 oceanAPI.getMainAccount().getPassword(),
                 config.getString("account.parity.file2"),
                 BigInteger.valueOf(config.getLong("keeper.gasLimit")),
-                BigInteger.valueOf(config.getLong("keeper.gasPrice"))
+                BigInteger.valueOf(config.getLong("keeper.gasPrice")),
+                config.getInt("keeper.tx.attempts"),
+                config.getLong("keeper.tx.sleepDuration")
                 );
 
         templateStoreManager= ManagerHelper.deployTemplateStoreManager(keeper);

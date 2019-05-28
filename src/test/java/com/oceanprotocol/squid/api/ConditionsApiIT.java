@@ -50,6 +50,8 @@ public class ConditionsApiIT {
         properties.put(OceanConfig.KEEPER_URL, config.getString("keeper.url"));
         properties.put(OceanConfig.KEEPER_GAS_LIMIT, config.getString("keeper.gasLimit"));
         properties.put(OceanConfig.KEEPER_GAS_PRICE, config.getString("keeper.gasPrice"));
+        properties.put(OceanConfig.KEEPER_TX_ATTEMPTS, config.getString("keeper.tx.attempts"));
+        properties.put(OceanConfig.KEEPER_TX_SLEEPDURATION, config.getString("keeper.tx.sleepDuration"));
         properties.put(OceanConfig.AQUARIUS_URL, config.getString("aquarius.url"));
         properties.put(OceanConfig.SECRETSTORE_URL, config.getString("secretstore.url"));
         properties.put(OceanConfig.CONSUME_BASE_PATH, config.getString("consume.basePath"));
