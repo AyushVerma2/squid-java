@@ -3,11 +3,12 @@ History
 
 
 
-0.5.1 (May 27th, 2019)
+0.5.1 (May 28th, 2019)
 -------------------------
 
 * Tokens are represented internally as String
 * Asset is registered first on-chain
+* Keeper sleep duration and retries can be configured
 
 
 0.5.0 (May 17th, 2019)
