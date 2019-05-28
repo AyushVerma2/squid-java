@@ -5,6 +5,7 @@
 
 package com.oceanprotocol.squid.manager;
 
+import com.oceanprotocol.keeper.contracts.DIDRegistry;
 import com.oceanprotocol.keeper.contracts.EscrowAccessSecretStoreTemplate;
 import com.oceanprotocol.squid.core.sla.ServiceAgreementHandler;
 import com.oceanprotocol.squid.core.sla.functions.FulfillEscrowReward;
@@ -28,9 +29,7 @@ import io.reactivex.Flowable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.web3j.abi.EventEncoder;
-import org.web3j.abi.FunctionReturnDecoder;
 import org.web3j.abi.datatypes.Event;
-import org.web3j.abi.datatypes.Type;
 import org.web3j.crypto.Keys;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.request.EthFilter;
@@ -107,25 +106,12 @@ public class OceanManager extends BaseManager {
             String didTopic = "0x" + did.getHash();
             didFilter.addOptionalTopics(didTopic);
 
-            EthLog ethLog;
+            DIDRegistry.DIDAttributeRegisteredEventResponse response = didRegistry.dIDAttributeRegisteredEventFlowable(didFilter)
+                    .timeout(10, TimeUnit.SECONDS)
+                    .blockingFirst();
 
-            try {
-                ethLog = getKeeperService().getWeb3().ethGetLogs(didFilter).send();
-            } catch (IOException e) {
-                throw new EthereumException("Error searching DID " + did.toString() + " onchain: " + e.getMessage());
-            }
-
-            List<EthLog.LogResult> logs = ethLog.getLogs();
-
-            int numLogs = logs.size();
-            if (numLogs < 1)
-                throw new DDOException("No events found for " + did.toString());
-
-            EthLog.LogResult logResult = logs.get(numLogs - 1);
-            List<Type> nonIndexed = FunctionReturnDecoder.decode(((EthLog.LogObject) logResult).getData(), event.getNonIndexedParameters());
-            String ddoUrl = nonIndexed.get(0).getValue().toString();
+            String ddoUrl = response._value;
             String didUrl = UrlHelper.parseDDOUrl(ddoUrl, did.toString());
-
             AquariusService ddoAquariosDto = AquariusService.getInstance(UrlHelper.getBaseUrl(didUrl));
             return ddoAquariosDto.getDDO(didUrl);
 
