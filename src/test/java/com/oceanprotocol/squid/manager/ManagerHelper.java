@@ -10,12 +10,10 @@ import com.oceanprotocol.secretstore.core.EvmDto;
 import com.oceanprotocol.secretstore.core.SecretStoreDto;
 import com.oceanprotocol.squid.external.AquariusService;
 import com.oceanprotocol.squid.external.KeeperService;
-import com.oceanprotocol.squid.external.web3.PersonalTransactionManager;
 import com.typesafe.config.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.web3j.crypto.CipherException;
-import org.web3j.tx.TransactionManager;
 
 import java.io.IOException;
 import java.math.BigInteger;
