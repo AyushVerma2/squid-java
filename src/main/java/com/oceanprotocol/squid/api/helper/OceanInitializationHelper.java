@@ -45,7 +45,9 @@ public class OceanInitializationHelper {
                 oceanConfig.getKeeperUrl(),
                 oceanConfig.getMainAccountAddress(),
                 oceanConfig.getMainAccountPassword(),
-                oceanConfig.getMainAccountCredentialsFile()
+                oceanConfig.getMainAccountCredentialsFile(),
+                oceanConfig.getKeeperTxAttempts(),
+                oceanConfig.getKeeperTxSleepDuration()
         );
 
         keeper.setGasLimit(oceanConfig.getKeeperGasLimit())

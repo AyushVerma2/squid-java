@@ -27,11 +27,16 @@ public class PersonalTransactionManager extends TransactionManager {
     private final Credentials credentials;
     private final String password;
 
-    public PersonalTransactionManager(Admin web3j, Credentials credentials, String password) {
-        super(web3j, credentials.getAddress());
+
+    public PersonalTransactionManager(Admin web3j, Credentials credentials, String password, int attempts, long sleepDuration) {
+        super(web3j, attempts, sleepDuration, credentials.getAddress());
         this.web3j = web3j;
         this.credentials = credentials;
         this.password = password;
+    }
+
+    public PersonalTransactionManager(Admin web3j, Credentials credentials, String password) {
+        this(web3j, credentials, password, 50, 5000l);
     }
 
 
