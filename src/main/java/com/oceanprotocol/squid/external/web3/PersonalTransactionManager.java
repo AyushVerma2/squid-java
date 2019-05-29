@@ -5,6 +5,7 @@
 
 package com.oceanprotocol.squid.external.web3;
 
+import com.oceanprotocol.squid.external.parity.SquidTransactionReceiptProcessor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.web3j.crypto.Credentials;
@@ -29,7 +30,8 @@ public class PersonalTransactionManager extends TransactionManager {
 
 
     public PersonalTransactionManager(Admin web3j, Credentials credentials, String password, int attempts, long sleepDuration) {
-        super(web3j, attempts, sleepDuration, credentials.getAddress());
+
+        super(new SquidTransactionReceiptProcessor(web3j, sleepDuration, attempts), credentials.getAddress());
         this.web3j = web3j;
         this.credentials = credentials;
         this.password = password;
