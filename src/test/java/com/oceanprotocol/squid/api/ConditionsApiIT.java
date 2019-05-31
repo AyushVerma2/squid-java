@@ -9,6 +9,8 @@ import com.oceanprotocol.squid.models.service.AgreementStatus;
 import com.oceanprotocol.squid.models.service.ProviderConfig;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -22,6 +24,8 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.*;
 
 public class ConditionsApiIT {
+
+    private static final Logger log = LogManager.getLogger(ConditionsApiIT.class);
 
     private static OceanAPI oceanAPI;
     private static OceanAPI oceanAPIConsumer;
@@ -87,16 +91,21 @@ public class ConditionsApiIT {
     // TODO: Review what's happening with this test
     @Test
     public void executeConditions() throws Exception {
+
+        log.debug("Creating DDO...");
         DDO ddo = oceanAPI.getAssetsAPI().create(metadataBase, providerConfig);
         String agreementId = ServiceAgreementHandler.generateSlaId();
 
         assertTrue(oceanAPI.getAgreementsAPI().create(ddo.getDid(), agreementId, "1", "", oceanAPIConsumer.getMainAccount().address));
+
+        log.debug("checking initial Status");
         AgreementStatus initialStatus = oceanAPI.getAgreementsAPI().status(agreementId);
         assertEquals(BigInteger.ONE, initialStatus.conditions.get(0).conditions.get("lockReward"));
         assertEquals(BigInteger.ONE, initialStatus.conditions.get(0).conditions.get("accessSecretStore"));
         assertEquals(BigInteger.ONE, initialStatus.conditions.get(0).conditions.get("escrowReward"));
 
         oceanAPI.getConditionsAPI().lockReward(agreementId, BigInteger.TEN);
+        log.debug("checking Status after lockReward");
         AgreementStatus statusAfterLockReward = oceanAPI.getAgreementsAPI().status(agreementId);
         assertEquals(BigInteger.TWO, statusAfterLockReward.conditions.get(0).conditions.get("lockReward"));
         assertEquals(BigInteger.ONE, statusAfterLockReward.conditions.get(0).conditions.get("accessSecretStore"));
@@ -117,6 +126,7 @@ public class ConditionsApiIT {
          */
 
         oceanAPI.getConditionsAPI().grantAccess(agreementId, ddo.getDid(), oceanAPIConsumer.getMainAccount().address);
+        log.debug("checking Status after accessGranted");
         AgreementStatus statusAfterAccessGranted = oceanAPI.getAgreementsAPI().status(agreementId);
         assertEquals(BigInteger.TWO, statusAfterAccessGranted.conditions.get(0).conditions.get("lockReward"));
         assertEquals(BigInteger.TWO, statusAfterAccessGranted.conditions.get(0).conditions.get("accessSecretStore"));
@@ -125,6 +135,7 @@ public class ConditionsApiIT {
 
         oceanAPI.getConditionsAPI().releaseReward(agreementId, BigInteger.TEN);
         AgreementStatus statusAfterReleaseReward = oceanAPI.getAgreementsAPI().status(agreementId);
+        log.debug("checking Status after release Reward");
         assertEquals(BigInteger.TWO, statusAfterReleaseReward.conditions.get(0).conditions.get("lockReward"));
         assertEquals(BigInteger.TWO, statusAfterReleaseReward.conditions.get(0).conditions.get("accessSecretStore"));
         assertEquals(BigInteger.TWO, statusAfterReleaseReward.conditions.get(0).conditions.get("escrowReward"));
