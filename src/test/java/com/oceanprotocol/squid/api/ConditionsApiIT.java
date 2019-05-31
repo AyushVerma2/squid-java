@@ -48,7 +48,7 @@ public class ConditionsApiIT {
         String consumeUrl = config.getString("brizo.url") + "/api/v1/brizo/services/consume?consumerAddress=${consumerAddress}&serviceAgreementId=${serviceAgreementId}&url=${url}";
         String purchaseEndpoint = config.getString("brizo.url") + "/api/v1/brizo/services/access/initialize";
         String secretStoreEndpoint = config.getString("secretstore.url");
-        String providerAddress = config.getString("provider.address");
+        String providerAddress = "0x00Bd138aBD70e2F00903268F3Db08f2D25677C9e"; //config.getString("provider.address");
 
         providerConfig = new ProviderConfig(consumeUrl, purchaseEndpoint, metadataUrl, secretStoreEndpoint, providerAddress);
         oceanAPIConsumer = OceanAPI.getInstance(config);
