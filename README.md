@@ -190,7 +190,7 @@ mvn javadoc:javadoc
 You can run both, the unit and integration tests by using:
 
 ```bash
-mvn clean verify -P all-test
+mvn clean verify -P all-tests
 ```
 
 ### Unit Tests
@@ -232,7 +232,7 @@ mvn javadoc:javadoc
 You can run the unit and integration tests running:
 
 ```bash
-mvn clean verify -P all-test
+mvn clean verify -P all-tests
 ```
 
 You can run the integration tests in Nile environment using the command:

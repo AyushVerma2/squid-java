@@ -1,6 +1,12 @@
 History
 =======
 
+0.5.1 (June, 2019)
+-------------------------
+
+* Transaction sleep and retries are configurable
+* Updated to Brizo 0.3.8 & Aquarius 0.2.8
+
 
 
 0.5.1 (May 28th, 2019)

@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 
@@ -141,6 +142,8 @@ public class AssetsApiIT {
         //Balance balanceAfter= oceanAPIConsumer.getAccountsAPI().balance(oceanAPIConsumer.getMainAccount());
 
         //log.debug("Account " + oceanAPIConsumer.getMainAccount().address + " balance is: " + balance.toString());
+
+        TimeUnit.SECONDS.sleep(2l);
 
         OrderResult result = response.blockingFirst();
         assertNotNull(result.getServiceAgreementId());
@@ -249,6 +252,8 @@ public class AssetsApiIT {
         log.debug("DDO registered!");
         oceanAPIConsumer.getAccountsAPI().requestTokens(BigInteger.valueOf(9000000));
         Flowable<OrderResult> response = oceanAPIConsumer.getAssetsAPI().order(did, Service.DEFAULT_ACCESS_SERVICE_ID);
+
+        TimeUnit.SECONDS.sleep(2l);
 
         OrderResult orderResult = response.blockingFirst();
         assertNotNull(orderResult.getServiceAgreementId());
