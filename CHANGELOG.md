@@ -5,7 +5,8 @@ History
 -------------------------
 
 * Transaction sleep and retries are configurable
-* Updated to Brizo 0.3.8 & Aquarius 0.2.8
+* price is an integer in the DDO
+* Updated to Brizo 0.3.9 & Aquarius 0.2.8
 
 
 

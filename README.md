@@ -32,7 +32,7 @@
 
 This library enables to integrate the Ocean Protocol capabilities from JVM clients.
 
-Currently squid-java implements the last version of the [squid-spec (v0.2)](https://github.com/oceanprotocol/dev-ocean/blob/master/doc/architecture/squid.md).
+Currently squid-java implements the last version of the [squid-spec (v0.3)](https://github.com/oceanprotocol/dev-ocean/blob/master/doc/architecture/squid.md).
 
 ## Installation
 
@@ -42,7 +42,7 @@ Typically in Maven you can add squid-java as a dependency:
 <dependency>
   <groupId>com.oceanprotocol</groupId>
   <artifactId>squid-java</artifactId>
-  <version>0.4.5</version>
+  <version>0.5.1</version>
 </dependency>
 ```
 
@@ -58,6 +58,8 @@ In case you want to use TypeSafe Config you would need an application.conf file 
 keeper.url="http://localhost:8545"
 keeper.gasLimit=4712388
 keeper.gasPrice=100000000000
+keeper.tx.attempts=50
+keeper.tx.sleepDuration=2000
 
 aquarius.url="http://localhost:5000"
 
@@ -135,7 +137,7 @@ Once you have initialized the API you can call the methods through their corresp
 
 If you are using [Barge](https://github.com/oceanprotocol/barge/) for playing with the Ocean Protocol stack, you can use the following command to run the components necessary to have a fully functional environment:
 
-`KEEPER_VERSION=v0.9.0 bash start_ocean.sh --latest --no-pleuston --local-spree-node`
+`KEEPER_VERSION=v0.9.7 bash start_ocean.sh --latest --no-pleuston --local-spree-node`
 
 After a few minutes, when Keeper has deployed the contracts, the ABI files describing the Smart Contracts can be found 
 in the `${HOME}/.ocean/keeper-contracts/artifacts/` folder. Depending on the network you are using, each ABI includes the 
