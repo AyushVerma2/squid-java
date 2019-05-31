@@ -100,7 +100,7 @@ public class AssetMetadata extends Metadata {
         public ArrayList<String> tags;
 
         @JsonProperty
-        public BigInteger price;
+        public String price;
 
         @JsonProperty
         public String checksum;
