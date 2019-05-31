@@ -4,18 +4,10 @@ History
 0.5.1 (June, 2019)
 -------------------------
 
-* Transaction sleep and retries are configurable
-* price is an integer in the DDO
-* Updated to Brizo 0.3.9 & Aquarius 0.2.8
-
-
-
-0.5.1 (May 28th, 2019)
--------------------------
-
 * Tokens are represented internally as String
 * Asset is registered first on-chain
 * Keeper sleep duration and retries can be configured
+* Updated to Brizo 0.3.9 & Aquarius 0.2.8
 
 
 0.5.0 (May 17th, 2019)
