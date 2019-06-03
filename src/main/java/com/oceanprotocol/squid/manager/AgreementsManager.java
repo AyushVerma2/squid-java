@@ -12,6 +12,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.web3j.crypto.Keys;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
+import org.web3j.tuples.generated.Tuple7;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -83,14 +84,20 @@ public class AgreementsManager extends BaseManager {
      * @throws Exception Exception
      */
     public AgreementStatus getStatus(String agreementId) throws Exception {
+
         List<byte[]> condition_ids = agreementStoreManager.getAgreement(EncodingHelper.hexStringToBytes(agreementId)).send().getValue4();
         AgreementStatus agreementStatus = new AgreementStatus();
         agreementStatus.agreementId = agreementId;
         AgreementStatus.ConditionStatusMap condition = new AgreementStatus.ConditionStatusMap();
+
         for (int i = 0; i <= condition_ids.size() - 1; i++) {
-            String address = conditionStoreManager.getCondition(condition_ids.get(i)).send().getValue1();
+
+            Tuple7<String, BigInteger, BigInteger, BigInteger, BigInteger, String, BigInteger> agreementCondition =
+                    conditionStoreManager.getCondition(condition_ids.get(i)).send();
+
+            String address = agreementCondition.getValue1();
             String conditionName = getConditionNameByAddress(Keys.toChecksumAddress(address));
-            BigInteger state = conditionStoreManager.getCondition(condition_ids.get(i)).send().getValue2();
+            BigInteger state = agreementCondition.getValue2();
             condition.conditions.put(conditionName, state);
 
         }
