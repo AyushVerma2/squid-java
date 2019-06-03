@@ -28,8 +28,8 @@ public abstract class ManagerHelper {
         return getKeeper(config, VmClient.ganache);
     }
 
-    public static KeeperService getKeeper(String url, String address, String password, String file, BigInteger gasLimit, BigInteger gasPrice) throws IOException, CipherException {
-        KeeperService keeper= KeeperService.getInstance(url, address, password, file);
+    public static KeeperService getKeeper(String url, String address, String password, String file, BigInteger gasLimit, BigInteger gasPrice, int attempts, long sleepDuration) throws IOException, CipherException {
+        KeeperService keeper= KeeperService.getInstance(url, address, password, file, attempts, sleepDuration);
 
         keeper.setGasLimit(gasLimit)
                 .setGasPrice(gasPrice);
@@ -45,8 +45,11 @@ public abstract class ManagerHelper {
                 config.getString("account." + client.toString() + ".password"),
                 config.getString("account." + client.toString() + ".file"),
                 BigInteger.valueOf(config.getLong("keeper.gasLimit")),
-                BigInteger.valueOf(config.getLong("keeper.gasPrice"))
-        );
+                BigInteger.valueOf(config.getLong("keeper.gasPrice")),
+                config.getInt("keeper.tx.attempts"),
+                config.getLong("keeper.tx.sleepDuration")
+         );
+
 
     }
 
@@ -56,7 +59,9 @@ public abstract class ManagerHelper {
                 config.getString("keeper.url"),
                 config.getString("account." + client.toString() + ".address" + nAddress),
                 config.getString("account." + client.toString() + ".password" + nAddress),
-                config.getString("account." + client.toString() + ".file" + nAddress)
+                config.getString("account." + client.toString() + ".file" + nAddress),
+                config.getInt("keeper.tx.attempts"),
+                config.getLong("keeper.tx.sleepDuration")
         );
 
         keeper.setGasLimit(BigInteger.valueOf(config.getLong("keeper.gasLimit")))
@@ -89,12 +94,12 @@ public abstract class ManagerHelper {
         return SecretStoreManager.getInstance(getSecretStoreDto(config), evmDto);
     }
 
-
     public static OceanToken loadOceanTokenContract(KeeperService keeper, String address) throws Exception, IOException, CipherException {
         return OceanToken.load(
                 address,
                 keeper.getWeb3(),
-                keeper.getCredentials(),
+//                keeper.getCredentials(),
+                keeper.getTxManager(),
                 keeper.getContractGasProvider());
     }
 
@@ -104,7 +109,8 @@ public abstract class ManagerHelper {
         return Dispenser.load(
                 address,
                 keeper.getWeb3(),
-                keeper.getCredentials(),
+//                keeper.getCredentials(),
+                keeper.getTxManager(),
                 keeper.getContractGasProvider()
         );
     }
@@ -116,7 +122,8 @@ public abstract class ManagerHelper {
         return DIDRegistry.load(
                 address,
                 keeper.getWeb3(),
-                keeper.getCredentials(),
+                //keeper.getCredentials(),
+                keeper.getTxManager(),
                 keeper.getContractGasProvider()
         );
     }
@@ -126,7 +133,8 @@ public abstract class ManagerHelper {
         return EscrowAccessSecretStoreTemplate.load(
                 address,
                 keeper.getWeb3(),
-                keeper.getCredentials(),
+//                keeper.getCredentials(),
+                keeper.getTxManager(),
                 keeper.getContractGasProvider());
     }
 
@@ -136,7 +144,8 @@ public abstract class ManagerHelper {
         return EscrowReward.load(
                 address,
                 keeper.getWeb3(),
-                keeper.getCredentials(),
+//                keeper.getCredentials(),
+                keeper.getTxManager(),
                 keeper.getContractGasProvider()
         );
     }
@@ -144,7 +153,8 @@ public abstract class ManagerHelper {
     public static LockRewardCondition loadLockRewardCondition(KeeperService keeper, String address) throws Exception, IOException, CipherException {
         return LockRewardCondition.load(address,
                 keeper.getWeb3(),
-                keeper.getCredentials(),
+//                keeper.getCredentials(),
+                keeper.getTxManager(),
                 keeper.getContractGasProvider()
         );
     }
@@ -152,7 +162,8 @@ public abstract class ManagerHelper {
     public static AccessSecretStoreCondition loadAccessSecretStoreConditionContract(KeeperService keeper, String address) throws Exception, IOException, CipherException {
         return AccessSecretStoreCondition.load(address,
                 keeper.getWeb3(),
-                keeper.getCredentials(),
+//                keeper.getCredentials(),
+                keeper.getTxManager(),
                 keeper.getContractGasProvider()
                 );
     }
@@ -160,7 +171,8 @@ public abstract class ManagerHelper {
     public static TemplateStoreManager loadTemplateStoreManager(KeeperService keeper, String address) throws Exception, IOException, CipherException {
         return TemplateStoreManager.load(address,
                 keeper.getWeb3(),
-                keeper.getCredentials(),
+//                keeper.getCredentials(),
+                keeper.getTxManager(),
                 keeper.getContractGasProvider()
         );
     }
@@ -168,7 +180,8 @@ public abstract class ManagerHelper {
     public static AgreementStoreManager loadAgreementStoreManager(KeeperService keeper, String address) throws Exception, IOException, CipherException {
         return AgreementStoreManager.load(address,
                 keeper.getWeb3(),
-                keeper.getCredentials(),
+//                keeper.getCredentials(),
+                keeper.getTxManager(),
                 keeper.getContractGasProvider()
         );
     }
@@ -176,7 +189,8 @@ public abstract class ManagerHelper {
     public static ConditionStoreManager loadConditionStoreManager(KeeperService keeper, String address) throws Exception, IOException, CipherException {
         return ConditionStoreManager.load(address,
                 keeper.getWeb3(),
-                keeper.getCredentials(),
+//                keeper.getCredentials(),
+                keeper.getTxManager(),
                 keeper.getContractGasProvider()
         );
     }
@@ -186,7 +200,8 @@ public abstract class ManagerHelper {
         log.debug("Deploying TemplateStoreManager with address: " + keeper.getCredentials().getAddress());
         return TemplateStoreManager.deploy(
                 keeper.getWeb3(),
-                keeper.getCredentials(),
+//                keeper.getCredentials(),
+                keeper.getTxManager(),
                 keeper.getContractGasProvider())
                 .send();
     }
@@ -195,7 +210,8 @@ public abstract class ManagerHelper {
         log.debug("Deploying EscrowAccessSecretStoreTemplate with address: " + keeper.getCredentials().getAddress());
         return EscrowAccessSecretStoreTemplate.deploy(
                 keeper.getWeb3(),
-                keeper.getCredentials(),
+//                keeper.getCredentials(),
+                keeper.getTxManager(),
                 keeper.getContractGasProvider())
                 .send();
     }

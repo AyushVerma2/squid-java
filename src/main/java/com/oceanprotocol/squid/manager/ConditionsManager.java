@@ -43,7 +43,7 @@ public class ConditionsManager extends BaseManager {
      */
     public Boolean lockReward(String agreementId, BigInteger amount) throws Exception {
         try {
-            getKeeperService().tokenApprove(tokenContract, lockRewardCondition.getContractAddress(), amount);
+            getKeeperService().tokenApprove(tokenContract, lockRewardCondition.getContractAddress(), amount.toString());
             TransactionReceipt txReceipt = lockRewardCondition.fulfill(EncodingHelper.hexStringToBytes(agreementId),
                     Keys.toChecksumAddress(escrowReward.getContractAddress()),
                     amount).send();

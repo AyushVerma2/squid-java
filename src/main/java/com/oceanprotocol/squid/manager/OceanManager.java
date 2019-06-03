@@ -240,13 +240,14 @@ public class OceanManager extends BaseManager {
 
             // Add authentication
             ddo.addAuthentication(ddo.id);
-            // Storing DDO
-            DDO createdDDO = getAquariusService().createDDO(ddo);
+
 
             // Registering DID
             registerDID(ddo.getDid(), metadataEndpoint, metadata.base.checksum, providerConfig.getProviderAddresses());
 
-            return createdDDO;
+            // Storing DDO
+
+            return getAquariusService().createDDO(ddo);
         } catch (DDOException e) {
             throw e;
         } catch (InitializeConditionsException | DIDRegisterException e) {
@@ -292,7 +293,7 @@ public class OceanManager extends BaseManager {
                             log.debug("Received AgreementCreated Event with Id: " + eventServiceAgreementId);
                             getKeeperService().tokenApprove(this.tokenContract, lockRewardCondition.getContractAddress(), ddo.metadata.base.price);
                             BigInteger balance = this.tokenContract.balanceOf(getMainAccount().address).send();
-                            if (balance.compareTo(ddo.metadata.base.price) < 0) {
+                            if (balance.compareTo(new BigInteger(ddo.metadata.base.price)) < 0) {
                                 log.warn("Consumer account does not have sufficient token balance to fulfill the " +
                                         "LockRewardCondition. Do `requestTokens` using the `dispenser` contract then try this again.");
                                 log.info("token balance is: " + balance + " price is: " + ddo.metadata.base.price);
@@ -654,7 +655,7 @@ public class OceanManager extends BaseManager {
      * @param price the price
      * @return a Map with the params of the Access ConditionStatusMap
      */
-    private Map<String, Object> getAccessConditionParams(String did, BigInteger price) {
+    private Map<String, Object> getAccessConditionParams(String did, String price) {
         Map<String, Object> params = new HashMap<>();
         params.put("parameter.did", did);
         params.put("parameter.price", price);
@@ -688,7 +689,7 @@ public class OceanManager extends BaseManager {
             Condition accessSecretStoreCondition = accessService.getConditionbyName("accessSecretStore");
             Condition.ConditionParameter documentId = accessSecretStoreCondition.getParameterByName("_documentId");
 
-            assetInfo.setPrice((Integer) amount.value);
+            assetInfo.setPrice(amount.value.toString());
             assetInfo.setAssetId(EncodingHelper.hexStringToBytes((String) documentId.value));
 
 

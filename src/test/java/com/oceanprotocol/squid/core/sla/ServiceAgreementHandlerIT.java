@@ -21,6 +21,7 @@ import org.junit.Test;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 
@@ -98,6 +99,7 @@ public class ServiceAgreementHandlerIT {
 
         OrderResult orderResult = response.blockingFirst();
         assertNotNull(orderResult.getServiceAgreementId());
+        TimeUnit.SECONDS.sleep(2l);
         assertEquals(true, orderResult.isAccessGranted());
 
         Boolean result = ServiceAgreementHandler.checkAgreementStatus(orderResult.getServiceAgreementId(), oceanAPIConsumer.getMainAccount().getAddress(), escrowAccessSecretStoreTemplate, 2, 500);

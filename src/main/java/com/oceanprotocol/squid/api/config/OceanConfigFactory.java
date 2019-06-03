@@ -6,6 +6,8 @@
 package com.oceanprotocol.squid.api.config;
 
 
+import org.web3j.tx.TransactionManager;
+
 import java.math.BigInteger;
 import java.util.Properties;
 
@@ -39,6 +41,15 @@ public class OceanConfigFactory {
         oceanConfig.setKeeperUrl((String) properties.getOrDefault(OceanConfig.KEEPER_URL, DEFAULT_KEEPER_URL));
         oceanConfig.setKeeperGasLimit(new BigInteger((String) properties.getOrDefault(OceanConfig.KEEPER_GAS_LIMIT, DEFAULT_KEEPER_GAS_LIMIT.toString())));
         oceanConfig.setKeeperGasPrice(new BigInteger((String) properties.getOrDefault(OceanConfig.KEEPER_GAS_PRICE, DEFAULT_KEEPER_GAS_PRICE.toString())));
+        oceanConfig.setKeeperTxAttempts(Integer.parseInt(
+                (String) properties.getOrDefault(
+                        OceanConfig.KEEPER_TX_ATTEMPTS, String.valueOf(TransactionManager.DEFAULT_POLLING_ATTEMPTS_PER_TX_HASH))
+        ));
+        oceanConfig.setKeeperTxSleepDuration(
+                Long.parseLong(
+                        (String) properties.getOrDefault(OceanConfig.KEEPER_TX_SLEEPDURATION, String.valueOf(TransactionManager.DEFAULT_POLLING_FREQUENCY))
+                ));
+
         oceanConfig.setAquariusUrl((String) properties.getOrDefault(OceanConfig.AQUARIUS_URL, DEFAULT_AQUARIUS_URL));
         oceanConfig.setSecretStoreUrl((String) properties.getOrDefault(OceanConfig.SECRETSTORE_URL, DEFAULT_SECRET_STORE_URL));
         oceanConfig.setProviderAddress((String) properties.getOrDefault(OceanConfig.PROVIDER_ADDRESS, ""));

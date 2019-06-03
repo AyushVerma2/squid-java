@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
 
@@ -78,6 +79,8 @@ public class AssetsApiIT {
         properties.put(OceanConfig.KEEPER_URL, config.getString("keeper.url"));
         properties.put(OceanConfig.KEEPER_GAS_LIMIT, config.getString("keeper.gasLimit"));
         properties.put(OceanConfig.KEEPER_GAS_PRICE, config.getString("keeper.gasPrice"));
+        properties.put(OceanConfig.KEEPER_TX_ATTEMPTS, config.getString("keeper.tx.attempts"));
+        properties.put(OceanConfig.KEEPER_TX_SLEEPDURATION, config.getString("keeper.tx.sleepDuration"));
         properties.put(OceanConfig.AQUARIUS_URL, config.getString("aquarius.url"));
         properties.put(OceanConfig.SECRETSTORE_URL, config.getString("secretstore.url"));
         properties.put(OceanConfig.CONSUME_BASE_PATH, config.getString("consume.basePath"));
@@ -139,6 +142,8 @@ public class AssetsApiIT {
         //Balance balanceAfter= oceanAPIConsumer.getAccountsAPI().balance(oceanAPIConsumer.getMainAccount());
 
         //log.debug("Account " + oceanAPIConsumer.getMainAccount().address + " balance is: " + balance.toString());
+
+        TimeUnit.SECONDS.sleep(2l);
 
         OrderResult result = response.blockingFirst();
         assertNotNull(result.getServiceAgreementId());
@@ -247,6 +252,8 @@ public class AssetsApiIT {
         log.debug("DDO registered!");
         oceanAPIConsumer.getAccountsAPI().requestTokens(BigInteger.valueOf(9000000));
         Flowable<OrderResult> response = oceanAPIConsumer.getAssetsAPI().order(did, Service.DEFAULT_ACCESS_SERVICE_ID);
+
+        TimeUnit.SECONDS.sleep(2l);
 
         OrderResult orderResult = response.blockingFirst();
         assertNotNull(orderResult.getServiceAgreementId());

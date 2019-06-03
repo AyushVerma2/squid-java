@@ -45,12 +45,12 @@ public class FulfillLockReward {
             log.debug("service Agreement String: " + serviceAgreementId);
             log.debug("serviceID Bytes:" + serviceId);
             log.debug("EscrowRewardAddress: " + escrowRewardAddressChecksum);
-            log.debug("Price: " + BigInteger.valueOf(assetInfo.getPrice()));
+            log.debug("Price: " + assetInfo.getPrice());
 
             TransactionReceipt receipt = lockRewardCondition.fulfill(
                     serviceId,
                     escrowRewardAddressChecksum,
-                    BigInteger.valueOf(assetInfo.getPrice())
+                    new BigInteger(assetInfo.getPrice())
             ).send();
 
             if (!receipt.getStatus().equals("0x1")) {
