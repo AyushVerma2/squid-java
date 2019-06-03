@@ -665,7 +665,7 @@ public class OceanManager extends BaseManager {
         params.put("contract.LockRewardCondition.address", lockRewardCondition.getContractAddress());
         params.put("contract.AccessSecretStoreCondition.address", accessSecretStoreCondition.getContractAddress());
 
-        params.put("parameter.assetId", did.replace("did:op:", "0x"));
+        params.put("parameter.assetId", did.replace("did:op:", ""));
 
         return params;
     }
