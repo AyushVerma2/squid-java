@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.web3j.crypto.Keys;
 import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.exceptions.TransactionException;
+import org.web3j.tuples.generated.Tuple2;
 
 import java.math.BigInteger;
 
@@ -84,12 +85,15 @@ public class ConditionsManager extends BaseManager {
      * @throws Exception exception
      */
     public Boolean releaseReward(String agreementId, BigInteger amount) throws Exception {
+
         Agreement agreement = new Agreement(agreementStoreManager.getAgreement(EncodingHelper.hexStringToBytes(agreementId)).send());
+        Tuple2<String, String> agreementData = escrowAccessSecretStoreTemplate.getAgreementData(EncodingHelper.hexStringToBytes(agreementId)).send();
+
         try {
             TransactionReceipt txReceipt = escrowReward.fulfill(EncodingHelper.hexStringToBytes(agreementId),
                     amount,
-                    escrowAccessSecretStoreTemplate.getAgreementData(EncodingHelper.hexStringToBytes(agreementId)).send().getValue2(),
-                    escrowAccessSecretStoreTemplate.getAgreementData(EncodingHelper.hexStringToBytes(agreementId)).send().getValue1(),
+                    agreementData.getValue2(),
+                    agreementData.getValue1(),
                     agreement.conditions.get(1),
                     agreement.conditions.get(0)).send();
             return txReceipt.isStatusOK();
