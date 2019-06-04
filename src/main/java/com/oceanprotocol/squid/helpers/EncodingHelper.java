@@ -148,10 +148,9 @@ public abstract class EncodingHelper {
     }
 
     public static String signatureToString(Sign.SignatureData signatureData) {
-        return EthereumHelper.remove0x(
-                Integer.toHexString(signatureData.getV())
-                        + Numeric.toHexString(signatureData.getR())
-                        + Numeric.toHexString(signatureData.getS())
+        return Numeric.toHexString(signatureData.getR())
+                + Numeric.toHexString(signatureData.getS())
+                + Integer.toHexString(signatureData.getV()
         );
     }
 

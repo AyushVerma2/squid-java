@@ -211,7 +211,7 @@ public class OceanManager extends BaseManager {
             // Handler
             Condition.Handler handler = new Condition.Handler();
             handler.moduleName = "escrowAccessSecretStoreTemplate";
-            handler.functionName = "escrowAccessSecretStoreTemplate";
+            handler.functionName = "fulfillLockRewardCondition";
             handler.version = "0.1";
             executeAgreementEvent.handler = handler;
 

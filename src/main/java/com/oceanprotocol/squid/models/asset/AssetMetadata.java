@@ -10,18 +10,15 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.oceanprotocol.squid.helpers.CryptoHelper;
 import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.Metadata;
-import org.apache.commons.codec.digest.DigestUtils;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA3_256;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder(alphabetic = true)
@@ -186,7 +183,7 @@ public class AssetMetadata extends Metadata {
                 .concat(this.base.author)
                 .concat(this.base.license)
                 .concat(did);
-        return "0x" + new DigestUtils(SHA3_256).digestAsHex(concatFields);
+        return "0x" + CryptoHelper.sha3_256(concatFields);
 
 
     }

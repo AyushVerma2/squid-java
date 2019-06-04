@@ -6,6 +6,7 @@
 package com.oceanprotocol.squid.helpers;
 
 import com.google.common.base.Preconditions;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Uint;
 import org.web3j.abi.datatypes.generated.Uint256;
@@ -19,6 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA3_256;
 
 /**
  * Helper abstract class with crypto utility methods
@@ -35,13 +38,13 @@ public abstract class CryptoHelper {
 
 
     /**
-     * Given an input string return the result of sha3
+     * Given an input string return the result of sha3_256
      *
      * @param input string
      * @return hashed message
      */
-    public static String sha3(String input) {
-        return Hash.sha3(input);
+    public static String sha3_256(String input) {
+        return new DigestUtils(SHA3_256).digestAsHex(input);
     }
 
     /**

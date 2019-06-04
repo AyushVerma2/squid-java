@@ -56,7 +56,7 @@ public class EthereumHelperTest {
 
     @Test
     public void checkingSignatureString() throws EncodingException {
-        String message = CryptoHelper.sha3("Hi there");
+        String message = CryptoHelper.sha3_256("Hi there");
 
         Sign.SignatureData signatureSource = EthereumHelper.signMessage(message, KEY_PAIR);
 
