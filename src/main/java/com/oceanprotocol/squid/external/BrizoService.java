@@ -109,7 +109,7 @@ public class BrizoService {
         parameters.put(Service.SERVICE_AGREEMENT_PARAM, serviceAgreementId);
         parameters.put(Service.URL_PARAM, url);
 
-        String endpoint = StringsHelper.format(serviceEndpoint, parameters);
+        String endpoint = StringsHelper.formUrl(serviceEndpoint, parameters);
 
         log.debug("Consuming URL[" + url + "]: for service Agreement " + serviceAgreementId);
 
@@ -134,7 +134,7 @@ public class BrizoService {
         parameters.put(Service.SERVICE_AGREEMENT_PARAM, serviceAgreementId);
         parameters.put(Service.URL_PARAM, url);
 
-        String endpoint = StringsHelper.format(serviceEndpoint, parameters);
+        String endpoint = StringsHelper.formUrl(serviceEndpoint, parameters);
 
         log.debug("Consuming URL[" + url + "]: for service Agreement " + serviceAgreementId);
 
@@ -161,7 +161,7 @@ public class BrizoService {
         parameters.put(Service.SERVICE_AGREEMENT_PARAM, serviceAgreementId);
         parameters.put(Service.URL_PARAM, url);
 
-        String endpoint = StringsHelper.format(serviceEndpoint, parameters);
+        String endpoint = StringsHelper.formUrl(serviceEndpoint, parameters);
 
         log.debug("Consuming URL[" + url + "]: for service Agreement " + serviceAgreementId);
 

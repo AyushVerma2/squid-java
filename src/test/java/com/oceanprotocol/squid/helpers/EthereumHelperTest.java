@@ -64,7 +64,7 @@ public class EthereumHelperTest {
 
         log.debug("Signature String " + signatureString);
 
-        Sign.SignatureData signature= EncodingHelper.stringToSignature(signatureString);
+        Sign.SignatureData signature=EncodingHelper.stringToSignature(EthereumHelper.remove0x(signatureString));
 
         assertTrue(signatureSource.getR().length == 32);
         assertTrue(signatureSource.getS().length == 32);

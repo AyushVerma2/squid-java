@@ -86,7 +86,7 @@ public class KeeperService {
 
         this.web3 = new JsonRpcSquidAdmin(new HttpService(keeperUrl));
 
-        // TODO: Web3j only supports a ChainId in byte format, so any ChainId of a
+        // TODO: Web3j only supports a ChainId in byte formUrl, so any ChainId of a
         // private network is not supported. By the time being we can't specify that
         // parameter in the TransactionManager
         // https://github.com/web3j/web3j/issues/234

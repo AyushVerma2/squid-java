@@ -97,6 +97,9 @@ public class AssetMetadata extends Metadata {
         public ArrayList<String> tags;
 
         @JsonProperty
+        public ArrayList<String> categories;
+
+        @JsonProperty
         public String price;
 
         @JsonProperty

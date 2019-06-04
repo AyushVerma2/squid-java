@@ -41,7 +41,7 @@ public class ConditionsApiIT {
         }, METADATA_JSON_CONTENT);
 
         String metadataUrl = config.getString("aquarius-internal.url") + "/api/v1/aquarius/assets/ddo/{did}";
-        String consumeUrl = config.getString("brizo.url") + "/api/v1/brizo/services/consume?consumerAddress=${consumerAddress}&serviceAgreementId=${serviceAgreementId}&url=${url}";
+        String consumeUrl = config.getString("brizo.url") + "/api/v1/brizo/services/consume";
         String purchaseEndpoint = config.getString("brizo.url") + "/api/v1/brizo/services/access/initialize";
         String secretStoreEndpoint = config.getString("secretstore.url");
         String providerAddress = config.getString("provider.address");
