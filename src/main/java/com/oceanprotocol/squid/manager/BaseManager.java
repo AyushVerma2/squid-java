@@ -113,7 +113,7 @@ public abstract class BaseManager {
             String filesJson = metadataService.metadata.toJson(metadataService.metadata.base.files);
 
             SecretStoreManager secretStoreManager = getSecretStoreInstance(authorizationService);
-
+            metadataService.serviceEndpoint = metadataService.serviceEndpoint.replace("{did}", did.toString());
             metadataService.metadata.base.encryptedFiles = secretStoreManager.encryptDocument(did.getHash(), filesJson, threshold);
             metadataService.metadata.base.checksum = metadataService.metadata.generateMetadataChecksum(did.getDid());
 

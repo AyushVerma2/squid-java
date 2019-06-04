@@ -41,10 +41,10 @@ public class StringsHelperTest {
         params.put("serviceId", "v2");
         params.put("url", "v3");
 
-        String input= "http://xx.org/?pubKey=${pubKey}&serviceId=${serviceId}&url=${url}";
+        String input= "http://xx.org/";
 
-        String output= StringsHelper.format(input, params);
+        String output= StringsHelper.formUrl(input, params);
 
-        assertEquals("http://xx.org/?pubKey=v1&serviceId=v2&url=v3", output);
+        assertEquals("http://xx.org/?serviceId=v2&url=v3&pubKey=v1", output);
     }
 }

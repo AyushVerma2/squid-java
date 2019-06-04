@@ -129,7 +129,7 @@ public class AssetsManager extends BaseManager {
     }
 
     /**
-     * Check that the metadata has a valid format.
+     * Check that the metadata has a valid formUrl.
      *
      * @param metadata the metadata of the DDO
      * @return a flag that indicates if the metadata is valid

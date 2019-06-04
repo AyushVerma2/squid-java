@@ -105,7 +105,7 @@ public abstract class EncodingHelper {
     }
 
     /**
-     * Return true or false if a input string is in hex format
+     * Return true or false if a input string is in hex formUrl
      *
      * @param input the input string
      * @return bool
@@ -119,7 +119,7 @@ public abstract class EncodingHelper {
      *
      * @param type  thw type
      * @param value the object
-     * @return String in hex format
+     * @return String in hex formUrl
      * @throws UnsupportedEncodingException UnsupportedEncodingException
      */
     public static String hexEncodeAbiType(String type, Object value) throws UnsupportedEncodingException {
@@ -148,10 +148,9 @@ public abstract class EncodingHelper {
     }
 
     public static String signatureToString(Sign.SignatureData signatureData) {
-        return EthereumHelper.remove0x(
-                Integer.toHexString(signatureData.getV())
-                        + Numeric.toHexString(signatureData.getR())
-                        + Numeric.toHexString(signatureData.getS())
+        return Numeric.toHexString(signatureData.getR())
+                + Numeric.toHexString(signatureData.getS())
+                + Integer.toHexString(signatureData.getV()
         );
     }
 
@@ -160,9 +159,9 @@ public abstract class EncodingHelper {
             throw new EncodingException(
                     "Error deserializing string to SignatureData, invalid length:" + signatureString.length());
 
-        byte[] v = Numeric.hexStringToByteArray(signatureString.substring(0, 2));
-        byte[] r = Numeric.hexStringToByteArray(signatureString.substring(2, 66));
-        byte[] s = Numeric.hexStringToByteArray(signatureString.substring(66, 130));
+        byte[] v = Numeric.hexStringToByteArray(signatureString.substring(128, 130));
+        byte[] r = Numeric.hexStringToByteArray(signatureString.substring(0, 64));
+        byte[] s = Numeric.hexStringToByteArray(signatureString.substring(64, 128));
 
         return new Sign.SignatureData(v[0], r, s);
     }

@@ -1,11 +1,8 @@
 {
-  "@context": "https://w3id.org/future-method/v1",
+  "@context": "https://w3id.org/did/v1",
   "authentication": [{
     "type": "RsaSignatureAuthentication2018",
-    "publicKey": "did:op:0ebed8226ada17fde24b6bf2b95d27f8f05fcce09139ff5cec31f6d81a7cd2ea#keys-1"
-  }, {
-    "type": "ieee2410Authentication2018",
-    "publicKey": "did:op:0ebed8226ada17fde24b6bf2b95d27f8f05fcce09139ff5cec31f6d81a7cd2ea#keys-2"
+    "publicKey": "did:op:0ebed8226ada17fde24b6bf2b95d27f8f05fcce09139ff5cec31f6d81a7cd2ea"
   }],
   "created": "2019-02-08T08:13:49Z",
   "id": "did:op:0bc278fee025464f8012b811d1bce8e22094d0984e4e49139df5d5ff7a028bdf",
@@ -287,7 +284,7 @@
         "fulfillmentOperator": 1
       },
       "serviceDefinitionId": "1",
-      "serviceEndpoint": "http://localhost:8030/api/v1/brizo/services/consume?consumerAddress=${consumerAddress}&serviceAgreementId=${serviceAgreementId}&url=${url}",
+      "serviceEndpoint": "http://localhost:8030/api/v1/brizo/services/consume",
       "templateId": "0x044852b2a670ade5407e78fb2863c51de9fcb96542a07186fe3aeda6bb8a116d",
       "type": "Access"
     }

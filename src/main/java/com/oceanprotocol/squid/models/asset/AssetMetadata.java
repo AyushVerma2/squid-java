@@ -10,11 +10,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.oceanprotocol.squid.helpers.CryptoHelper;
 import com.oceanprotocol.squid.models.DID;
 import com.oceanprotocol.squid.models.Metadata;
-import org.web3j.crypto.Hash;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,9 +24,7 @@ import java.util.stream.Collectors;
 @JsonPropertyOrder(alphabetic = true)
 public class AssetMetadata extends Metadata {
 
-    public enum assetTypes {dataset, algorithm, container, workflow, other}
-
-    ;
+    public enum assetTypes {dataset, algorithm, container, workflow, other};
 
     @JsonProperty
     public DID did;
@@ -98,6 +95,9 @@ public class AssetMetadata extends Metadata {
 
         @JsonProperty
         public ArrayList<String> tags;
+
+        @JsonProperty
+        public ArrayList<String> categories;
 
         @JsonProperty
         public String price;
@@ -186,8 +186,8 @@ public class AssetMetadata extends Metadata {
                 .concat(this.base.author)
                 .concat(this.base.license)
                 .concat(did);
+        return "0x" + CryptoHelper.sha3256(concatFields);
 
-        return Hash.sha3(concatFields);
 
     }
 

@@ -80,10 +80,10 @@ public class AccessService extends Service {
         public List<String> lockReward = Arrays.asList();
 
         @JsonProperty
-        public List<String> grantSecretStoreAccess = Arrays.asList();
+        public List<String> accessSecretStore = Arrays.asList();
 
         @JsonProperty
-        public List<String> releaseReward = Arrays.asList("lockReward", "accessSecretStore");
+        public List<String> escrowReward = Arrays.asList("lockReward", "accessSecretStore");
 
         public ConditionDependency() {
         }

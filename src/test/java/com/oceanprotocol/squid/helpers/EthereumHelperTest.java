@@ -56,7 +56,7 @@ public class EthereumHelperTest {
 
     @Test
     public void checkingSignatureString() throws EncodingException {
-        String message = CryptoHelper.sha3("Hi there");
+        String message = CryptoHelper.sha3256("Hi there");
 
         Sign.SignatureData signatureSource = EthereumHelper.signMessage(message, KEY_PAIR);
 
@@ -64,7 +64,7 @@ public class EthereumHelperTest {
 
         log.debug("Signature String " + signatureString);
 
-        Sign.SignatureData signature= EncodingHelper.stringToSignature(signatureString);
+        Sign.SignatureData signature=EncodingHelper.stringToSignature(EthereumHelper.remove0x(signatureString));
 
         assertTrue(signatureSource.getR().length == 32);
         assertTrue(signatureSource.getS().length == 32);
