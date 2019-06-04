@@ -1,6 +1,11 @@
 History
 =======
 
+0.5.2 (June, 2019)
+-------------------------
+* Update values in the ddo generation to work in the same way that the other squids implementations.
+* Refactor some classes.
+
 0.5.1 (June, 2019)
 -------------------------
 
