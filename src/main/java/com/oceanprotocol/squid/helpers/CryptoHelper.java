@@ -38,12 +38,12 @@ public abstract class CryptoHelper {
 
 
     /**
-     * Given an input string return the result of sha3_256
+     * Given an input string return the result of sha3256
      *
      * @param input string
      * @return hashed message
      */
-    public static String sha3_256(String input) {
+    public static String sha3256(String input) {
         return new DigestUtils(SHA3_256).digestAsHex(input);
     }
 

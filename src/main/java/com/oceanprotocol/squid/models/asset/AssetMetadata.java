@@ -186,7 +186,7 @@ public class AssetMetadata extends Metadata {
                 .concat(this.base.author)
                 .concat(this.base.license)
                 .concat(did);
-        return "0x" + CryptoHelper.sha3_256(concatFields);
+        return "0x" + CryptoHelper.sha3256(concatFields);
 
 
     }

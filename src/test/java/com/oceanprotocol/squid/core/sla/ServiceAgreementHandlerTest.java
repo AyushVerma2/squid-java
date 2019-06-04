@@ -113,7 +113,7 @@ public class ServiceAgreementHandlerTest {
         String signature= accessService.generateServiceAgreementSignatureFromHash(keeper.getWeb3(), keeper.getAddress(), account.password, hash);
 
         final String hashTemplateId= Hash.sha3(TEMPLATE_ID);
-        //final String hashConditionKeys= Hash.sha3_256(accessService.fetchConditionKeys());
+        //final String hashConditionKeys= Hash.sha3256(accessService.fetchConditionKeys());
         final String hashConditionValues= Hash.sha3(accessService.fetchConditionValues());
         final String hashTimeouts= Hash.sha3(accessService.fetchTimeout());
         final String hashServiceAgreementId= Hash.sha3(SERVICEAGREEMENT_ID);

@@ -41,14 +41,15 @@ public class StringsHelper {
     /**
      * Given a base url an the parameters form the final url.
      *
-     * @param base input base url.
+     * @param baseUrl input base url.
      * @param values map with key values to replace in the string
      * @return output string with the variables replaced
      */
-    public static String formUrl(String base, Map<String, Object> values) {
+    public static String formUrl(String baseUrl, Map<String, Object> values) {
         StringBuilder result = new StringBuilder();
+        String base = "";
         if (!values.isEmpty()) {
-            base = base.concat("?");
+            base = baseUrl.concat("?");
             values.forEach((key, value) -> result.append((String) key + "=" + (String) value + "&"));
         }
         result.deleteCharAt(result.length() - 1);
