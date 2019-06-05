@@ -69,6 +69,10 @@ public class AssetMetadata extends Metadata {
         @JsonProperty
         public Date dateCreated;
 
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DATE_PATTERN)
+        @JsonProperty
+        public Date datePublished;
+
         @JsonProperty
         public String author;
 
