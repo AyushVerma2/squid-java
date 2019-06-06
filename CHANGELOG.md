@@ -1,6 +1,11 @@
 History
 =======
 
+0.5.3 (June, 2019)
+-------------------------
+* Add datePublished metadata property in the ddo.
+* Allow to download files in a recursive directory.
+
 0.5.2 (June, 2019)
 -------------------------
 * Update values in the ddo generation to work in the same way that the other squids implementations.
