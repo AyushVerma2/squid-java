@@ -177,7 +177,11 @@ public abstract class EthereumHelper {
             return EthereumHelper.remove0x((String) value);
         else if (type.contains("int"))
             if (value instanceof String)
-                return EthereumHelper.remove0x(EncodingHelper.hexEncodeAbiType("uint", Integer.parseInt((String) value)));
+                if(type.equals("uint256")) {
+                    return EthereumHelper.remove0x(EncodingHelper.hexEncodeAbiType("uint", new BigInteger((String) value)));
+                }
+                else
+                    return EthereumHelper.remove0x(EncodingHelper.hexEncodeAbiType("uint", Integer.parseInt((String) value)));
             else
                 return EthereumHelper.remove0x(EncodingHelper.hexEncodeAbiType("uint", value));
         else if ("address".equals(type))
