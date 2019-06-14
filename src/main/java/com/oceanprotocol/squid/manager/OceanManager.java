@@ -53,6 +53,7 @@ public class OceanManager extends BaseManager {
 
     private static final Logger log = LogManager.getLogger(OceanManager.class);
     private AgreementsManager agreementsManager;
+    private TemplatesManager templatesManager;
 
     protected OceanManager(KeeperService keeperService, AquariusService aquariusService) {
         super(keeperService, aquariusService);
@@ -72,6 +73,11 @@ public class OceanManager extends BaseManager {
 
     public OceanManager setAgreementManager(AgreementsManager agreementManager){
         this.agreementsManager = agreementManager;
+        return this;
+    }
+
+    public OceanManager setTemplatesManager(TemplatesManager templatesManager){
+        this.templatesManager = templatesManager;
         return this;
     }
 
@@ -325,7 +331,7 @@ public class OceanManager extends BaseManager {
                         throw new ServiceAgreementException(serviceAgreementId, msg, throwable);
                     });
 
-        } catch (DDOException | ServiceException | ServiceAgreementException e) {
+        } catch ( ServiceException | ServiceAgreementException e) {
             String msg = "Error processing Order with DID " + did.getDid() + "and ServiceAgreementID " + serviceAgreementId;
             log.error(msg + ": " + e.getMessage());
             throw new OrderException(msg, e);
@@ -346,13 +352,24 @@ public class OceanManager extends BaseManager {
      * @throws ServiceAgreementException ServiceAgreementException
      */
     private Flowable<EscrowAccessSecretStoreTemplate.AgreementCreatedEventResponse> initializeServiceAgreement(DID did, DDO ddo, String serviceDefinitionId, String serviceAgreementId)
-            throws DDOException, ServiceException, ServiceAgreementException {
+            throws  ServiceException, ServiceAgreementException {
+
+        Boolean isTemplateApproved;
+        try {
+            isTemplateApproved = templatesManager.isTemplateApproved(escrowAccessSecretStoreTemplate.getContractAddress());
+        } catch (EthereumException e) {
+            String msg = "Error creating Service Agreement: " + serviceAgreementId + ". Error verifying template";
+            log.error(msg + ": " + e.getMessage());
+            throw new ServiceAgreementException(serviceAgreementId, msg, e);
+        }
+
+        if (!isTemplateApproved)
+            throw new ServiceAgreementException(serviceAgreementId, "The template is not approved");
 
         AccessService accessService = ddo.getAccessService(serviceDefinitionId);
 
         String agreementSignature;
-        Boolean result;
-
+        Boolean result = false;
         try {
             //  Consumer sign service details. It includes:
             // (templateId, conditionKeys, valuesHashList, timeoutValues, serviceAgreementId)
@@ -368,7 +385,7 @@ public class OceanManager extends BaseManager {
             );
 
             List<byte[]> conditionsId = accessService.generateConditionIds(serviceAgreementId, this, ddo, Keys.toChecksumAddress(getMainAccount().getAddress()));
-            result =  this.agreementsManager.createAgreement(serviceAgreementId,
+            result = this.agreementsManager.createAgreement(serviceAgreementId,
                     ddo,
                     conditionsId,
                     Keys.toChecksumAddress(getMainAccount().getAddress()),
@@ -376,14 +393,27 @@ public class OceanManager extends BaseManager {
                     accessService
             );
 
+            if (!result) {
+                int retries = 5;
+                int sleepTime = 2000;
+                for(int i=0; i<retries&&!result;i++){
+                    log.debug("Checking if the agreement is on-chain...");
+                    Agreement agreement = agreementsManager.getAgreement(serviceAgreementId);
+                    if(!agreement.templateId.equals("0x0000000000000000000000000000000000000000")){
+                        result = true;
+                        break;
+                    }
+                    Thread.sleep(sleepTime);
+                }
+                if (!result)
+                    throw new ServiceAgreementException(serviceAgreementId, "The create Agreement Transaction has failed");
+            }
+
         } catch (Exception e) {
             String msg = "Error creating Service Agreement: " + serviceAgreementId;
             log.error(msg + ": " + e.getMessage());
             throw new ServiceAgreementException(serviceAgreementId, msg, e);
         }
-
-       if (!result)
-           throw new ServiceAgreementException(serviceAgreementId, "The create Agreement Transactions has failed");
 
         // 4. Listening of events
         return ServiceAgreementHandler.listenExecuteAgreement(escrowAccessSecretStoreTemplate, serviceAgreementId);

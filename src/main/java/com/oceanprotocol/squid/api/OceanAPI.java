@@ -185,9 +185,14 @@ public class OceanAPI {
             oceanAPI.agreementsManager.setAccessSecretStoreCondition(oceanAPI.accessSecretStoreCondition);
             oceanAPI.agreementsManager.setEscrowReward(oceanAPI.escrowReward);
 
+            oceanAPI.templatesManager = oceanInitializationHelper.getTemplatesManager(oceanAPI.keeperService, oceanAPI.aquariusService);
+            oceanAPI.templatesManager.setMainAccount(oceanAPI.mainAccount);
+            oceanAPI.templatesManager.setTemplateStoreManagerContract(oceanAPI.templateStoreManagerContract);
+
             oceanAPI.oceanManager = oceanInitializationHelper.getOceanManager(oceanAPI.keeperService, oceanAPI.aquariusService);
             oceanAPI.oceanManager
                     .setAgreementManager(oceanAPI.agreementsManager)
+                    .setTemplatesManager(oceanAPI.templatesManager)
                     .setSecretStoreManager(oceanAPI.secretStoreManager)
                     .setDidRegistryContract(oceanAPI.didRegistryContract)
                     .setEscrowAccessSecretStoreTemplate(oceanAPI.escrowAccessSecretStoreTemplate)
@@ -219,9 +224,7 @@ public class OceanAPI {
             oceanAPI.assetsManager = oceanInitializationHelper.getAssetsManager(oceanAPI.keeperService, oceanAPI.aquariusService);
             oceanAPI.assetsManager.setMainAccount(oceanAPI.mainAccount);
 
-            oceanAPI.templatesManager = oceanInitializationHelper.getTemplatesManager(oceanAPI.keeperService, oceanAPI.aquariusService);
-            oceanAPI.templatesManager.setMainAccount(oceanAPI.mainAccount);
-            oceanAPI.templatesManager.setTemplateStoreManagerContract(oceanAPI.templateStoreManagerContract);
+
 
             oceanAPI.accountsAPI = new AccountsImpl(oceanAPI.accountsManager);
             oceanAPI.agreementsAPI = new AgreementsImpl(oceanAPI.agreementsManager, oceanAPI.oceanManager);
