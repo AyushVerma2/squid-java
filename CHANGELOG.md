@@ -1,6 +1,11 @@
 History
 =======
 
+0.5.4 (June, 2019)
+-------------------------
+* Updated to Brizo 0.3.10 and Keeper Contracts 0.10.2
+* Creation of the Agreements directly from squid, with no Brizo initialization
+
 0.5.3 (June, 2019)
 -------------------------
 * Add datePublished metadata property in the ddo.

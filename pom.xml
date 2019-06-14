@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.oceanprotocol</groupId>
     <artifactId>squid</artifactId>
-    <version>0.5.3</version>
+    <version>0.5.4</version>
     <packaging>jar</packaging>
     <name>Java client library for Ocean Protocol</name>
     <url>https://github.com/oceanprotocol/squid-java</url>
@@ -25,7 +25,7 @@
         <final-name>squid</final-name>
 
         <web3j.version>4.1.1</web3j.version>
-        <ocean.keeper.version>0.9.7</ocean.keeper.version>
+        <ocean.keeper.version>0.10.2</ocean.keeper.version>
         <ocean.secretstore.version>0.1.4</ocean.secretstore.version>
         <eddsa.version>0.3.0</eddsa.version>
         <jackson.version>2.9.8</jackson.version>
