@@ -23,6 +23,7 @@ import io.reactivex.exceptions.UndeliverableException;
 import io.reactivex.plugins.RxJavaPlugins;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.web3j.crypto.Keys;
 
 import java.io.IOException;
 import java.net.SocketException;
@@ -153,7 +154,7 @@ public class OceanAPI {
 
         oceanAPI = new OceanAPI(oceanConfig);
 
-        oceanAPI.mainAccount = new Account(oceanConfig.getMainAccountAddress(), oceanConfig.getMainAccountPassword());
+        oceanAPI.mainAccount = new Account(Keys.toChecksumAddress(oceanConfig.getMainAccountAddress()), oceanConfig.getMainAccountPassword());
 
         OceanInitializationHelper oceanInitializationHelper = new OceanInitializationHelper(oceanConfig);
 
@@ -176,8 +177,18 @@ public class OceanAPI {
             oceanAPI.agreementStoreManagerContract = oceanInitializationHelper.loadAgreementStoreManager(oceanAPI.keeperService);
             oceanAPI.conditionStoreManager = oceanInitializationHelper.loadConditionStoreManager(oceanAPI.keeperService);
 
+            oceanAPI.agreementsManager = oceanInitializationHelper.getAgreementsManager(oceanAPI.keeperService, oceanAPI.aquariusService);
+            oceanAPI.agreementsManager.setConditionStoreManagerContract(oceanAPI.conditionStoreManager);
+            oceanAPI.agreementsManager.setEscrowAccessSecretStoreTemplate(oceanAPI.escrowAccessSecretStoreTemplate);
+            oceanAPI.agreementsManager.setAgreementStoreManagerContract(oceanAPI.agreementStoreManagerContract);
+            oceanAPI.agreementsManager.setLockRewardCondition(oceanAPI.lockRewardCondition);
+            oceanAPI.agreementsManager.setAccessSecretStoreCondition(oceanAPI.accessSecretStoreCondition);
+            oceanAPI.agreementsManager.setEscrowReward(oceanAPI.escrowReward);
+
             oceanAPI.oceanManager = oceanInitializationHelper.getOceanManager(oceanAPI.keeperService, oceanAPI.aquariusService);
-            oceanAPI.oceanManager.setSecretStoreManager(oceanAPI.secretStoreManager)
+            oceanAPI.oceanManager
+                    .setAgreementManager(oceanAPI.agreementsManager)
+                    .setSecretStoreManager(oceanAPI.secretStoreManager)
                     .setDidRegistryContract(oceanAPI.didRegistryContract)
                     .setEscrowAccessSecretStoreTemplate(oceanAPI.escrowAccessSecretStoreTemplate)
                     .setLockRewardCondition(oceanAPI.lockRewardCondition)
@@ -195,14 +206,6 @@ public class OceanAPI {
             oceanAPI.accountsManager.setTokenContract(oceanAPI.tokenContract);
             oceanAPI.accountsManager.setDispenserContract(oceanAPI.dispenser);
             oceanAPI.accountsManager.setMainAccount(oceanAPI.mainAccount);
-
-            oceanAPI.agreementsManager = oceanInitializationHelper.getAgreementsManager(oceanAPI.keeperService, oceanAPI.aquariusService);
-            oceanAPI.agreementsManager.setConditionStoreManagerContract(oceanAPI.conditionStoreManager);
-            oceanAPI.agreementsManager.setEscrowAccessSecretStoreTemplate(oceanAPI.escrowAccessSecretStoreTemplate);
-            oceanAPI.agreementsManager.setAgreementStoreManagerContract(oceanAPI.agreementStoreManagerContract);
-            oceanAPI.agreementsManager.setLockRewardCondition(oceanAPI.lockRewardCondition);
-            oceanAPI.agreementsManager.setAccessSecretStoreCondition(oceanAPI.accessSecretStoreCondition);
-            oceanAPI.agreementsManager.setEscrowReward(oceanAPI.escrowReward);
 
             oceanAPI.conditionsManager = oceanInitializationHelper.getConditionsManager(oceanAPI.keeperService, oceanAPI.aquariusService);
             oceanAPI.conditionsManager.setTokenContract(oceanAPI.tokenContract);
