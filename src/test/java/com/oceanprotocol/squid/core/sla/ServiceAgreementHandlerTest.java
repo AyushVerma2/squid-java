@@ -106,7 +106,7 @@ public class ServiceAgreementHandlerTest {
     public void generateServiceAgreementSignature() throws Exception {
 
 
-        AccessService accessService= (AccessService) ddo.services.get(0);
+        AccessService accessService= (AccessService) ddo.services.get(1);
 
         String hash= accessService.generateServiceAgreementHash(SERVICEAGREEMENT_ID, "consumerAddress", "publisherAddress", "lockRewardAddress",
                 "accessSecretStoreADdress", "escrowRewardAddredd");
