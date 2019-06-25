@@ -367,29 +367,14 @@ public class OceanManager extends BaseManager {
             throw new ServiceAgreementException(serviceAgreementId, "The template is not approved");
 
         AccessService accessService = ddo.getAccessService(serviceDefinitionId);
-
-        String agreementSignature;
         Boolean result = false;
-        try {
-            //  Consumer sign service details. It includes:
-            // (templateId, conditionKeys, valuesHashList, timeoutValues, serviceAgreementId)
-            agreementSignature = accessService.generateServiceAgreementSignature(
-                    getKeeperService().getWeb3(),
-                    getMainAccount().getAddress(),
-                    getMainAccount().getPassword(),
-                    ddo.proof.creator,
-                    serviceAgreementId,
-                    lockRewardCondition.getContractAddress(),
-                    Keys.toChecksumAddress(accessSecretStoreCondition.getContractAddress()),
-                    escrowReward.getContractAddress()
-            );
 
+        try {
             List<byte[]> conditionsId = accessService.generateConditionIds(serviceAgreementId, this, ddo, Keys.toChecksumAddress(getMainAccount().getAddress()));
             result = this.agreementsManager.createAgreement(serviceAgreementId,
                     ddo,
                     conditionsId,
                     Keys.toChecksumAddress(getMainAccount().getAddress()),
-                    agreementSignature,
                     accessService
             );
 
