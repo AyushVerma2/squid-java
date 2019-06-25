@@ -1,6 +1,10 @@
 History
 =======
 
+0.6.0 (June, 2019)
+-------------------------
+* Transactions locally signed using Raw Transactions
+
 0.5.4 (June, 2019)
 -------------------------
 * Updated to Brizo 0.3.10 and Keeper Contracts 0.10.2
