@@ -347,7 +347,6 @@ public class OceanManager extends BaseManager {
      * @param serviceDefinitionId the service definition id
      * @param serviceAgreementId  the service agreement id
      * @return a Flowable over an AgreementInitializedEventResponse
-     * @throws DDOException              DDOException
      * @throws ServiceException          ServiceException
      * @throws ServiceAgreementException ServiceAgreementException
      */
