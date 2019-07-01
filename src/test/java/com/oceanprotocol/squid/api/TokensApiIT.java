@@ -47,7 +47,7 @@ public class TokensApiIT {
 
         Account receiverAccount= new Account(receiverAddress, receiverPasswd);
 
-
+        oceanAPI.getTokensAPI().request(BigInteger.ONE);
         Balance balanceBefore = oceanAPI.getAccountsAPI().balance(receiverAccount);
         assertNotNull(balanceBefore);
 

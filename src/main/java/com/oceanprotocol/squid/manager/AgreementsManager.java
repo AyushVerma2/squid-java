@@ -44,16 +44,13 @@ public class AgreementsManager extends BaseManager {
      * @param ddo the ddo
      * @param conditionIds   list with the conditions ids
      * @param accessConsumer eth address of the consumer of the agreement.
-     * @param signature  the signature
      * @param accessService an instance of accessService
      * @return a flag that is true if the agreement was successfully created.
      * @throws Exception exception
      */
     public Boolean createAgreement(String agreementId, DDO ddo, List<byte[]> conditionIds,
-                                   String accessConsumer, String signature, AccessService accessService) throws Exception {
-//TODO Check that the signature is valid.
-//        String agreementHash = accessService.generateServiceAgreementHash(agreementId, accessConsumer, ddo.proof.creator, lockRewardCondition.getContractAddress(), accessSecretStoreCondition.getContractAddress(), escrowReward.getContractAddress());
-//        getKeeperService().getWeb3().ethGetTransactionByHash(agreementHash).send();
+                                   String accessConsumer, AccessService accessService) throws Exception {
+
         log.debug("Creating agreement with id: " + agreementId);
         TransactionReceipt txReceipt = escrowAccessSecretStoreTemplate.createAgreement(
                 EncodingHelper.hexStringToBytes("0x" + agreementId),

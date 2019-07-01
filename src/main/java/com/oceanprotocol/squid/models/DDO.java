@@ -173,7 +173,7 @@ public class DDO extends AbstractModel implements FromJsonToModel {
         this.services.add(metadataService);
 
         this.proof = new Proof(UUID_PROOF_TYPE, publicKey, signature);
-        this.publicKeys.add(new DDO.PublicKey(this.id, ETHEREUM_KEY_TYPE, publicKey));
+        this.publicKeys.add(new PublicKey(this.id, ETHEREUM_KEY_TYPE, publicKey));
     }
 
     @JsonSetter("id")

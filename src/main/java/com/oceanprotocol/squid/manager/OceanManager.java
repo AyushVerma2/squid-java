@@ -22,7 +22,6 @@ import com.oceanprotocol.squid.models.Order;
 import com.oceanprotocol.squid.models.asset.AssetMetadata;
 import com.oceanprotocol.squid.models.asset.BasicAssetInfo;
 import com.oceanprotocol.squid.models.asset.OrderResult;
-import com.oceanprotocol.squid.models.brizo.InitializeAccessSLA;
 import com.oceanprotocol.squid.models.service.*;
 import io.reactivex.Flowable;
 import org.apache.logging.log4j.LogManager;
@@ -53,6 +52,8 @@ import java.util.concurrent.TimeoutException;
 public class OceanManager extends BaseManager {
 
     private static final Logger log = LogManager.getLogger(OceanManager.class);
+    private AgreementsManager agreementsManager;
+    private TemplatesManager templatesManager;
 
     protected OceanManager(KeeperService keeperService, AquariusService aquariusService) {
         super(keeperService, aquariusService);
@@ -68,6 +69,16 @@ public class OceanManager extends BaseManager {
      */
     public static OceanManager getInstance(KeeperService keeperService, AquariusService aquariusService) {
         return new OceanManager(keeperService, aquariusService);
+    }
+
+    public OceanManager setAgreementManager(AgreementsManager agreementManager){
+        this.agreementsManager = agreementManager;
+        return this;
+    }
+
+    public OceanManager setTemplatesManager(TemplatesManager templatesManager){
+        this.templatesManager = templatesManager;
+        return this;
     }
 
     /**
@@ -160,7 +171,8 @@ public class OceanManager extends BaseManager {
                     url
             ).send();
 
-            return receipt.getStatus().equals("0x1");
+            //return receipt.getStatus().equals("0x1");
+            return true;
 
         } catch (Exception e) {
             throw new DIDRegisterException("Error registering DID " + did.getHash(), e);
@@ -320,7 +332,7 @@ public class OceanManager extends BaseManager {
                         throw new ServiceAgreementException(serviceAgreementId, msg, throwable);
                     });
 
-        } catch (DDOException | ServiceException | ServiceAgreementException e) {
+        } catch ( ServiceException | ServiceAgreementException e) {
             String msg = "Error processing Order with DID " + did.getDid() + "and ServiceAgreementID " + serviceAgreementId;
             log.error(msg + ": " + e.getMessage());
             throw new OrderException(msg, e);
@@ -336,67 +348,56 @@ public class OceanManager extends BaseManager {
      * @param serviceDefinitionId the service definition id
      * @param serviceAgreementId  the service agreement id
      * @return a Flowable over an AgreementInitializedEventResponse
-     * @throws DDOException              DDOException
      * @throws ServiceException          ServiceException
      * @throws ServiceAgreementException ServiceAgreementException
      */
     private Flowable<EscrowAccessSecretStoreTemplate.AgreementCreatedEventResponse> initializeServiceAgreement(DID did, DDO ddo, String serviceDefinitionId, String serviceAgreementId)
-            throws DDOException, ServiceException, ServiceAgreementException {
+            throws  ServiceException, ServiceAgreementException {
 
-        AccessService accessService = ddo.getAccessService(serviceDefinitionId);
-
-        //  Consumer sign service details. It includes:
-        // (templateId, conditionKeys, valuesHashList, timeoutValues, serviceAgreementId)
-        String agreementSignature;
+        Boolean isTemplateApproved;
         try {
-            agreementSignature = accessService.generateServiceAgreementSignature(
-                    getKeeperService().getWeb3(),
-                    getMainAccount().getAddress(),
-                    getMainAccount().getPassword(),
-                    ddo.proof.creator,
-                    serviceAgreementId,
-                    lockRewardCondition.getContractAddress(),
-                    accessSecretStoreCondition.getContractAddress(),
-                    escrowReward.getContractAddress()
-            );
-        } catch (IOException e) {
-            String msg = "Error generating signature for Service Agreement: " + serviceAgreementId;
+            isTemplateApproved = templatesManager.isTemplateApproved(escrowAccessSecretStoreTemplate.getContractAddress());
+        } catch (EthereumException e) {
+            String msg = "Error creating Service Agreement: " + serviceAgreementId + ". Error verifying template";
             log.error(msg + ": " + e.getMessage());
             throw new ServiceAgreementException(serviceAgreementId, msg, e);
         }
 
-        InitializeAccessSLA initializePayload = new InitializeAccessSLA(
-                did.toString(),
-                "0x".concat(serviceAgreementId),
-                serviceDefinitionId,
-                agreementSignature,
-                Keys.toChecksumAddress(getMainAccount().getAddress())
-        );
+        if (!isTemplateApproved)
+            throw new ServiceAgreementException(serviceAgreementId, "The template is not approved");
 
-        // 3. Send agreement details to Publisher (Brizo endpoint)
-        BrizoService.ServiceAgreementResult result = BrizoService.initializeAccessServiceAgreement(accessService.purchaseEndpoint, initializePayload);
+        AccessService accessService = ddo.getAccessService(serviceDefinitionId);
+        Boolean result = false;
 
-        if (!result.getOk()) {
+        try {
+            List<byte[]> conditionsId = accessService.generateConditionIds(serviceAgreementId, this, ddo, Keys.toChecksumAddress(getMainAccount().getAddress()));
+            result = this.agreementsManager.createAgreement(serviceAgreementId,
+                    ddo,
+                    conditionsId,
+                    Keys.toChecksumAddress(getMainAccount().getAddress()),
+                    accessService
+            );
 
-            if (result.getCode() != 401)
-                throw new ServiceAgreementException(serviceAgreementId, "Unable to initialize SA using Brizo. Payload: " + initializePayload);
-            else {
-
-                log.debug("Received a 401 code from Brizo. Checking if the SA " + serviceAgreementId + " is created in Keeper");
-                Boolean foundOnChain;
-
-                try {
-                    foundOnChain = ServiceAgreementHandler.checkAgreementStatus(serviceAgreementId, getMainAccount().address, escrowAccessSecretStoreTemplate, 2, 10000);
-                } catch (Exception e) {
-                    throw new ServiceAgreementException(serviceAgreementId, "Error trying to get the status of the SA. Unable to initialize SA using Brizo. Payload: " + initializePayload, e);
+            if (!result) {
+                int retries = 5;
+                int sleepTime = 2000;
+                for(int i=0; i<retries&&!result;i++){
+                    log.debug("Checking if the agreement is on-chain...");
+                    Agreement agreement = agreementsManager.getAgreement(serviceAgreementId);
+                    if(!agreement.templateId.equals("0x0000000000000000000000000000000000000000")){
+                        result = true;
+                        break;
+                    }
+                    Thread.sleep(sleepTime);
                 }
-
-                if (!foundOnChain)
-                    throw new ServiceAgreementException(serviceAgreementId, "SA is not created on-line. Unable to initialize SA using Brizo. Payload: " + initializePayload);
-
-                log.debug("The SA " + serviceAgreementId + " is created correctly in Keeper. Ignoring the error from Brizo");
-
+                if (!result)
+                    throw new ServiceAgreementException(serviceAgreementId, "The create Agreement Transaction has failed");
             }
+
+        } catch (Exception e) {
+            String msg = "Error creating Service Agreement: " + serviceAgreementId;
+            log.error(msg + ": " + e.getMessage());
+            throw new ServiceAgreementException(serviceAgreementId, msg, e);
         }
 
         // 4. Listening of events
@@ -712,7 +713,7 @@ public class OceanManager extends BaseManager {
      * @throws Exception Exception
      */
     public String getDIDOwner(DID did) throws Exception {
-        return this.didRegistry.getDIDOwner(EncodingHelper.hexStringToBytes(did.getHash())).send();
+        return Keys.toChecksumAddress(this.didRegistry.getDIDOwner(EncodingHelper.hexStringToBytes(did.getHash())).send());
     }
 
     /**

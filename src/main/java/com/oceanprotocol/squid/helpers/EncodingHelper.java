@@ -135,7 +135,11 @@ public abstract class EncodingHelper {
         } else if (type.contains("bool"))
             return TypeEncoder.encode(new Bool((boolean) value));
         else if (type.contains("uint"))
-            return TypeEncoder.encode(new Uint(BigInteger.valueOf((Integer) value)));
+            if(value instanceof Integer){
+                return TypeEncoder.encode(new Uint(BigInteger.valueOf((Integer) value)));
+            }
+            else
+                return TypeEncoder.encode(new Uint((BigInteger) value));
         else if (type.contains("address"))
             return TypeEncoder.encode(new Address((String) value));
         else if (type.contains("bytes"))

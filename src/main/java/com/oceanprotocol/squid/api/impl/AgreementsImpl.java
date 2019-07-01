@@ -43,7 +43,6 @@ public class AgreementsImpl implements AgreementsAPI {
     public void send(DID did, String agreementId, String serviceDefinitionId, String signature, Account consumerAccount) throws Exception {
         DDO ddo = oceanManager.resolveDID(did);
         AccessService accessService = ddo.getAccessService(serviceDefinitionId);
-        create(did, agreementId, serviceDefinitionId, signature, consumerAccount.address);
         InitializeAccessSLA initializePayload = new InitializeAccessSLA(
                 did.toString(),
                 "0x".concat(agreementId),
@@ -55,14 +54,13 @@ public class AgreementsImpl implements AgreementsAPI {
     }
 
     @Override
-    public boolean create(DID did, String agreementId, String serviceDefinitionId, String signature, String consumerAddress) throws Exception {
+    public boolean create(DID did, String agreementId, String serviceDefinitionId, String consumerAddress) throws Exception {
         DDO ddo = oceanManager.resolveDID(did);
         AccessService accessService = ddo.getAccessService(serviceDefinitionId);
         return agreementsManager.createAgreement(agreementId,
                 ddo,
                 accessService.generateConditionIds(agreementId, oceanManager, ddo, Keys.toChecksumAddress(consumerAddress)),
                 Keys.toChecksumAddress(consumerAddress),
-                signature,
                 accessService
         );
     }

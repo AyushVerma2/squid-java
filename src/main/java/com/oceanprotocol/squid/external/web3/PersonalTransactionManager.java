@@ -9,13 +9,17 @@ import com.oceanprotocol.squid.external.parity.SquidTransactionReceiptProcessor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.web3j.crypto.Credentials;
+import org.web3j.crypto.Hash;
+import org.web3j.crypto.RawTransaction;
+import org.web3j.crypto.TransactionEncoder;
 import org.web3j.protocol.admin.Admin;
 import org.web3j.protocol.core.DefaultBlockParameterName;
-import org.web3j.protocol.core.methods.request.Transaction;
 import org.web3j.protocol.core.methods.response.EthGetTransactionCount;
 import org.web3j.protocol.core.methods.response.EthSendTransaction;
 import org.web3j.tx.TransactionManager;
+import org.web3j.tx.exceptions.TxHashMismatchException;
 import org.web3j.utils.Numeric;
+import org.web3j.utils.TxHashVerifier;
 
 import java.io.IOException;
 import java.math.BigInteger;
@@ -28,6 +32,7 @@ public class PersonalTransactionManager extends TransactionManager {
     private final Credentials credentials;
     private final String password;
 
+    protected TxHashVerifier txHashVerifier = new TxHashVerifier();
 
     public PersonalTransactionManager(Admin web3j, Credentials credentials, String password, int attempts, long sleepDuration) {
 
@@ -59,16 +64,51 @@ public class PersonalTransactionManager extends TransactionManager {
     }
 
     @Override
-    public EthSendTransaction sendTransaction(BigInteger gasPrice, BigInteger gasLimit, String to, String data, BigInteger value) throws IOException {
+    public EthSendTransaction sendTransaction(
+            BigInteger gasPrice, BigInteger gasLimit, String to,
+            String data, BigInteger value) throws IOException {
 
-        Transaction transaction = new Transaction(
-                getFromAddress(), getNonce(), getEstimatedGas(to, data), gasLimit, to, value, data);
+        BigInteger nonce = getNonce();
 
-        log.debug("Sending Personal Transaction " + transaction.getNonce()
-                + " - Gas Price: " + Numeric.decodeQuantity(transaction.getGasPrice()));
+        RawTransaction rawTransaction = RawTransaction.createTransaction(
+                nonce,
+                getEstimatedGas(to, data),
+                gasLimit,
+                to,
+                value,
+                data);
 
-        EthSendTransaction ethSendTransaction = web3j.personalSendTransaction(transaction, password).send();
+        return signAndSend(rawTransaction);
+    }
+
+    /*
+     * @param rawTransaction a RawTransaction istance to be signed
+     * @return The transaction signed and encoded without ever broadcasting it
+     */
+    public String sign(RawTransaction rawTransaction) {
+
+        byte[] signedMessage;
+        signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials);
+
+        return Numeric.toHexString(signedMessage);
+    }
+
+    public EthSendTransaction signAndSend(RawTransaction rawTransaction)
+            throws IOException {
+
+        String hexValue = sign(rawTransaction);
+        EthSendTransaction ethSendTransaction = web3j.ethSendRawTransaction(hexValue).send();
+
+        if (ethSendTransaction != null && !ethSendTransaction.hasError()) {
+            String txHashLocal = Hash.sha3(hexValue);
+            String txHashRemote = ethSendTransaction.getTransactionHash();
+            if (!txHashVerifier.verify(txHashLocal, txHashRemote)) {
+                throw new TxHashMismatchException(txHashLocal, txHashRemote);
+            }
+        }
 
         return ethSendTransaction;
     }
 }
+
+

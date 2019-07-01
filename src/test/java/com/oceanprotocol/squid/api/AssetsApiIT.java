@@ -105,13 +105,13 @@ public class AssetsApiIT {
         EscrowAccessSecretStoreTemplate escrowAccessSecretStoreTemplate = ManagerHelper.loadEscrowAccessSecretStoreTemplate(keeper, config.getString("contract.EscrowAccessSecretStoreTemplate.address"));
         TemplateStoreManager templateManager = ManagerHelper.loadTemplateStoreManager(keeper, config.getString("contract.TemplateStoreManager.address"));
 
-        oceanAPIConsumer.getTokensAPI().request(BigInteger.TEN);
-        Balance balance = oceanAPIConsumer.getAccountsAPI().balance(oceanAPIConsumer.getMainAccount());
-
-        log.debug("Account " + oceanAPIConsumer.getMainAccount().address + " balance is: " + balance.toString());
-
-        boolean isTemplateApproved = templateManager.isTemplateApproved(escrowAccessSecretStoreTemplate.getContractAddress()).send();
-        log.debug("Is escrowAccessSecretStoreTemplate approved? " + isTemplateApproved);
+//        oceanAPIConsumer.getTokensAPI().request(BigInteger.TEN);
+//        Balance balance = oceanAPIConsumer.getAccountsAPI().balance(oceanAPIConsumer.getMainAccount());
+//
+//        log.debug("Account " + oceanAPIConsumer.getMainAccount().address + " balance is: " + balance.toString());
+//
+//        boolean isTemplateApproved = templateManager.isTemplateApproved(escrowAccessSecretStoreTemplate.getContractAddress()).send();
+//        log.debug("Is escrowAccessSecretStoreTemplate approved? " + isTemplateApproved);
     }
 
     @Test
@@ -132,7 +132,7 @@ public class AssetsApiIT {
         DDO ddo = oceanAPI.getAssetsAPI().create(metadataBase, providerConfig);
         DID did = new DID(ddo.id);
 
-        oceanAPIConsumer.getAccountsAPI().requestTokens(BigInteger.valueOf(9000000));
+        oceanAPIConsumer.getAccountsAPI().requestTokens(BigInteger.TEN);
         Balance balance = oceanAPIConsumer.getAccountsAPI().balance(oceanAPIConsumer.getMainAccount());
 
         log.debug("Account " + oceanAPIConsumer.getMainAccount().address + " balance is: " + balance.toString());
@@ -250,7 +250,7 @@ public class AssetsApiIT {
         DID did = new DID(ddo.id);
 
         log.debug("DDO registered!");
-        oceanAPIConsumer.getAccountsAPI().requestTokens(BigInteger.valueOf(9000000));
+        oceanAPIConsumer.getAccountsAPI().requestTokens(BigInteger.TEN);
         Flowable<OrderResult> response = oceanAPIConsumer.getAssetsAPI().order(did, Service.DEFAULT_ACCESS_SERVICE_ID);
 
         TimeUnit.SECONDS.sleep(2l);

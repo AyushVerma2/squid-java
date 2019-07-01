@@ -123,6 +123,6 @@ public class AgreementsManagerIT {
         assertEquals(orderResult.getServiceAgreementId(), status.agreementId);
         assertEquals(BigInteger.TWO, status.conditions.get(0).conditions.get("lockReward"));
         assertEquals(BigInteger.TWO, status.conditions.get(0).conditions.get("accessSecretStore"));
-        assertEquals(BigInteger.ONE, status.conditions.get(0).conditions.get("escrowReward"));
+        assertEquals(BigInteger.TWO, status.conditions.get(0).conditions.get("escrowReward"));
     }
 }

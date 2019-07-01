@@ -345,7 +345,7 @@ public abstract class HttpHelper {
         try {
             URL contentUrl = new URL(url);
             ReadableByteChannel readableByteChannel = Channels.newChannel(contentUrl.openStream());
-            FileOutputStream fileOutputStream = new FileOutputStream(destinationPath);
+            FileOutputStream fileOutputStream = FileUtils.openOutputStream(new File(destinationPath));
             fileOutputStream.getChannel()
                     .transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
 

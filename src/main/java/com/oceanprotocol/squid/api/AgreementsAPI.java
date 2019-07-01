@@ -31,6 +31,7 @@ public interface AgreementsAPI {
      * @param consumerAccount     the account of the consumer
      * @throws Exception Exception
      */
+    @Deprecated
     public void send(DID did, String agreementId, String serviceDefinitionId, String signature, Account consumerAccount) throws Exception;
 
     /**
@@ -39,12 +40,11 @@ public interface AgreementsAPI {
      * @param did                 the did
      * @param agreementId         the agreement id
      * @param serviceDefinitionId the service definition id of the agreement
-     * @param signature           the signature
      * @param consumerAddress     the address of the consumer
      * @return a flag a true if the creation of the agreement was successful.
      * @throws Exception Exception
      */
-    public boolean create(DID did, String agreementId, String serviceDefinitionId, String signature, String consumerAddress) throws Exception;
+    public boolean create(DID did, String agreementId, String serviceDefinitionId, String consumerAddress) throws Exception;
 
     /**
      * Get the status of a service agreement.

@@ -56,6 +56,8 @@ public class KeeperService {
      * @param address         User ethereum address
      * @param password        User password
      * @param credentialsFile Path to the file with the local credentials
+     * @param txAttempts      attempts to get the transaction receipt
+     * @param txSleepDuration time in milliseconds between each attempt
      * @return KeeperService
      * @throws IOException     IOException
      * @throws CipherException CipherException
