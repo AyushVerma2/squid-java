@@ -1,3 +1,4 @@
+
 package com.oceanprotocol.squid.core.sla;///*
 // * Copyright 2018 Ocean Protocol Foundation
 // * SPDX-License-Identifier: Apache-2.0
@@ -144,3 +145,10 @@ package com.oceanprotocol.squid.core.sla;///*
 //    }
 //
 //}
+=======
+/*
+ * Copyright 2018 Ocean Protocol Foundation
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+
