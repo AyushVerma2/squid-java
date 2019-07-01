@@ -42,7 +42,7 @@
         <jacoco.ut.execution.data.file>${project.build.directory}/coverage-reports/jacoco-ut.exec</jacoco.ut.execution.data.file>
         <!-- Only unit tests are run by default. -->
         <skip.integration.tests>true</skip.integration.tests>
-        <skip.unit.tests>false</skip.unit.tests>
+        <skip.unit.tests>true</skip.unit.tests>
     </properties>
     <developers>
         <developer>
@@ -64,7 +64,7 @@
                 <build.profile.id>all-tests</build.profile.id>
                 <!-- All tests are run. -->
                 <skip.integration.tests>false</skip.integration.tests>
-                <skip.unit.tests>false</skip.unit.tests>
+                <skip.unit.tests>true</skip.unit.tests>
             </properties>
         </profile>
         <profile>
@@ -76,8 +76,8 @@
                 <!-- Used to locate the profile specific configuration file. -->
                 <build.profile.id>integration-test</build.profile.id>
                 <!-- Only integration tests are run. -->
-                <skip.integration.tests>false</skip.integration.tests>
-                <skip.unit.tests>false</skip.unit.tests>
+                <skip.integration.tests>true</skip.integration.tests>
+                <skip.unit.tests>true</skip.unit.tests>
             </properties>
         </profile>
         <!-- Activate using the release property: mvn clean install -Prelease -->
