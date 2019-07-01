@@ -1,69 +1,69 @@
-language: java
+# language: java
 
-jdk:
-- openjdk11
+# jdk:
+# - openjdk11
 
-sudo: false
+# sudo: false
 
-services:
-- docker
+# services:
+# - docker
 
-cache:
-  directories:
-  - "$HOME/.cache"
+# cache:
+#   directories:
+#   - "$HOME/.cache"
 
-before_install:
-- git clone https://github.com/oceanprotocol/barge
-- cd barge
-- export KEEPER_VERSION=v0.10.3
-- export BRIZO_VERSION=v0.3.12
-- export AQUARIUS_VERSION=v0.3.3
-- bash -x start_ocean.sh --latest --no-pleuston --local-spree-node 2>&1 > start_ocean.log &
-- cd ..
-- sleep 60
-- echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
-- echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
-- sudo apt-get install jq
-- wget -O ~/codacy-coverage-reporter-assembly-latest.jar https://github.com/codacy/codacy-coverage-reporter/releases/download/4.0.5/codacy-coverage-reporter-4.0.5-assembly.jar
-- |
-    for i in $(seq 1 50); do
-      sleep 5
-      [ -f "${HOME}/.ocean/keeper-contracts/artifacts/ready" ] && break
-    done
-    ls -la "${HOME}/.ocean/keeper-contracts/artifacts/"
+# before_install:
+# - git clone https://github.com/oceanprotocol/barge
+# - cd barge
+# - export KEEPER_VERSION=v0.10.3
+# - export BRIZO_VERSION=v0.3.12
+# - export AQUARIUS_VERSION=v0.3.3
+# - bash -x start_ocean.sh --latest --no-pleuston --local-spree-node 2>&1 > start_ocean.log &
+# - cd ..
+# - sleep 60
+# - echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import
+# - echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust
+# - sudo apt-get install jq
+# - wget -O ~/codacy-coverage-reporter-assembly-latest.jar https://github.com/codacy/codacy-coverage-reporter/releases/download/4.0.5/codacy-coverage-reporter-4.0.5-assembly.jar
+# - |
+#     for i in $(seq 1 50); do
+#       sleep 5
+#       [ -f "${HOME}/.ocean/keeper-contracts/artifacts/ready" ] && break
+#     done
+#     ls -la "${HOME}/.ocean/keeper-contracts/artifacts/"
 
-    /bin/bash src/test/resources/scripts/updateConfAddresses.sh
+#     /bin/bash src/test/resources/scripts/updateConfAddresses.sh
 
-install:
-#- mvn --settings .maven.xml install -P dev -Dgpg.skip -Dmaven.javadoc.skip=true -B -V # Unit tests only
-- mvn --settings .maven.xml install -P integration-test -Dgpg.skip -Dmaven.javadoc.skip=true -B -V
-- mvn help:evaluate -Dexpression=project.version | grep -e '^[^\[]'
-- export project_version=$(mvn help:evaluate -Dexpression=project.version | grep -e '^[^\[]')
+# install:
+# #- mvn --settings .maven.xml install -P dev -Dgpg.skip -Dmaven.javadoc.skip=true -B -V # Unit tests only
+# - mvn --settings .maven.xml install -P integration-test -Dgpg.skip -Dmaven.javadoc.skip=true -B -V
+# - mvn help:evaluate -Dexpression=project.version | grep -e '^[^\[]'
+# - export project_version=$(mvn help:evaluate -Dexpression=project.version | grep -e '^[^\[]')
 
-script:
-#- mvn clean verify -P dev
-#- mvn clean verify -P all-test # TODO: uncomment this when barge run properly in travis
+# script:
+# #- mvn clean verify -P dev
+# #- mvn clean verify -P all-test # TODO: uncomment this when barge run properly in travis
 
-after_success:
-- java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r target/site/jacoco/jacoco.xml
-- mvn javadoc:javadoc
+# after_success:
+# - java -jar ~/codacy-coverage-reporter-assembly-latest.jar report -l Java -r target/site/jacoco/jacoco.xml
+# - mvn javadoc:javadoc
 
-deploy:
-- provider: releases
-  skip_cleanup: true
-  api_key:
-    secure: "SUMtbqHpj2Fvf6wM8wTMhj4T8Y6p86w4Ivq/3prSGapAe6BhHo+p2TUbRszTX66psrbkeBPp99Vc+sCWS5Rnz1bGVVrWzDA8sDzWHa/uiUZsuqXu1t4DbTtvhc6JKNN28px5f9vI01Q+FZ9gGhnNTtSIOn5pG+sxPJ4/7hZwBA7JGd74hyDdtX2lChHaM4wMk0vBivT5kZMwlKuuoFgWYaE1oemEFLOPJhmM5ORELB8d+jzCwr8XcUyA2gKHCRuCVEhPhFmLTwaycxiVa04VRNmHhBI7ux9F2YNthR/aSap3A9ud4kET0FCkmUoyi/Q/+o0PlWBsc8hmeprcG+llQYirNMXplZUpzQR4Uwy3VXrESG7KlCTSQ43zObNXROLzGx8qMTnQUdFb72sq9gc07tGQHc1rDNHnzqkNF08BvdZS4wsInmaBrlqXzzMarD1XgcR9UoUZm3BJu87DdVp4NXJCNGe2FMmaWWzcEwbFzbInrYIrN2kmzNOFUPYwLgMhLJ6ulYrePXo7lGDeQ71NV/DXccRw5kLgJ/Y+kOS5rbVvPiAuEODob5cDnLMXFZ6rsNFygZTu1/d2iQIY/TBjUawKuYXAHeMHu2B8YIEWLCg3Kc4NgNSvV8fVgw58NJkxI8IyIhd73cbE8GG/ll7zDm3uFhi1BmKi/7K8JNczv1c="
-  file:
-  - target/squid-$project_version.jar
-  name: "$project_version"
-  on:
-    tags: true
-    all_branches: true
+# deploy:
+# - provider: releases
+#   skip_cleanup: true
+#   api_key:
+#     secure: "SUMtbqHpj2Fvf6wM8wTMhj4T8Y6p86w4Ivq/3prSGapAe6BhHo+p2TUbRszTX66psrbkeBPp99Vc+sCWS5Rnz1bGVVrWzDA8sDzWHa/uiUZsuqXu1t4DbTtvhc6JKNN28px5f9vI01Q+FZ9gGhnNTtSIOn5pG+sxPJ4/7hZwBA7JGd74hyDdtX2lChHaM4wMk0vBivT5kZMwlKuuoFgWYaE1oemEFLOPJhmM5ORELB8d+jzCwr8XcUyA2gKHCRuCVEhPhFmLTwaycxiVa04VRNmHhBI7ux9F2YNthR/aSap3A9ud4kET0FCkmUoyi/Q/+o0PlWBsc8hmeprcG+llQYirNMXplZUpzQR4Uwy3VXrESG7KlCTSQ43zObNXROLzGx8qMTnQUdFb72sq9gc07tGQHc1rDNHnzqkNF08BvdZS4wsInmaBrlqXzzMarD1XgcR9UoUZm3BJu87DdVp4NXJCNGe2FMmaWWzcEwbFzbInrYIrN2kmzNOFUPYwLgMhLJ6ulYrePXo7lGDeQ71NV/DXccRw5kLgJ/Y+kOS5rbVvPiAuEODob5cDnLMXFZ6rsNFygZTu1/d2iQIY/TBjUawKuYXAHeMHu2B8YIEWLCg3Kc4NgNSvV8fVgw58NJkxI8IyIhd73cbE8GG/ll7zDm3uFhi1BmKi/7K8JNczv1c="
+#   file:
+#   - target/squid-$project_version.jar
+#   name: "$project_version"
+#   on:
+#     tags: true
+#     all_branches: true
 
-- provider: script
-  skip_cleanup: true
-  script: mvn clean deploy --settings .maven.xml -B -U -Prelease
-  on:
-    tags: true
-    all_branches: true
+# - provider: script
+#   skip_cleanup: true
+#   script: mvn clean deploy --settings .maven.xml -B -U -Prelease
+#   on:
+#     tags: true
+#     all_branches: true
 
